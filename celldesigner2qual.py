@@ -84,13 +84,14 @@ def write_qual(filename, info):
     etree.SubElement(clist, 'compartment', constant="true", id="comp1")
     llist = etree.SubElement(model, 'layout:listOfLayouts')
     layout = etree.SubElement(llist, 'layout:layout')
-    add_positions(layout, info)
+    qlist = etree.SubElement(model, 'qual:listOfQualitativeSpecies')
+    add_positions(layout, qlist, info)
     root.append(model)
     tree = etree.ElementTree(root)
     tree.write(filename, "UTF-8", xml_declaration=True)
 
 
-def add_positions(layout, info):
+def add_positions(layout, qlist, info):
     '''create layout sub-elements'''
     llist = etree.SubElement(layout, 'layout:listOfSpeciesGlyphs')
     for species, data in info.items():
@@ -102,6 +103,10 @@ def add_positions(layout, info):
         etree.SubElement(box, 'layout:dimensions',
                          {'layout:height': data['h'],
                           'layout:width': data['w']})
+        etree.SubElement(qlist, 'qual:qualitativeSpecies',
+                         {'qual:maxLevel': "1",
+                          'qual:compartment': "comp1",
+                          'qual:id': species})
 
 
 def main():
