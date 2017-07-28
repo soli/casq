@@ -95,20 +95,26 @@ def add_positions(layout, qlist, info):
     '''create layout sub-elements'''
     llist = etree.SubElement(layout, 'layout:listOfSpeciesGlyphs')
     for species, data in info.items():
-        glyph = etree.SubElement(llist, 'layout:speciesGlyph',
-                                 {'layout:species': species})
+        glyph = etree.SubElement(
+            llist, 'layout:speciesGlyph',
+            {'layout:species': species})
         box = etree.SubElement(glyph, 'layout:boundingBox')
-        etree.SubElement(box, 'layout:position',
-                         {'layout:x': data['x'], 'layout:y': data['y']})
-        etree.SubElement(box, 'layout:dimensions',
-                         {'layout:height': data['h'],
-                          'layout:width': data['w']})
-        etree.SubElement(qlist, 'qual:qualitativeSpecies',
-                         {'qual:maxLevel': "1",
-                          'qual:compartment': "comp1",
-                          'qual:name': data['name'],
-                          'qual:constant': "false",
-                          'qual:id': species})
+        etree.SubElement(
+            box, 'layout:position',
+            {'layout:x': data['x'], 'layout:y': data['y']})
+        etree.SubElement(
+            box, 'layout:dimensions',
+            {'layout:height': data['h'], 'layout:width': data['w']})
+        etree.SubElement(
+            qlist,
+            'qual:qualitativeSpecies',
+            {
+                'qual:maxLevel': "1",
+                'qual:compartment': "comp1",
+                'qual:name': data['name'],
+                'qual:constant': "false",
+                'qual:id': species,
+            })
 
 
 def main():
