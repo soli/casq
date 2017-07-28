@@ -20,20 +20,31 @@ def read_sbgn(filename):
         print('Currently limited to SBML Level 2 Version 4')
         exit(1)
     model = root.find('sbml:model', NS)
-    return species_conv(model)
+    return species_info(model)
 
 
-def species_conv(model):
+def species_info(model):
     '''create a map from species' ids to their attributes'''
     nameconv = {}
     for species in model.findall('./sbml:listOfSpecies/sbml:species', NS):
-        annot = species.find('sbml:annotation', NS)
+        annot = species.find('./sbml:annotation', NS)
         cls = get_class(annot.find('.//cd:class', NS))
         mods = get_mods(annot.find('.//cd:listOfModifications', NS))
-        nameconv[species.get('id')] = [
-            species.get('name'),
-            cls,
-            mods]
+        nameconv[species.get('id')] = {
+            'name': species.get('name'),
+            'type': cls,
+            'modifications': mods
+        }
+    for species in model.findall(
+            './sbml:annotation/cd:extension/*/*[@compartmentAlias]', NS):
+        activity = species.find('.//cd:activity', NS).text
+        boundx = species.find('.//cd:bounds', NS).get('x')
+        boundy = species.find('.//cd:bounds', NS).get('y')
+        nameconv[species.get('species')].update({
+            'activity': activity,
+            'x': boundx,
+            'y': boundy
+        })
     return nameconv
 
 
