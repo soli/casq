@@ -106,6 +106,8 @@ def add_positions(layout, qlist, info):
         etree.SubElement(qlist, 'qual:qualitativeSpecies',
                          {'qual:maxLevel': "1",
                           'qual:compartment': "comp1",
+                          'qual:name': data['name'],
+                          'qual:constant': "false",
                           'qual:id': species})
 
 
