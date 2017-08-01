@@ -23,6 +23,7 @@ def read_celldesigner(filename):
         print('Currently limited to SBML Level 2 Version 4')
         exit(1)
     model = root.find('sbml:model', NS)
+    get_transitions(model)
     return species_info(model)
 
 
@@ -54,6 +55,20 @@ def species_info(model):
             'w': boundw,
         })
     return nameconv
+
+
+def get_transitions(model):
+    '''find all transitions'''
+    for trans in model.findall('./sbml:listOfReactions/sbml:reaction', NS):
+        annot = trans.find('./sbml:annotation/cd:extension', NS)
+        type = annot.find('./cd:reactionType', NS).text
+        reacs = [reac.get('species') for reac in
+                 annot.findall('./cd:baseReactants/cd:baseReactant', NS)]
+        prods = [prod.get('species') for prod in
+                 annot.findall('./cd:baseProducts/cd:baseProduct', NS)]
+        mods = [(mod.get('type'), mod.get('modifiers')) for mod in
+                annot.findall('./cd:listOfModification/cd:modification', NS)]
+        print((type, reacs, prods, mods))
 
 
 def get_class(cd_class):
@@ -127,7 +142,6 @@ def main():
     print(f'parsing {celldesignerfile}…')
     info = read_celldesigner(celldesignerfile)
     write_qual(sys.argv[2], info)
-    print(info)
 
 
 if __name__ == '__main__':  # pragma: no cover
