@@ -171,7 +171,7 @@ def add_transitions(tlist, info):
 
 def add_function(func, transitions):
     '''add the complete boolean function'''
-    math = etree.SubElement(func, 'math', xlmns=NS['mathml'])
+    math = etree.SubElement(func, 'math', xmlns=NS['mathml'])
     # create or node if necessary
     if len(transitions) > 1:
         apply = etree.SubElement(math, 'apply')
