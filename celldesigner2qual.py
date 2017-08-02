@@ -162,37 +162,55 @@ def add_transitions(tlist, info):
         etree.SubElement(flist, 'qual:defaultTerm', {
             'qual:resultLevel': '0'
         })
-        func = etree.SubElement(flist, 'qual:defaultTerm', {
-            'qual:resultLevel': '1'
-        })
-        add_function(func, data['transitions'])
+        if data['transitions']:
+            func = etree.SubElement(flist, 'qual:functionTerm', {
+                'qual:resultLevel': '1'
+            })
+            add_function(func, data['transitions'])
 
 
 def add_function(func, transitions):
     '''add the complete boolean function'''
     math = etree.SubElement(func, 'math', xlmns=NS['mathml'])
-    apply = etree.SubElement(math, 'apply')
-    etree.SubElement(apply, 'or')
+    # create or node if necessary
+    if len(transitions) > 1:
+        apply = etree.SubElement(math, 'apply')
+        etree.SubElement(apply, 'or')
+    else:
+        apply = math
     for reaction in transitions:
         reactants = reaction[1]
         activators = [modifier for (modtype, modifier) in reaction[2] if
                       modtype != 'INHIBITION']
         inhibitors = [modifier for (modtype, modifier) in reaction[2] if
                       modtype == 'INHIBITION']
-        if len(activators) < 2:
+        # create and node if necessary
+        if len(reactants) > 1 or (activators and reactants):
             lapply = etree.SubElement(apply, 'apply')
+            etree.SubElement(lapply, 'and')
+        else:
+            lapply = apply
+        if len(activators) < 2:
             reactants.extend(activators)
         else:
-            continue
-        etree.SubElement(lapply, 'and')
+            # create or node if necessary
+            inner_apply = etree.SubElement(lapply, 'apply')
+            etree.SubElement(inner_apply, 'or')
+            for modifier in activators:
+                set_level(inner_apply, modifier, '1')
         for level, modifier in chain(zip(repeat('1'), reactants),
                                      zip(repeat('0'), inhibitors)):
-            trigger = etree.SubElement(lapply, 'apply')
-            etree.SubElement(trigger, 'eq')
-            math_ci = etree.SubElement(trigger, 'ci')
-            math_ci.text = modifier
-            math_cn = etree.SubElement(trigger, 'cn', type='integer')
-            math_cn.text = level
+            set_level(lapply, modifier, level)
+
+
+def set_level(elt, modifier, level):
+    '''add mathml to element elt such that modifier is equal to level'''
+    trigger = etree.SubElement(elt, 'apply')
+    etree.SubElement(trigger, 'eq')
+    math_ci = etree.SubElement(trigger, 'ci')
+    math_ci.text = modifier
+    math_cn = etree.SubElement(trigger, 'cn', type='integer')
+    math_cn.text = level
 
 
 def add_inputs(ilist, transitions, species):
