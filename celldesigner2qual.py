@@ -3,6 +3,7 @@
 Convert CellDesigner models to SBML-qual with a rather strict semantics
 '''
 import sys
+from itertools import chain
 import xml.etree.ElementTree as etree
 
 
@@ -23,52 +24,57 @@ def read_celldesigner(filename):
         print('Currently limited to SBML Level 2 Version 4')
         exit(1)
     model = root.find('sbml:model', NS)
-    get_transitions(model)
+    # return get_transitions(model, species_info(model))
     return species_info(model)
 
 
 def species_info(model):
     '''create a map from species' ids to their attributes'''
     nameconv = {}
-    for species in model.findall('./sbml:listOfSpecies/sbml:species', NS):
-        annot = species.find('./sbml:annotation', NS)
+    for species in chain(
+            model.findall(
+                './sbml:annotation/cd:extension/' +
+                'cd:listOfComplexSpeciesAliases/' +
+                'cd:complexSpeciesAlias[@compartmentAlias]', NS),
+            model.findall(
+                './sbml:annotation/cd:extension/' +
+                'cd:listOfSpeciesAliases/' +
+                'cd:speciesAlias[@compartmentAlias]', NS),
+    ):
+        activity = species.find('.//cd:activity', NS).text
+        bound = species.find('.//cd:bounds', NS)
+        sbml = model.find('./sbml:listOfSpecies/sbml:species[@id="' +
+                          species.get('species') + '"]', NS)
+        annot = sbml.find('./sbml:annotation', NS)
         cls = get_class(annot.find('.//cd:class', NS))
         mods = get_mods(annot.find('.//cd:listOfModifications', NS))
         nameconv[species.get('id')] = {
-            'name': species.get('name'),
-            'type': cls,
-            'modifications': mods
-        }
-    for species in model.findall(
-            './sbml:annotation/cd:extension/*/*[@compartmentAlias]', NS):
-        activity = species.find('.//cd:activity', NS).text
-        bound = species.find('.//cd:bounds', NS)
-        boundx = bound.get('x')
-        boundy = bound.get('y')
-        boundh = bound.get('h')
-        boundw = bound.get('w')
-        nameconv[species.get('species')].update({
             'activity': activity,
-            'x': boundx,
-            'y': boundy,
-            'h': boundh,
-            'w': boundw,
-        })
+            'x': bound.get('x'),
+            'y': bound.get('y'),
+            'h': bound.get('h'),
+            'w': bound.get('w'),
+            'transitions': [],
+            'name': sbml.get('name'),
+            'type': cls,
+            'modifications': mods,
+        }
     return nameconv
 
 
-def get_transitions(model):
+def get_transitions(model, info):
     '''find all transitions'''
     for trans in model.findall('./sbml:listOfReactions/sbml:reaction', NS):
         annot = trans.find('./sbml:annotation/cd:extension', NS)
-        type = annot.find('./cd:reactionType', NS).text
-        reacs = [reac.get('species') for reac in
+        rtype = annot.find('./cd:reactionType', NS).text
+        reacs = [reac.get('alias') for reac in
                  annot.findall('./cd:baseReactants/cd:baseReactant', NS)]
-        prods = [prod.get('species') for prod in
+        prods = [prod.get('alias') for prod in
                  annot.findall('./cd:baseProducts/cd:baseProduct', NS)]
         mods = [(mod.get('type'), mod.get('modifiers')) for mod in
                 annot.findall('./cd:listOfModification/cd:modification', NS)]
-        print((type, reacs, prods, mods))
+        for species in prods:
+            info[species]['transitions'].append((rtype, reacs, mods))
 
 
 def get_class(cd_class):
@@ -101,6 +107,8 @@ def write_qual(filename, info):
     layout = etree.SubElement(llist, 'layout:layout')
     qlist = etree.SubElement(model, 'qual:listOfQualitativeSpecies')
     add_positions(layout, qlist, info)
+    tlist = etree.SubElement(model, 'qual:listOfTransitions')
+    add_transitions(tlist, info)
     root.append(model)
     tree = etree.ElementTree(root)
     tree.write(filename, "UTF-8", xml_declaration=True)
@@ -130,6 +138,25 @@ def add_positions(layout, qlist, info):
                 'qual:constant': "false",
                 'qual:id': species,
             })
+
+
+def add_transitions(tlist, info):
+    '''create transition elements'''
+    for species, data in info.items():
+        trans = etree.SubElement(tlist, 'qual:transition', {
+            'qual:id': f'tr_{species}'
+        })
+        etree.SubElement(trans, 'qual:listOfInputs')
+        olist = etree.SubElement(trans, 'qual:listOfOutputs')
+        etree.SubElement(olist, 'qual:output', {
+            'qual:qualitativeSpecies': species,
+            'qual:transitionEffect': 'assignmentLevel',
+            'qual:id': f'tr_{species}_out'
+        })
+        flist = etree.SubElement(trans, 'qual:listOfFunctionTerms')
+        etree.SubElement(flist, 'qual:defaultTerm', {
+            'qual:resultLevel': '0'
+        })
 
 
 def main():
