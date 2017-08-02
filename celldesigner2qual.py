@@ -3,7 +3,7 @@
 Convert CellDesigner models to SBML-qual with a rather strict semantics
 '''
 import sys
-from itertools import chain
+from itertools import chain, repeat
 import xml.etree.ElementTree as etree
 
 
@@ -13,6 +13,7 @@ NS = {
     'sbml3': 'http://www.sbml.org/sbml/level3/version1/core',
     'layout': 'http://www.sbml.org/sbml/level3/version1/layout/version1',
     'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
+    'mathml': 'http://www.w3.org/1998/Math/MathML',
 }
 
 
@@ -150,22 +151,7 @@ def add_transitions(tlist, info):
             'qual:id': f'tr_{species}'
         })
         ilist = etree.SubElement(trans, 'qual:listOfInputs')
-        index = 0
-        for reaction in data['transitions']:
-            # we use enumerate to get a dummy modtype for reactants
-            for modtype, modifier in chain(enumerate(reaction[1]),
-                                           reaction[2]):
-                if modtype == 'INHIBITION':
-                    sign = 'negative'
-                else:
-                    sign = 'positive'
-                etree.SubElement(ilist, 'qual:input', {
-                    'qual:qualitativeSpecies': modifier,
-                    'qual:transitionEffect': 'none',
-                    'qual:sign': sign,
-                    'qual:id': f'tr_{species}_in_{index}',
-                })
-                index += 1
+        add_inputs(ilist, data['transitions'], species)
         olist = etree.SubElement(trans, 'qual:listOfOutputs')
         etree.SubElement(olist, 'qual:output', {
             'qual:qualitativeSpecies': species,
@@ -176,6 +162,60 @@ def add_transitions(tlist, info):
         etree.SubElement(flist, 'qual:defaultTerm', {
             'qual:resultLevel': '0'
         })
+        func = etree.SubElement(flist, 'qual:defaultTerm', {
+            'qual:resultLevel': '1'
+        })
+        add_function(func, data['transitions'])
+
+
+def add_function(func, transitions):
+    '''add the complete boolean function'''
+    math = etree.SubElement(func, 'math', xlmns=NS['mathml'])
+    apply = etree.SubElement(math, 'apply')
+    etree.SubElement(apply, 'or')
+    for reaction in transitions:
+        reactants = reaction[1]
+        activators = [modifier for (modtype, modifier) in reaction[2] if
+                      modtype != 'INHIBITION']
+        inhibitors = [modifier for (modtype, modifier) in reaction[2] if
+                      modtype == 'INHIBITION']
+        if len(activators) < 2:
+            lapply = etree.SubElement(apply, 'apply')
+            reactants.extend(activators)
+        else:
+            continue
+        etree.SubElement(lapply, 'and')
+        for level, modifier in chain(zip(repeat('1'), reactants),
+                                     zip(repeat('0'), inhibitors)):
+            trigger = etree.SubElement(lapply, 'apply')
+            etree.SubElement(trigger, 'eq')
+            math_ci = etree.SubElement(trigger, 'ci')
+            math_ci.text = modifier
+            math_cn = etree.SubElement(trigger, 'cn', type='integer')
+            math_cn.text = level
+
+
+def add_inputs(ilist, transitions, species):
+    '''add all known inputs'''
+    index = 0
+    modifiers = []
+    for reaction in transitions:
+        # we use enumerate to get a dummy modtype for reactants
+        for modtype, modifier in chain(enumerate(reaction[1]),
+                                       reaction[2]):
+            if modtype == 'INHIBITION':
+                sign = 'negative'
+            else:
+                sign = 'positive'
+            if (modifier, sign) not in modifiers:
+                modifiers.append((modifier, sign))
+                etree.SubElement(ilist, 'qual:input', {
+                    'qual:qualitativeSpecies': modifier,
+                    'qual:transitionEffect': 'none',
+                    'qual:sign': sign,
+                    'qual:id': f'tr_{species}_in_{index}',
+                })
+                index += 1
 
 
 def main():
