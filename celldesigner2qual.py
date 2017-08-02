@@ -24,8 +24,7 @@ def read_celldesigner(filename):
         print('Currently limited to SBML Level 2 Version 4')
         exit(1)
     model = root.find('sbml:model', NS)
-    # return get_transitions(model, species_info(model))
-    return species_info(model)
+    return get_transitions(model, species_info(model))
 
 
 def species_info(model):
@@ -71,10 +70,14 @@ def get_transitions(model, info):
                  annot.findall('./cd:baseReactants/cd:baseReactant', NS)]
         prods = [prod.get('alias') for prod in
                  annot.findall('./cd:baseProducts/cd:baseProduct', NS)]
-        mods = [(mod.get('type'), mod.get('modifiers')) for mod in
+        mods = [(mod.get('type'), mod.get('aliases')) for mod in
                 annot.findall('./cd:listOfModification/cd:modification', NS)]
         for species in prods:
-            info[species]['transitions'].append((rtype, reacs, mods))
+            if species in info:
+                info[species]['transitions'].append((rtype, reacs, mods))
+            else:
+                print(f'ignoring unknown species {species}')
+    return info
 
 
 def get_class(cd_class):
@@ -146,7 +149,23 @@ def add_transitions(tlist, info):
         trans = etree.SubElement(tlist, 'qual:transition', {
             'qual:id': f'tr_{species}'
         })
-        etree.SubElement(trans, 'qual:listOfInputs')
+        ilist = etree.SubElement(trans, 'qual:listOfInputs')
+        index = 0
+        for reaction in data['transitions']:
+            # we use enumerate to get a dummy modtype for reactants
+            for modtype, modifier in chain(enumerate(reaction[1]),
+                                           reaction[2]):
+                if modtype == 'INHIBITION':
+                    sign = 'negative'
+                else:
+                    sign = 'positive'
+                etree.SubElement(ilist, 'qual:input', {
+                    'qual:qualitativeSpecies': modifier,
+                    'qual:transitionEffect': 'none',
+                    'qual:sign': sign,
+                    'qual:id': f'tr_{species}_in_{index}',
+                })
+                index += 1
         olist = etree.SubElement(trans, 'qual:listOfOutputs')
         etree.SubElement(olist, 'qual:output', {
             'qual:qualitativeSpecies': species,
