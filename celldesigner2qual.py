@@ -67,11 +67,12 @@ def get_transitions(model, info):
     for trans in model.findall('./sbml:listOfReactions/sbml:reaction', NS):
         annot = trans.find('./sbml:annotation/cd:extension', NS)
         rtype = annot.find('./cd:reactionType', NS).text
-        reacs = [reac.get('alias') for reac in
+        reacs = [decomplexify(reac.get('alias'), model) for reac in
                  annot.findall('./cd:baseReactants/cd:baseReactant', NS)]
-        prods = [prod.get('alias') for prod in
+        prods = [decomplexify(prod.get('alias'), model) for prod in
                  annot.findall('./cd:baseProducts/cd:baseProduct', NS)]
-        mods = [(mod.get('type'), mod.get('aliases')) for mod in
+        mods = [(mod.get('type'),
+                 decomplexify(mod.get('aliases'), model)) for mod in
                 annot.findall('./cd:listOfModification/cd:modification', NS)]
         for species in prods:
             if species in info:
@@ -79,6 +80,17 @@ def get_transitions(model, info):
             else:
                 print(f'ignoring unknown species {species}')
     return info
+
+
+def decomplexify(species, model):
+    '''return external complex if there is one, or species unchanged
+    otherwise'''
+    cmplx = model.find('./sbml:annotation/cd:extension/' +
+                       'cd:listOfSpeciesAliases/' +
+                       'cd:speciesAlias[@id="' + species + '"]', NS)
+    if cmplx is None:
+        return species
+    return cmplx.get('complexSpeciesAlias', species)
 
 
 def get_class(cd_class):
@@ -132,6 +144,10 @@ def add_positions(layout, qlist, info):
         etree.SubElement(
             box, 'layout:dimensions',
             {'layout:height': data['h'], 'layout:width': data['w']})
+        if data['transitions']:
+            constant = "false"
+        else:
+            constant = "true"
         etree.SubElement(
             qlist,
             'qual:qualitativeSpecies',
@@ -139,7 +155,7 @@ def add_positions(layout, qlist, info):
                 'qual:maxLevel': "1",
                 'qual:compartment': "comp1",
                 'qual:name': data['name'],
-                'qual:constant': "false",
+                'qual:constant': constant,
                 'qual:id': species,
             })
 
@@ -147,22 +163,22 @@ def add_positions(layout, qlist, info):
 def add_transitions(tlist, info):
     '''create transition elements'''
     for species, data in info.items():
-        trans = etree.SubElement(tlist, 'qual:transition', {
-            'qual:id': f'tr_{species}'
-        })
-        ilist = etree.SubElement(trans, 'qual:listOfInputs')
-        add_inputs(ilist, data['transitions'], species)
-        olist = etree.SubElement(trans, 'qual:listOfOutputs')
-        etree.SubElement(olist, 'qual:output', {
-            'qual:qualitativeSpecies': species,
-            'qual:transitionEffect': 'assignmentLevel',
-            'qual:id': f'tr_{species}_out'
-        })
-        flist = etree.SubElement(trans, 'qual:listOfFunctionTerms')
-        etree.SubElement(flist, 'qual:defaultTerm', {
-            'qual:resultLevel': '0'
-        })
         if data['transitions']:
+            trans = etree.SubElement(tlist, 'qual:transition', {
+                'qual:id': f'tr_{species}'
+            })
+            ilist = etree.SubElement(trans, 'qual:listOfInputs')
+            add_inputs(ilist, data['transitions'], species)
+            olist = etree.SubElement(trans, 'qual:listOfOutputs')
+            etree.SubElement(olist, 'qual:output', {
+                'qual:qualitativeSpecies': species,
+                'qual:transitionEffect': 'assignmentLevel',
+                'qual:id': f'tr_{species}_out'
+            })
+            flist = etree.SubElement(trans, 'qual:listOfFunctionTerms')
+            etree.SubElement(flist, 'qual:defaultTerm', {
+                'qual:resultLevel': '0'
+            })
             func = etree.SubElement(flist, 'qual:functionTerm', {
                 'qual:resultLevel': '1'
             })
@@ -185,7 +201,8 @@ def add_function(func, transitions):
         inhibitors = [modifier for (modtype, modifier) in reaction[2] if
                       modtype == 'INHIBITION']
         # create and node if necessary
-        if len(reactants) > 1 or (activators and reactants):
+        if len(reactants) + len(inhibitors) > 1 or (
+                activators and (reactants or inhibitors)):
             lapply = etree.SubElement(apply, 'apply')
             etree.SubElement(lapply, 'and')
         else:
