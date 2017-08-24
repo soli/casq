@@ -154,7 +154,11 @@ def add_positions(layout, qlist, info):
             {
                 'qual:maxLevel': "1",
                 'qual:compartment': "comp1",
-                'qual:name': data['name'],
+                # FIXME ginsim bug uses name as id
+                # 'qual:name': data['name'],
+                'qual:name': data['name'].replace(
+                    ' ', '_').replace(
+                        ',', '').replace('/', '_') + '_' + species,
                 'qual:constant': constant,
                 'qual:id': species,
             })
