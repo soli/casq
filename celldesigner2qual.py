@@ -74,9 +74,11 @@ def get_transitions(model, info):
         mods = [(mod.get('type'),
                  decomplexify(mod.get('aliases'), model)) for mod in
                 annot.findall('./cd:listOfModification/cd:modification', NS)]
+        notes = trans.find('./sbml:notes', NS)
         for species in prods:
             if species in info:
-                info[species]['transitions'].append((rtype, reacs, mods))
+                info[species]['transitions'].append(
+                    (rtype, reacs, mods, notes))
             else:
                 print(f'ignoring unknown species {species}')
     return info
@@ -187,6 +189,15 @@ def add_transitions(tlist, info):
                 'qual:resultLevel': '1'
             })
             add_function(func, data['transitions'])
+            add_notes(trans, data['transitions'])
+
+
+def add_notes(trans, transitions):
+    '''add all the found notes'''
+    notes = etree.SubElement(trans, 'notes')
+    for reaction in transitions:
+        if reaction[3] is not None:
+            notes.append(reaction[3][0])
 
 
 def add_function(func, transitions):
@@ -200,9 +211,11 @@ def add_function(func, transitions):
         apply = math
     for reaction in transitions:
         reactants = reaction[1]
-        activators = [modifier for (modtype, modifier) in reaction[2] if
+        activators = [mod for (modtype, modifier) in reaction[2]
+                      for mod in modifier.split(',') if
                       modtype != 'INHIBITION']
-        inhibitors = [modifier for (modtype, modifier) in reaction[2] if
+        inhibitors = [mod for (modtype, modifier) in reaction[2]
+                      for mod in modifier.split(',') if
                       modtype == 'INHIBITION']
         # create and node if necessary
         if len(reactants) + len(inhibitors) > 1 or (
