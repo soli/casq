@@ -5,6 +5,7 @@ Convert CellDesigner models to SBML-qual with a rather strict semantics
 import sys
 from itertools import chain, repeat
 import xml.etree.ElementTree as etree
+import collections
 
 
 NS = {
@@ -20,7 +21,14 @@ NS = {
     'vCard': 'http://www.w3.org/2001/vcard-rdf/3.0#',
     'bqbiol': 'http://biomodels.net/biology-qualifiers/',
     'bqmodel': 'http://biomodels.net/model-qualifiers/',
+    'xhtml': 'http://www.w3.org/1999/xhtml'
 }
+
+GINSIM = False
+
+
+Transition = collections.namedtuple('Transition', [
+    'type', 'reactants', 'modifiers', 'notes', 'annotations'])
 
 
 def read_celldesigner(filename):
@@ -82,11 +90,13 @@ def get_transitions(model, info):
         mods = [(mod.get('type'),
                  decomplexify(mod.get('aliases'), model)) for mod in
                 annot.findall('./cd:listOfModification/cd:modification', NS)]
-        notes = trans.find('./sbml:notes', NS)
+        notes = trans.find('./sbml:notes//xhtml:body', NS)
+        rdf = trans.find('./sbml:annotation/rdf:RDF', NS)
         for species in prods:
             if species in info:
                 info[species]['transitions'].append(
-                    (rtype, reacs, mods, notes))
+                    Transition(rtype, reacs, mods, notes, rdf)
+                )
             else:
                 print(f'ignoring unknown species {species}')
     return info
@@ -166,19 +176,27 @@ def add_positions(layout, qlist, info):
             {
                 'qual:maxLevel': "1",
                 'qual:compartment': "comp1",
-                # FIXME ginsim bug uses name as id
-                # 'qual:name': data['name'],
-                'qual:name': data['name'].replace(
-                    ' ', '_').replace(
-                        ',', '').replace('/', '_') + '_' + species,
+                'qual:name': data['name'],
                 'qual:constant': constant,
                 'qual:id': species,
             })
-        if data['annotations'] is not None:
-            etree.SubElement(
-                qspecies,
-                'annotation'
-            ).append(data['annotations'])
+        if GINSIM:
+            # ginsim bug uses name as id
+            qspecies.set(
+                'qual:name',
+                data['name'].replace(' ', '_').replace(',', '').replace(
+                    '/', '_') + '_' + species
+            )
+        add_annotation(qspecies, data['annotations'])
+
+
+def add_annotation(node, rdf):
+    '''add a single RDF element as an annotation node'''
+    if rdf is not None:
+        etree.SubElement(
+            node,
+            'annotation'
+        ).append(rdf)
 
 
 def add_transitions(tlist, info):
@@ -205,14 +223,39 @@ def add_transitions(tlist, info):
             })
             add_function(func, data['transitions'])
             add_notes(trans, data['transitions'])
+            add_annotations(trans, data['transitions'])
 
 
 def add_notes(trans, transitions):
     '''add all the found notes'''
     notes = etree.SubElement(trans, 'notes')
+    html = etree.SubElement(notes, 'html', xmlns=NS['xhtml'])
+    head = etree.SubElement(html, 'head')
+    etree.SubElement(head, 'title')
+    body = etree.SubElement(html, 'body')
+    some_notes = False
+    prefix_len = len(NS['xhtml']) + 2
     for reaction in transitions:
-        if reaction[3] is not None:
-            notes.append(reaction[3][0])
+        if reaction.notes is not None:
+            some_notes = True
+            reaction.notes.tag = 'p'
+            for element in reaction.notes.getiterator():
+                if element.tag.startswith(f"{{{NS['xhtml']}}}"):
+                    element.tag = element.tag[prefix_len:]
+            body.append(reaction.notes)
+    if not some_notes:
+        trans.remove(notes)
+
+
+def add_annotations(trans, transitions):
+    '''add all the found annotations'''
+    annotation = etree.SubElement(trans, 'annotation')
+    rdf = etree.SubElement(annotation, 'rdf:RDF')
+    for reaction in transitions:
+        if reaction.annotations is not None:
+            rdf.append(reaction.annotations[0])
+    if not rdf:
+        trans.remove(annotation)
 
 
 def add_function(func, transitions):
@@ -225,11 +268,11 @@ def add_function(func, transitions):
     else:
         apply = math
     for reaction in transitions:
-        reactants = reaction[1]
-        activators = [mod for (modtype, modifier) in reaction[2]
+        reactants = reaction.reactants
+        activators = [mod for (modtype, modifier) in reaction.modifiers
                       for mod in modifier.split(',') if
                       modtype != 'INHIBITION']
-        inhibitors = [mod for (modtype, modifier) in reaction[2]
+        inhibitors = [mod for (modtype, modifier) in reaction.modifiers
                       for mod in modifier.split(',') if
                       modtype == 'INHIBITION']
         # create and node if necessary
@@ -268,8 +311,8 @@ def add_inputs(ilist, transitions, species):
     modifiers = []
     for reaction in transitions:
         # we use enumerate to get a dummy modtype for reactants
-        for modtype, modifier in chain(enumerate(reaction[1]),
-                                       reaction[2]):
+        for modtype, modifier in chain(enumerate(reaction.reactants),
+                                       reaction.modifiers):
             if modtype == 'INHIBITION':
                 sign = 'negative'
             else:
@@ -287,6 +330,9 @@ def add_inputs(ilist, transitions, species):
 
 def main():
     '''run conversion using the CLI given first argument'''
+    if len(sys.argv) > 1 and sys.argv[1] == '--ginsim':
+        global GINSIM   # pylint: disable=global-statement
+        GINSIM = True
     if len(sys.argv) != 3:
         print(f'Usage: [python3] {sys.argv[0]} ' +
               '<celldesignerinfile.xml> <sbmlqualoutfile.xml>')
