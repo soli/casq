@@ -14,6 +14,12 @@ NS = {
     'layout': 'http://www.sbml.org/sbml/level3/version1/layout/version1',
     'qual': 'http://www.sbml.org/sbml/level3/version1/qual/version1',
     'mathml': 'http://www.w3.org/1998/Math/MathML',
+    'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+    'dc': 'http://purl.org/dc/elements/1.1/',
+    'dcterms': 'http://purl.org/dc/terms/',
+    'vCard': 'http://www.w3.org/2001/vcard-rdf/3.0#',
+    'bqbiol': 'http://biomodels.net/biology-qualifiers/',
+    'bqmodel': 'http://biomodels.net/model-qualifiers/',
 }
 
 
@@ -48,6 +54,7 @@ def species_info(model):
         annot = sbml.find('./sbml:annotation', NS)
         cls = get_class(annot.find('.//cd:class', NS))
         mods = get_mods(annot.find('.//cd:listOfModifications', NS))
+        rdf = annot.find('.//rdf:RDF', NS)
         nameconv[species.get('id')] = {
             'activity': activity,
             'x': bound.get('x'),
@@ -58,6 +65,7 @@ def species_info(model):
             'name': sbml.get('name'),
             'type': cls,
             'modifications': mods,
+            'annotations': rdf,
         }
     return nameconv
 
@@ -113,6 +121,8 @@ def get_mods(cd_modifications):
 
 def write_qual(filename, info):
     '''write the SBML qual with layout file for our model'''
+    for name, space in NS.items():
+        etree.register_namespace(name, space)
     root = etree.Element('sbml', {
         'level': '3', 'version': '1', 'layout:required': 'false',
         'xmlns': NS['sbml3'], 'qual:required': 'true',
@@ -150,7 +160,7 @@ def add_positions(layout, qlist, info):
             constant = "false"
         else:
             constant = "true"
-        etree.SubElement(
+        qspecies = etree.SubElement(
             qlist,
             'qual:qualitativeSpecies',
             {
@@ -164,6 +174,11 @@ def add_positions(layout, qlist, info):
                 'qual:constant': constant,
                 'qual:id': species,
             })
+        if data['annotations'] is not None:
+            etree.SubElement(
+                qspecies,
+                'annotation'
+            ).append(data['annotations'])
 
 
 def add_transitions(tlist, info):
