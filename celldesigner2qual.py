@@ -45,6 +45,7 @@ def read_celldesigner(filename):
 def species_info(model):
     '''create a map from species' ids to their attributes'''
     nameconv = {}
+    # Find all CellDesigner species used later
     for species in chain(
             model.findall(
                 './sbml:annotation/cd:extension/' +
@@ -75,27 +76,21 @@ def species_info(model):
             'modifications': mods,
             'annotations': rdf,
         }
+    # For unused CD species (only subcomponents of complexes), add their
+    # annotations to the parent complex
     for species in model.findall('./sbml:annotation/cd:extension/' +
                                  'cd:listOfIncludedSpecies/cd:species/' +
                                  'cd:notes/xhtml:html/xhtml:body/' +
                                  'rdf:RDF/../../../..', NS):
         species_id = species.get('id')
         new_rdf = species.find('.//rdf:RDF', NS)
-        reference = model.find('./sbml:annotation/cd:extension/' +
-                               'cd:listOfSpeciesAliases/' +
-                               f'cd:speciesAlias[@species="{species_id}"]',
-                               NS).get('complexSpeciesAlias')
-        annotations = nameconv[reference]['annotations']
-        print(species_id)
-        print(reference)
-        print(annotations)
-        if annotations is not None:
+        reference = decomplexify(species_id, model, field='species')
+        if nameconv[reference]['annotations'] is not None:
             nameconv[reference]['annotations'].find(
                 './rdf:Description', NS).extend(
                     new_rdf.find('./rdf:Description', NS)[:])
         else:
             nameconv[reference]['annotations'] = new_rdf
-        print(nameconv[reference]['annotations'])
     return nameconv
 
 
@@ -113,6 +108,8 @@ def get_transitions(model, info):
                 annot.findall('./cd:listOfModification/cd:modification', NS)]
         notes = trans.find('./sbml:notes//xhtml:body', NS)
         rdf = trans.find('./sbml:annotation/rdf:RDF', NS)
+        # for each product of a reaction, add this reaction as a transition
+        # affecting that species
         for species in prods:
             if species in info:
                 info[species]['transitions'].append(
@@ -123,12 +120,12 @@ def get_transitions(model, info):
     return info
 
 
-def decomplexify(species, model):
+def decomplexify(species, model, field='id'):
     '''return external complex if there is one, or species unchanged
     otherwise'''
     cmplx = model.find('./sbml:annotation/cd:extension/' +
                        'cd:listOfSpeciesAliases/' +
-                       'cd:speciesAlias[@id="' + species + '"]', NS)
+                       f'cd:speciesAlias[@{field}="{species}"]', NS)
     if cmplx is None:
         return species
     return cmplx.get('complexSpeciesAlias', species)
@@ -280,7 +277,11 @@ def add_annotations(trans, transitions):
 
 
 def add_function(func, transitions):
-    '''add the complete boolean function'''
+    '''add the complete boolean activation function
+
+    this is an or over all reactions having the target as product.
+    For each reaction it can activate if all reactants are present,
+    no inhibitor is present, and one of the activators is present'''
     math = etree.SubElement(func, 'math', xmlns=NS['mathml'])
     # create or node if necessary
     if len(transitions) > 1:
