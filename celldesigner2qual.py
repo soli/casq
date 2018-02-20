@@ -75,6 +75,27 @@ def species_info(model):
             'modifications': mods,
             'annotations': rdf,
         }
+    for species in model.findall('./sbml:annotation/cd:extension/' +
+                                 'cd:listOfIncludedSpecies/cd:species/' +
+                                 'cd:notes/xhtml:html/xhtml:body/' +
+                                 'rdf:RDF/../../../..', NS):
+        species_id = species.get('id')
+        new_rdf = species.find('.//rdf:RDF', NS)
+        reference = model.find('./sbml:annotation/cd:extension/' +
+                               'cd:listOfSpeciesAliases/' +
+                               f'cd:speciesAlias[@species="{species_id}"]',
+                               NS).get('complexSpeciesAlias')
+        annotations = nameconv[reference]['annotations']
+        print(species_id)
+        print(reference)
+        print(annotations)
+        if annotations is not None:
+            nameconv[reference]['annotations'].find(
+                './rdf:Description', NS).extend(
+                    new_rdf.find('./rdf:Description', NS)[:])
+        else:
+            nameconv[reference]['annotations'] = new_rdf
+        print(nameconv[reference]['annotations'])
     return nameconv
 
 
