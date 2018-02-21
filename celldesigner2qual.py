@@ -58,11 +58,14 @@ def species_info(model):
     ):
         activity = species.find('.//cd:activity', NS).text
         bound = species.find('.//cd:bounds', NS)
-        sbml = model.find('./sbml:listOfSpecies/sbml:species[@id="' +
-                          species.get('species') + '"]', NS)
+        ref_species = species.get('species')
+        sbml = model.find(
+            f'./sbml:listOfSpecies/sbml:species[@id="{ref_species}"]', NS)
         annot = sbml.find('./sbml:annotation', NS)
-        cls = get_class(annot.find('.//cd:class', NS))
+        cls = get_text(annot.find('.//cd:class', NS), 'PROTEIN')
         mods = get_mods(annot.find('.//cd:listOfModifications', NS))
+        prot_ref = get_text(annot.find('.//cd:proteinReference', NS),
+                            ref_species)
         rdf = annot.find('.//rdf:RDF', NS)
         nameconv[species.get('id')] = {
             'activity': activity,
@@ -76,6 +79,12 @@ def species_info(model):
             'modifications': mods,
             'annotations': rdf,
         }
+        # also store in nameconv the reverse mapping from SBML species to CD
+        # species using the corresponding reference protein
+        if prot_ref in nameconv:
+            nameconv[prot_ref].append(species.get('id'))
+        else:
+            nameconv[prot_ref] = [species.get('id')]
     # For unused CD species (only subcomponents of complexes), add their
     # annotations to the parent complex
     for species in model.findall('./sbml:annotation/cd:extension/' +
@@ -85,13 +94,20 @@ def species_info(model):
         species_id = species.get('id')
         new_rdf = species.find('.//rdf:RDF', NS)
         reference = decomplexify(species_id, model, field='species')
-        if nameconv[reference]['annotations'] is not None:
-            nameconv[reference]['annotations'].find(
-                './rdf:Description', NS).extend(
-                    new_rdf.find('./rdf:Description', NS)[:])
-        else:
-            nameconv[reference]['annotations'] = new_rdf
+        add_rdf(nameconv, reference, new_rdf)
     return nameconv
+
+
+def add_rdf(nameconv, reference, new_rdf):
+    '''Adds the new_rdf element to nameconv[reference]['annotations']'''
+    if new_rdf is None:
+        return
+    if nameconv[reference]['annotations'] is not None:
+        nameconv[reference]['annotations'].find(
+            './rdf:Description', NS).extend(
+                new_rdf.find('./rdf:Description', NS)[:])
+    else:
+        nameconv[reference]['annotations'] = new_rdf
 
 
 def get_transitions(model, info):
@@ -131,11 +147,11 @@ def decomplexify(species, model, field='id'):
     return cmplx.get('complexSpeciesAlias', species)
 
 
-def get_class(cd_class):
-    '''celldesigner:class to class'''
+def get_text(cd_class, default=None):
+    '''get the text of an XML field if it exists or return a default'''
     if cd_class is not None:
         return cd_class.text
-    return 'PROTEIN'
+    return default
 
 
 def get_mods(cd_modifications):
@@ -156,6 +172,7 @@ def write_qual(filename, info):
         'xmlns': NS['sbml3'], 'qual:required': 'true',
         'xmlns:layout': NS['layout'], 'xmlns:qual': NS['qual'],
     })
+    simplify_model(info)
     model = etree.Element('model', id="model_id")
     clist = etree.SubElement(model, 'listOfCompartments')
     etree.SubElement(clist, 'compartment', constant="true", id="comp1")
@@ -168,6 +185,33 @@ def write_qual(filename, info):
     root.append(model)
     tree = etree.ElementTree(root)
     tree.write(filename, "UTF-8", xml_declaration=True)
+
+
+def simplify_model(info):
+    '''Cleaning the model w.r.t. some active/inactive species'''
+    multispecies = {}
+    for key, value in list(info.items()):
+        if not key.startswith('csa') and not key.startswith('sa'):
+            del info[key]
+            if len(value) > 1:
+                multispecies[key] = value
+    for key, value in multispecies.items():
+        active = [val for val in value if info[val]['activity'] == 'active']
+        print(key, active)
+        if len(active) == 1:
+            active = active[0]
+            for val in value:
+                # check that it does not appear in any other reaction than the
+                # activation one
+                if not info[val]['transitions'] and \
+                   info[val]['activity'] == 'inactive':
+                    add_rdf(info, active, info[val]['annotations'])
+                    print(f'deleting {val} [{active} is active for {key}]')
+                    del info[val]
+        else:
+            # apparently only double/triple inactive
+            # print('***', value)
+            pass
 
 
 def add_positions(layout, qlist, info):
@@ -219,29 +263,34 @@ def add_annotation(node, rdf):
 
 def add_transitions(tlist, info):
     '''create transition elements'''
+    known = list(info.keys())
     for species, data in info.items():
         if data['transitions']:
             trans = etree.SubElement(tlist, 'qual:transition', {
                 'qual:id': f'tr_{species}'
             })
             ilist = etree.SubElement(trans, 'qual:listOfInputs')
-            add_inputs(ilist, data['transitions'], species)
-            olist = etree.SubElement(trans, 'qual:listOfOutputs')
-            etree.SubElement(olist, 'qual:output', {
-                'qual:qualitativeSpecies': species,
-                'qual:transitionEffect': 'assignmentLevel',
-                'qual:id': f'tr_{species}_out'
-            })
-            flist = etree.SubElement(trans, 'qual:listOfFunctionTerms')
-            etree.SubElement(flist, 'qual:defaultTerm', {
-                'qual:resultLevel': '0'
-            })
-            func = etree.SubElement(flist, 'qual:functionTerm', {
-                'qual:resultLevel': '1'
-            })
-            add_function(func, data['transitions'])
-            add_notes(trans, data['transitions'])
-            add_annotations(trans, data['transitions'])
+            add_inputs(ilist, data['transitions'], species, known)
+            # there might not be any input left after filtering known species
+            if not ilist:
+                tlist.remove(trans)
+            else:
+                olist = etree.SubElement(trans, 'qual:listOfOutputs')
+                etree.SubElement(olist, 'qual:output', {
+                    'qual:qualitativeSpecies': species,
+                    'qual:transitionEffect': 'assignmentLevel',
+                    'qual:id': f'tr_{species}_out'
+                })
+                flist = etree.SubElement(trans, 'qual:listOfFunctionTerms')
+                etree.SubElement(flist, 'qual:defaultTerm', {
+                    'qual:resultLevel': '0'
+                })
+                func = etree.SubElement(flist, 'qual:functionTerm', {
+                    'qual:resultLevel': '1'
+                })
+                add_function(func, data['transitions'], known)
+                add_notes(trans, data['transitions'])
+                add_annotations(trans, data['transitions'])
 
 
 def add_notes(trans, transitions):
@@ -276,7 +325,7 @@ def add_annotations(trans, transitions):
         trans.remove(annotation)
 
 
-def add_function(func, transitions):
+def add_function(func, transitions, known):
     '''add the complete boolean activation function
 
     this is an or over all reactions having the target as product.
@@ -290,13 +339,13 @@ def add_function(func, transitions):
     else:
         apply = math
     for reaction in transitions:
-        reactants = reaction.reactants
+        reactants = [reac for reac in reaction.reactants if reac in known]
         activators = [mod for (modtype, modifier) in reaction.modifiers
                       for mod in modifier.split(',') if
-                      modtype != 'INHIBITION']
+                      modtype != 'INHIBITION' and mod in known]
         inhibitors = [mod for (modtype, modifier) in reaction.modifiers
                       for mod in modifier.split(',') if
-                      modtype == 'INHIBITION']
+                      modtype == 'INHIBITION' and mod in known]
         # create and node if necessary
         if len(reactants) + len(inhibitors) > 1 or (
                 activators and (reactants or inhibitors)):
@@ -327,7 +376,7 @@ def set_level(elt, modifier, level):
     math_cn.text = level
 
 
-def add_inputs(ilist, transitions, species):
+def add_inputs(ilist, transitions, species, known):
     '''add all known inputs'''
     index = 0
     modifiers = []
@@ -339,7 +388,7 @@ def add_inputs(ilist, transitions, species):
                 sign = 'negative'
             else:
                 sign = 'positive'
-            if (modifier, sign) not in modifiers:
+            if (modifier, sign) not in modifiers and modifier in known:
                 modifiers.append((modifier, sign))
                 etree.SubElement(ilist, 'qual:input', {
                     'qual:qualitativeSpecies': modifier,
