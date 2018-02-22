@@ -196,9 +196,9 @@ def simplify_model(info):
             # activation one
             active = None
             for species, data in info.items():
-                for t in data['transitions']:
-                    if val in t.reactants or \
-                       val in [mod[0] for mod in t.modifiers]:
+                for trans in data['transitions']:
+                    if val in trans.reactants or \
+                       val in [mod[0] for mod in trans.modifiers]:
                         if active is None:
                             active = species
                         else:
@@ -243,6 +243,7 @@ def add_qual_species(layout, qlist, info):
 
 
 def fix_name(name, species):
+    '''change name for GINSIM compatibility or to remove subscripts'''
     if GINSIM:
         # ginsim bug uses name as id
         return name.replace(' ', '_').replace(',', '').replace(
