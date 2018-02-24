@@ -96,8 +96,8 @@ def add_subcomponents_only(nameconv, model):
                                  'rdf:RDF/../../../..', NS):
         add_rdf(
             nameconv,
-            decomplexify(species.get('id'), model, field='species'),
-            species.find('.//rdf:RDF', NS))
+            reference=decomplexify(species.get('id'), model, field='species'),
+            new_rdf=species.find('.//rdf:RDF', NS))
 
 
 def add_rdf(nameconv, reference, new_rdf):
