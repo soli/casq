@@ -178,7 +178,7 @@ def write_qual(filename, info):
     llist = etree.SubElement(model, 'layout:listOfLayouts')
     layout = etree.SubElement(llist, 'layout:layout')
     qlist = etree.SubElement(model, 'qual:listOfQualitativeSpecies')
-    add_positions(layout, qlist, info)
+    add_qual_species(layout, qlist, info)
     tlist = etree.SubElement(model, 'qual:listOfTransitions')
     add_transitions(tlist, info)
     etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
@@ -211,7 +211,7 @@ def simplify_model(info):
             pass
 
 
-def add_positions(layout, qlist, info):
+def add_qual_species(layout, qlist, info):
     '''create layout sub-elements'''
     llist = etree.SubElement(layout, 'layout:listOfSpeciesGlyphs')
     for species, data in info.items():
@@ -235,27 +235,25 @@ def add_positions(layout, qlist, info):
             {
                 'qual:maxLevel': "1",
                 'qual:compartment': "comp1",
-                'qual:name': data['name'],
+                'qual:name': fix_name(data['name'], species),
                 'qual:constant': constant,
                 'qual:id': species,
             })
-        if GINSIM:
-            # ginsim bug uses name as id
-            qspecies.set(
-                'qual:name',
-                data['name'].replace(' ', '_').replace(',', '').replace(
-                    '/', '_') + '_' + species
-            )
         add_annotation(qspecies, data['annotations'])
+
+
+def fix_name(name, species):
+    if GINSIM:
+        # ginsim bug uses name as id
+        return name.replace(' ', '_').replace(',', '').replace(
+            '/', '_') + '_' + species
+    return name.replace('_sub_', '').replace('_endsub_', '')
 
 
 def add_annotation(node, rdf):
     '''add a single RDF element as an annotation node'''
     if rdf is not None:
-        etree.SubElement(
-            node,
-            'annotation'
-        ).append(rdf)
+        etree.SubElement(node, 'annotation').append(rdf)
 
 
 def add_transitions(tlist, info):
