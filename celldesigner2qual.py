@@ -56,46 +56,48 @@ def species_info(model):
                 'cd:listOfSpeciesAliases/' +
                 'cd:speciesAlias[@compartmentAlias]', NS),
     ):
-        activity = species.find('.//cd:activity', NS).text
         bound = species.find('.//cd:bounds', NS)
         ref_species = species.get('species')
         sbml = model.find(
             f'./sbml:listOfSpecies/sbml:species[@id="{ref_species}"]', NS)
         annot = sbml.find('./sbml:annotation', NS)
-        cls = get_text(annot.find('.//cd:class', NS), 'PROTEIN')
-        mods = get_mods(annot.find('.//cd:listOfModifications', NS))
-        prot_ref = get_text(annot.find('.//cd:proteinReference', NS),
-                            ref_species)
-        rdf = annot.find('.//rdf:RDF', NS)
         nameconv[species.get('id')] = {
-            'activity': activity,
+            'activity': get_text(species.find('.//cd:activity', NS),
+                                 'inactive'),
             'x': bound.get('x'),
             'y': bound.get('y'),
             'h': bound.get('h'),
             'w': bound.get('w'),
             'transitions': [],
             'name': sbml.get('name'),
-            'type': cls,
-            'modifications': mods,
-            'annotations': rdf,
+            'type': get_text(annot.find('.//cd:class', NS), 'PROTEIN'),
+            'modifications': get_mods(annot.find('.//cd:listOfModifications',
+                                                 NS)),
+            'annotations': annot.find('.//rdf:RDF', NS),
         }
         # also store in nameconv the reverse mapping from SBML species to CD
         # species using the corresponding reference protein
+        prot_ref = get_text(annot.find('.//cd:proteinReference', NS),
+                            ref_species)
         if prot_ref in nameconv:
             nameconv[prot_ref].append(species.get('id'))
         else:
             nameconv[prot_ref] = [species.get('id')]
-    # For unused CD species (only subcomponents of complexes), add their
-    # annotations to the parent complex
+    add_subcomponents_only(nameconv, model)
+    return nameconv
+
+
+def add_subcomponents_only(nameconv, model):
+    '''For unused CD species (only subcomponents of complexes), add their
+    annotations to the parent complex'''
     for species in model.findall('./sbml:annotation/cd:extension/' +
                                  'cd:listOfIncludedSpecies/cd:species/' +
                                  'cd:notes/xhtml:html/xhtml:body/' +
                                  'rdf:RDF/../../../..', NS):
-        species_id = species.get('id')
-        new_rdf = species.find('.//rdf:RDF', NS)
-        reference = decomplexify(species_id, model, field='species')
-        add_rdf(nameconv, reference, new_rdf)
-    return nameconv
+        add_rdf(
+            nameconv,
+            decomplexify(species.get('id'), model, field='species'),
+            species.find('.//rdf:RDF', NS))
 
 
 def add_rdf(nameconv, reference, new_rdf):
@@ -171,7 +173,6 @@ def write_qual(filename, info):
         'xmlns': NS['sbml3'], 'qual:required': 'true',
         'xmlns:layout': NS['layout'], 'xmlns:qual': NS['qual'],
     })
-    simplify_model(info)
     model = etree.SubElement(root, 'model', id="model_id")
     clist = etree.SubElement(model, 'listOfCompartments')
     etree.SubElement(clist, 'compartment', constant="true", id="comp1")
@@ -212,7 +213,7 @@ def simplify_model(info):
 
 
 def add_qual_species(layout, qlist, info):
-    '''create layout sub-elements'''
+    '''create layout sub-elements and species'''
     llist = etree.SubElement(layout, 'layout:listOfSpeciesGlyphs')
     for species, data in info.items():
         glyph = etree.SubElement(
@@ -406,6 +407,7 @@ def main():
     celldesignerfile = sys.argv[1]
     print(f'parsing {celldesignerfile}…')
     info = read_celldesigner(celldesignerfile)
+    simplify_model(info)
     write_qual(sys.argv[2], info)
 
 
