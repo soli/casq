@@ -156,11 +156,10 @@ def get_text(cd_class, default=None):
 
 def get_mods(cd_modifications):
     '''celldesigner:listOfModifications to list of mods'''
-    mods = []
-    if cd_modifications:
-        for mod in cd_modifications.findall('cd:modification', NS):
-            mods.append(mod.get('state'))
-    return mods
+    if not cd_modifications:
+        return []
+    return [mod.get('state') for mod in
+            cd_modifications.findall('cd:modification', NS)]
 
 
 def write_qual(filename, info):
