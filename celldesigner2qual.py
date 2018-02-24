@@ -172,7 +172,7 @@ def write_qual(filename, info):
         'xmlns:layout': NS['layout'], 'xmlns:qual': NS['qual'],
     })
     simplify_model(info)
-    model = etree.Element('model', id="model_id")
+    model = etree.SubElement(root, 'model', id="model_id")
     clist = etree.SubElement(model, 'listOfCompartments')
     etree.SubElement(clist, 'compartment', constant="true", id="comp1")
     llist = etree.SubElement(model, 'layout:listOfLayouts')
@@ -181,9 +181,7 @@ def write_qual(filename, info):
     add_positions(layout, qlist, info)
     tlist = etree.SubElement(model, 'qual:listOfTransitions')
     add_transitions(tlist, info)
-    root.append(model)
-    tree = etree.ElementTree(root)
-    tree.write(filename, "UTF-8", xml_declaration=True)
+    etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
 
 
 def simplify_model(info):
