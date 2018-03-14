@@ -77,8 +77,7 @@ def species_info(model):
         }
         # also store in nameconv the reverse mapping from SBML species to CD
         # species using the corresponding reference protein
-        prot_ref = get_text(annot.find('.//cd:proteinReference', NS),
-                            ref_species)
+        prot_ref = f'__{sbml.get("name")}'
         if prot_ref in nameconv:
             nameconv[prot_ref].append(species.get('id'))
         else:
@@ -129,12 +128,9 @@ def get_transitions(model, info):
         # for each product of a reaction, add this reaction as a transition
         # affecting that species
         for species in prods:
-            if species in info:
-                info[species]['transitions'].append(
-                    Transition(rtype, reacs, mods, notes, rdf)
-                )
-            else:
-                print(f'ignoring unknown species {species}')
+            info[species]['transitions'].append(
+                Transition(rtype, reacs, mods, notes, rdf)
+            )
     return info
 
 
@@ -193,23 +189,26 @@ def simplify_model(info):
             del info[key]
             if len(value) > 1:
                 multispecies[key] = value
+                # print('multi', key, value)
     for key, value in multispecies.items():
-        active = [val for val in value if info[val]['activity'] == 'active']
-        print(key, active)
-        if len(active) == 1:
-            active = active[0]
-            for val in value:
-                # check that it does not appear in any other reaction than the
-                # activation one
-                if not info[val]['transitions'] and \
-                   info[val]['activity'] == 'inactive':
-                    add_rdf(info, active, info[val]['annotations'])
-                    print(f'deleting {val} [{active} is active for {key}]')
-                    del info[val]
-        else:
-            # apparently only double/triple inactive
-            # print('***', value)
-            pass
+        for val in value:
+            # check that it does not appear in any other reaction than the
+            # activation one
+            active = None
+            for species, data in info.items():
+                for t in data['transitions']:
+                    if val in t.reactants or \
+                       val in [mod[0] for mod in t.modifiers]:
+                        if active is None:
+                            active = species
+                        else:
+                            active = False
+                if active is False:
+                    break
+            if not info[val]['transitions'] and active in value:
+                add_rdf(info, active, info[val]['annotations'])
+                print(f'deleting {val} [{active} is active for {key}]')
+                del info[val]
 
 
 def add_qual_species(layout, qlist, info):
