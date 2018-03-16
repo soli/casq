@@ -1,7 +1,8 @@
-   _________   _____ ____ 
-  / ____/   | / ___// __ \
- / /   / /| | \__ \/ / / /
-/ /___/ ___ |___/ / /_/ / 
-\____/_/  |_/____/\___\_\ 
+   ______      _____ ____ 
+  / ____/___ _/ ___// __ \
+ / /   / __ `/\__ \/ / / /
+/ /___/ /_/ /___/ / /_/ / 
+\____/\__,_//____/\___\_\ 
                           
-Convert SBGN-PD models in SBGN-ML to SBML-qual with a rather strict semantics
+
+Convert CellDesigner models in SBGL to SBML-Qual with a rather strict semantics
