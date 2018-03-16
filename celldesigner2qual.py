@@ -35,7 +35,7 @@ def read_celldesigner(filename):
     '''main file parsing function'''
     root = etree.parse(filename).getroot()
     tag = root.tag
-    if tag != '{{' + NS["sbml"] + '}}sbml':
+    if tag != '{' + NS["sbml"] + '}sbml':
         print('Currently limited to SBML Level 2 Version 4')
         exit(1)
     model = root.find('sbml:model', NS)
