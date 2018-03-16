@@ -311,7 +311,7 @@ def add_notes(trans, transitions):
             some_notes = True
             reaction.notes.tag = 'p'
             for element in reaction.notes.getiterator():
-                if element.tag.startswith(f"{{{NS['xhtml']}}}"):
+                if element.tag.startswith('{' + NS['xhtml'] + '}'):
                     element.tag = element.tag[prefix_len:]
             body.append(reaction.notes)
     if not some_notes:
