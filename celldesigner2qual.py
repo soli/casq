@@ -209,11 +209,11 @@ def simplify_model(info):
                     break
             if not info[val]['transitions'] and active in value:
                 add_rdf(info, active, info[val]['annotations'])
-                print('deleting {val} [{active} is active for {key}]'.format(
-                    val=val,
-                    active=active,
-                    key=key,
-                ))
+                # print('deleting {val} [{active} is active for {key}]'.format(
+                #     val=val,
+                #     active=active,
+                #     key=key,
+                # ))
                 del info[val]
 
 
