@@ -24,8 +24,6 @@ NS = {
     'xhtml': 'http://www.w3.org/1999/xhtml'
 }
 
-GINSIM = False
-
 
 Transition = collections.namedtuple('Transition', [
     'type', 'reactants', 'modifiers', 'notes', 'annotations'])
@@ -164,7 +162,7 @@ def get_mods(cd_modifications):
             cd_modifications.findall('cd:modification', NS)]
 
 
-def write_qual(filename, info):
+def write_qual(filename, info, ginsim_names):
     '''write the SBML qual with layout file for our model'''
     for name, space in NS.items():
         etree.register_namespace(name, space)
@@ -179,7 +177,7 @@ def write_qual(filename, info):
     llist = etree.SubElement(model, 'layout:listOfLayouts')
     layout = etree.SubElement(llist, 'layout:layout')
     qlist = etree.SubElement(model, 'qual:listOfQualitativeSpecies')
-    add_qual_species(layout, qlist, info)
+    add_qual_species(layout, qlist, info, ginsim_names)
     tlist = etree.SubElement(model, 'qual:listOfTransitions')
     add_transitions(tlist, info)
     etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
@@ -219,7 +217,7 @@ def simplify_model(info):
                 del info[val]
 
 
-def add_qual_species(layout, qlist, info):
+def add_qual_species(layout, qlist, info, ginsim_names):
     '''create layout sub-elements and species'''
     llist = etree.SubElement(layout, 'layout:listOfSpeciesGlyphs')
     for species, data in info.items():
@@ -243,16 +241,16 @@ def add_qual_species(layout, qlist, info):
             {
                 'qual:maxLevel': "1",
                 'qual:compartment': "comp1",
-                'qual:name': fix_name(data['name'], species),
+                'qual:name': fix_name(data['name'], species, ginsim_names),
                 'qual:constant': constant,
                 'qual:id': species,
             })
         add_annotation(qspecies, data['annotations'])
 
 
-def fix_name(name, species):
+def fix_name(name, species, ginsim_names):
     '''change name for GINSIM compatibility or to remove subscripts'''
-    if GINSIM:
+    if ginsim_names:
         # ginsim bug uses name as id
         return name.replace(' ', '_').replace(',', '').replace(
             '/', '_') + '_' + species
@@ -409,8 +407,10 @@ def add_inputs(ilist, transitions, species, known):
 def main():
     '''run conversion using the CLI given first argument'''
     if len(sys.argv) > 1 and sys.argv[1] == '--ginsim':
-        global GINSIM   # pylint: disable=global-statement
-        GINSIM = True
+        ginsim = True
+        del sys.argv[1]
+    else:
+        ginsim = False
     if len(sys.argv) != 3:
         print('Usage: [python3] ' + sys.argv[0] +
               ' <celldesignerinfile.xml> <sbmlqualoutfile.xml>')
@@ -420,7 +420,7 @@ def main():
         celldesignerfile=celldesignerfile))
     info = read_celldesigner(celldesignerfile)
     simplify_model(info)
-    write_qual(sys.argv[2], info)
+    write_qual(sys.argv[2], info, ginsim_names=ginsim)
 
 
 if __name__ == '__main__':  # pragma: no cover
