@@ -35,7 +35,7 @@ def read_celldesigner(filename):
     '''main file parsing function'''
     root = etree.parse(filename).getroot()
     tag = root.tag
-    if tag != f'{{{NS["sbml"]}}}sbml':
+    if tag != '{{' + NS["sbml"] + '}}sbml':
         print('Currently limited to SBML Level 2 Version 4')
         exit(1)
     model = root.find('sbml:model', NS)
@@ -59,7 +59,8 @@ def species_info(model):
         bound = species.find('.//cd:bounds', NS)
         ref_species = species.get('species')
         sbml = model.find(
-            f'./sbml:listOfSpecies/sbml:species[@id="{ref_species}"]', NS)
+            './sbml:listOfSpecies/sbml:species[@id="' + ref_species + '"]',
+            NS)
         annot = sbml.find('./sbml:annotation', NS)
         nameconv[species.get('id')] = {
             'activity': get_text(species.find('.//cd:activity', NS),
@@ -77,7 +78,7 @@ def species_info(model):
         }
         # also store in nameconv the reverse mapping from SBML species to CD
         # species using the corresponding reference protein
-        prot_ref = f'__{sbml.get("name")}'
+        prot_ref = '__' + sbml.get("name")
         if prot_ref in nameconv:
             nameconv[prot_ref].append(species.get('id'))
         else:
@@ -139,7 +140,10 @@ def decomplexify(species, model, field='id'):
     otherwise'''
     cmplx = model.find('./sbml:annotation/cd:extension/' +
                        'cd:listOfSpeciesAliases/' +
-                       f'cd:speciesAlias[@{field}="{species}"]', NS)
+                       'cd:speciesAlias[@{field}="{species}"]'.format(
+                           field=field,
+                           species=species),
+                       NS)
     if cmplx is None:
         return species
     return cmplx.get('complexSpeciesAlias', species)
@@ -207,7 +211,11 @@ def simplify_model(info):
                     break
             if not info[val]['transitions'] and active in value:
                 add_rdf(info, active, info[val]['annotations'])
-                print(f'deleting {val} [{active} is active for {key}]')
+                print('deleting {val} [{active} is active for {key}]'.format(
+                    val=val,
+                    active=active,
+                    key=key,
+                ))
                 del info[val]
 
 
@@ -263,7 +271,7 @@ def add_transitions(tlist, info):
     for species, data in info.items():
         if data['transitions']:
             trans = etree.SubElement(tlist, 'qual:transition', {
-                'qual:id': f'tr_{species}'
+                'qual:id': 'tr_' + species
             })
             ilist = etree.SubElement(trans, 'qual:listOfInputs')
             add_inputs(ilist, data['transitions'], species, known)
@@ -275,7 +283,7 @@ def add_transitions(tlist, info):
                 etree.SubElement(olist, 'qual:output', {
                     'qual:qualitativeSpecies': species,
                     'qual:transitionEffect': 'assignmentLevel',
-                    'qual:id': f'tr_{species}_out'
+                    'qual:id': 'tr_{species}_out'.format(species=species)
                 })
                 flist = etree.SubElement(trans, 'qual:listOfFunctionTerms')
                 etree.SubElement(flist, 'qual:defaultTerm', {
@@ -390,7 +398,10 @@ def add_inputs(ilist, transitions, species, known):
                     'qual:qualitativeSpecies': modifier,
                     'qual:transitionEffect': 'none',
                     'qual:sign': sign,
-                    'qual:id': f'tr_{species}_in_{index}',
+                    'qual:id': 'tr_{species}_in_{index}'.format(
+                        species=species,
+                        index=index,
+                    ),
                 })
                 index += 1
 
@@ -401,11 +412,12 @@ def main():
         global GINSIM   # pylint: disable=global-statement
         GINSIM = True
     if len(sys.argv) != 3:
-        print(f'Usage: [python3] {sys.argv[0]} ' +
-              '<celldesignerinfile.xml> <sbmlqualoutfile.xml>')
+        print('Usage: [python3] ' + sys.argv[0] +
+              ' <celldesignerinfile.xml> <sbmlqualoutfile.xml>')
         exit(1)
     celldesignerfile = sys.argv[1]
-    print(f'parsing {celldesignerfile}…')
+    print('parsing {celldesignerfile}…'.format(
+        celldesignerfile=celldesignerfile))
     info = read_celldesigner(celldesignerfile)
     simplify_model(info)
     write_qual(sys.argv[2], info)
