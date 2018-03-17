@@ -7,4 +7,5 @@
 ```
                           
 
-Convert CellDesigner models in SBGL to SBML-Qual with a rather strict semantics
+Convert CellDesigner models to SBML-Qual with a rather strict semantics
+defined in a to-be-written article.
