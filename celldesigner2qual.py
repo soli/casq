@@ -37,7 +37,9 @@ def read_celldesigner(filename):
         print('Currently limited to SBML Level 2 Version 4')
         exit(1)
     model = root.find('sbml:model', NS)
-    return get_transitions(model, species_info(model))
+    display = model.find('./sbml:annotation/cd:extension/cd:modelDisplay', NS)
+    return (get_transitions(model, species_info(model)),
+            display.get('sizeX'), display.get('sizeY'))
 
 
 def species_info(model):
@@ -162,7 +164,7 @@ def get_mods(cd_modifications):
             cd_modifications.findall('cd:modification', NS)]
 
 
-def write_qual(filename, info, ginsim_names):
+def write_qual(filename, info, width, height, ginsim_names):
     '''write the SBML qual with layout file for our model'''
     for name, space in NS.items():
         etree.register_namespace(name, space)
@@ -175,7 +177,8 @@ def write_qual(filename, info, ginsim_names):
     clist = etree.SubElement(model, 'listOfCompartments')
     etree.SubElement(clist, 'compartment', constant="true", id="comp1")
     llist = etree.SubElement(model, 'layout:listOfLayouts')
-    layout = etree.SubElement(llist, 'layout:layout')
+    layout = etree.SubElement(llist, 'layout:layout', id="layout1")
+    etree.SubElement(layout, 'layout:dimensions', width=width, height=height)
     qlist = etree.SubElement(model, 'qual:listOfQualitativeSpecies')
     add_qual_species(layout, qlist, info, ginsim_names)
     tlist = etree.SubElement(model, 'qual:listOfTransitions')
@@ -223,7 +226,7 @@ def add_qual_species(layout, qlist, info, ginsim_names):
     for species, data in info.items():
         glyph = etree.SubElement(
             llist, 'layout:speciesGlyph',
-            {'layout:species': species})
+            {'layout:species': species, 'layout:id': species + '_glyph'})
         box = etree.SubElement(glyph, 'layout:boundingBox')
         etree.SubElement(
             box, 'layout:position',
@@ -418,9 +421,9 @@ def main():
     celldesignerfile = sys.argv[1]
     print('parsing {celldesignerfile}…'.format(
         celldesignerfile=celldesignerfile))
-    info = read_celldesigner(celldesignerfile)
+    info, width, height = read_celldesigner(celldesignerfile)
     simplify_model(info)
-    write_qual(sys.argv[2], info, ginsim_names=ginsim)
+    write_qual(sys.argv[2], info, width, height, ginsim_names=ginsim)
 
 
 if __name__ == '__main__':  # pragma: no cover
