@@ -222,11 +222,11 @@ def simplify_model(info):
 
 def add_qual_species(layout, qlist, info, ginsim_names):
     '''create layout sub-elements and species'''
-    llist = etree.SubElement(layout, 'layout:listOfSpeciesGlyphs')
+    llist = etree.SubElement(layout, 'layout:listOfAdditionalGraphicalObjects')
     for species, data in info.items():
         glyph = etree.SubElement(
-            llist, 'layout:speciesGlyph',
-            {'layout:species': species, 'layout:id': species + '_glyph'})
+            llist, 'layout:generalGlyph',
+            {'layout:reference': species, 'layout:id': species + '_glyph'})
         box = etree.SubElement(glyph, 'layout:boundingBox')
         etree.SubElement(
             box, 'layout:position',
