@@ -164,7 +164,7 @@ def get_mods(cd_modifications):
             cd_modifications.findall('cd:modification', NS)]
 
 
-def write_qual(filename, info, width, height, ginsim_names):
+def write_qual(filename, info, width, height):
     '''write the SBML qual with layout file for our model'''
     for name, space in NS.items():
         etree.register_namespace(name, space)
@@ -180,7 +180,7 @@ def write_qual(filename, info, width, height, ginsim_names):
     layout = etree.SubElement(llist, 'layout:layout', id="layout1")
     etree.SubElement(layout, 'layout:dimensions', width=width, height=height)
     qlist = etree.SubElement(model, 'qual:listOfQualitativeSpecies')
-    add_qual_species(layout, qlist, info, ginsim_names)
+    add_qual_species(layout, qlist, info)
     tlist = etree.SubElement(model, 'qual:listOfTransitions')
     add_transitions(tlist, info)
     etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
@@ -220,7 +220,7 @@ def simplify_model(info):
                 del info[val]
 
 
-def add_qual_species(layout, qlist, info, ginsim_names):
+def add_qual_species(layout, qlist, info):
     '''create layout sub-elements and species'''
     llist = etree.SubElement(layout, 'layout:listOfAdditionalGraphicalObjects')
     for species, data in info.items():
@@ -244,19 +244,15 @@ def add_qual_species(layout, qlist, info, ginsim_names):
             {
                 'qual:maxLevel': "1",
                 'qual:compartment': "comp1",
-                'qual:name': fix_name(data['name'], species, ginsim_names),
+                'qual:name': fix_name(data['name']),
                 'qual:constant': constant,
                 'qual:id': species,
             })
         add_annotation(qspecies, data['annotations'])
 
 
-def fix_name(name, species, ginsim_names):
-    '''change name for GINSIM compatibility or to remove subscripts'''
-    if ginsim_names:
-        # ginsim bug uses name as id
-        return name.replace(' ', '_').replace(',', '').replace(
-            '/', '_') + '_' + species
+def fix_name(name):
+    '''remove subscripts'''
     return name.replace('_sub_', '').replace('_endsub_', '')
 
 
@@ -409,11 +405,6 @@ def add_inputs(ilist, transitions, species, known):
 
 def main():
     '''run conversion using the CLI given first argument'''
-    if len(sys.argv) > 1 and sys.argv[1] == '--ginsim':
-        ginsim = True
-        del sys.argv[1]
-    else:
-        ginsim = False
     if len(sys.argv) != 3:
         print('Usage: [python3] ' + sys.argv[0] +
               ' <celldesignerinfile.xml> <sbmlqualoutfile.xml>')
@@ -423,7 +414,7 @@ def main():
         celldesignerfile=celldesignerfile))
     info, width, height = read_celldesigner(celldesignerfile)
     simplify_model(info)
-    write_qual(sys.argv[2], info, width, height, ginsim_names=ginsim)
+    write_qual(sys.argv[2], info, width, height)
 
 
 if __name__ == '__main__':  # pragma: no cover
