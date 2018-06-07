@@ -62,6 +62,9 @@ def species_info(model):
             './sbml:listOfSpecies/sbml:species[@id="' + ref_species + '"]',
             NS)
         annot = sbml.find('./sbml:annotation', NS)
+        classtype = get_text(annot.find('.//cd:class', NS), 'PROTEIN')
+        if classtype == 'DEGRADED':
+            continue
         nameconv[species.get('id')] = {
             'activity': get_text(species.find('.//cd:activity', NS),
                                  'inactive'),
@@ -71,7 +74,7 @@ def species_info(model):
             'w': bound.get('w'),
             'transitions': [],
             'name': sbml.get('name'),
-            'type': get_text(annot.find('.//cd:class', NS), 'PROTEIN'),
+            'type': classtype,
             'modifications': get_mods(annot.find('.//cd:listOfModifications',
                                                  NS)),
             'annotations': annot.find('.//rdf:RDF', NS),
@@ -126,6 +129,9 @@ def get_transitions(model, info):
                 annot.findall('./cd:listOfModification/cd:modification', NS)]
         notes = trans.find('./sbml:notes//xhtml:body', NS)
         rdf = trans.find('./sbml:annotation/rdf:RDF', NS)
+        # remove degraded
+        reacs = filter(lambda x: x in info, reacs)
+        prods = filter(lambda x: x in info, prods)
         # for each product of a reaction, add this reaction as a transition
         # affecting that species
         for species in prods:
