@@ -346,13 +346,19 @@ def add_function(func, transitions, known):
     else:
         apply = math
     for reaction in transitions:
+        # we assume that only "BOOLEAN_LOGIC_GATE_AND" has multiple modifiers
+        # it is also the only modification that has an AND and therefore ends
+        # with reactants
         reactants = [reac for reac in reaction.reactants if reac in known]
-        activators = [mod for (modtype, modifier) in reaction.modifiers
-                      for mod in modifier.split(',') if
-                      modtype != 'INHIBITION' and mod in known]
-        inhibitors = [mod for (modtype, modifier) in reaction.modifiers
-                      for mod in modifier.split(',') if
-                      modtype == 'INHIBITION' and mod in known]
+        reactants.extend(
+            [mod for (modtype, modifier) in reaction.modifiers
+             for mod in modifier.split(',') if
+             modtype == 'BOOLEAN_LOGIC_GATE_AND' and mod in known])
+        activators = [modifier for (modtype, modifier) in reaction.modifiers
+                      if modtype not in ('INHIBITION', 'BOOLEAN_LOGIC_GATE_AND')
+                      and modifier in known]
+        inhibitors = [modifier for (modtype, modifier) in reaction.modifiers
+                      if modtype == 'INHIBITION' and modifier in known]
         # create and node if necessary
         if len(reactants) + len(inhibitors) > 1 or (
                 activators and (reactants or inhibitors)):
