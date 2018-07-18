@@ -130,8 +130,8 @@ def get_transitions(model, info):
         notes = trans.find('./sbml:notes//xhtml:body', NS)
         rdf = trans.find('./sbml:annotation/rdf:RDF', NS)
         # remove degraded
-        reacs = filter(lambda x: x in info, reacs)
-        prods = filter(lambda x: x in info, prods)
+        reacs = list(filter(lambda x: x in info, reacs))
+        prods = list(filter(lambda x: x in info, prods))
         # for each product of a reaction, add this reaction as a transition
         # affecting that species
         for species in prods:
@@ -356,7 +356,7 @@ def add_function(func, transitions, known):
              modtype == 'BOOLEAN_LOGIC_GATE_AND' and mod in known])
         activators = [modifier for (modtype, modifier) in reaction.modifiers
                       if modtype not in ('INHIBITION', 'BOOLEAN_LOGIC_GATE_AND')
-                      and modifier in known]
+                      and modifier in known and modifier not in reactants]
         inhibitors = [modifier for (modtype, modifier) in reaction.modifiers
                       if modtype == 'INHIBITION' and modifier in known]
         # create and node if necessary
