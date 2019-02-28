@@ -226,7 +226,7 @@ def simplify_model(info):
             if len(value) > 1:
                 multispecies[key] = value
                 # print('multi', key, value)
-    for key, value in multispecies.items():
+    for _key, value in multispecies.items():
         for val in value:
             # check that it does not appear in any other reaction than the
             # activation one
