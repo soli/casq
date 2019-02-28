@@ -332,6 +332,7 @@ def add_transitions(tlist, info):
                     flist, "qual:functionTerm", {"qual:resultLevel": "1"}
                 )
                 add_function(func, data["transitions"], known)
+                info[species]["function"] = func.find("./math/*", NS)
                 add_notes(trans, data["transitions"])
                 add_annotations(trans, data["transitions"])
 
@@ -474,7 +475,27 @@ def write_csv(sbml_filename, info):
     with open(sbml_filename + ".csv", "w", newline="") as f:
         writer = csv.writer(f)
         for species, data in info.items():
-            writer.writerow([species, data["name"], data["ref_species"]])
+            if "function" in data:
+                func = mathml_to_ginsim(data["function"])
+            else:
+                func = species
+            writer.writerow([species, data["name"], data["ref_species"], func])
+
+
+def mathml_to_ginsim(math):
+    """Convert a MATHML boolean formula into its GinSIM representation."""
+    if math.tag != 'apply':
+        raise ValueError(etree.tostring(math))
+    children = list(math)
+    if children[0].tag == 'and':
+        return '&'.join(map(mathml_to_ginsim, children[1:]))
+    if children[0].tag == 'or':
+        return '&'.join(map(mathml_to_ginsim, children[1:]))
+    if children[0].tag == 'eq':
+        if children[2].text == '0':
+            return f'!{children[1].text}'
+        return f'{children[1].text}'
+    raise ValueError(etree.tostring(math))
 
 
 def main():
