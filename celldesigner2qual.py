@@ -2,6 +2,7 @@
 """Convert CellDesigner models to SBML-qual with a rather strict semantics."""
 
 import collections
+import csv
 import sys
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
@@ -34,8 +35,7 @@ def read_celldesigner(filename):
     root = etree.parse(filename).getroot()
     tag = root.tag
     if tag != "{" + NS["sbml"] + "}sbml":
-        print("Currently limited to SBML Level 2 Version 4")
-        exit(1)
+        raise ValueError("Currently limited to SBML Level 2 Version 4")
     model = root.find("sbml:model", NS)
     display = model.find("./sbml:annotation/cd:extension/cd:modelDisplay", NS)
     return (
@@ -80,6 +80,7 @@ def species_info(model):
             "w": bound.get("w"),
             "transitions": [],
             "name": sbml.get("name"),
+            "ref_species": ref_species,
             "type": classtype,
             "modifications": get_mods(annot.find(".//cd:listOfModifications", NS)),
             "annotations": annot.find(".//rdf:RDF", NS),
@@ -468,6 +469,14 @@ def add_inputs(ilist, transitions, species, known):
                 index += 1
 
 
+def write_csv(sbml_filename, info):
+    """Write a csv file with SBML IDs, CD IDs, Names, Formulae, etc."""
+    with open(sbml_filename + ".csv", "w", newline="") as f:
+        writer = csv.writer(f)
+        for species, data in info.items():
+            writer.writerow([species, data["name"], data["ref_species"]])
+
+
 def main():
     """Run conversion using the CLI given first argument."""
     if len(sys.argv) > 1 and sys.argv[1] == "--ginsim":
@@ -477,16 +486,17 @@ def main():
         ginsim = False
     if len(sys.argv) != 3:
         print(
-            "Usage: [python3] "
-            + sys.argv[0]
-            + " <celldesignerinfile.xml> <sbmlqualoutfile.xml>"
+            "Usage: [python3] " + sys.argv[0] + " [--ginsim]"
+            + " <celldesignerinfile.xml> <sbmlqualoutfile.xml>",
+            file=sys.stderr
         )
         exit(1)
     celldesignerfile = sys.argv[1]
-    print("parsing {celldesignerfile}…".format(celldesignerfile=celldesignerfile))
+    print(f"parsing {celldesignerfile}…", file=sys.stderr)
     info, width, height = read_celldesigner(celldesignerfile)
     simplify_model(info)
     write_qual(sys.argv[2], info, width, height, ginsim_names=ginsim)
+    write_csv(sys.argv[2], info)
 
 
 if __name__ == "__main__":  # pragma: no cover
