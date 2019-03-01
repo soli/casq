@@ -340,6 +340,8 @@ def add_transitions(tlist, info):
                 add_function_as_rdf(info, species, func)
                 add_notes(trans, data["transitions"])
                 add_annotations(trans, data["transitions"])
+        else:
+            add_function_as_rdf(info, species, info[species]["function"])
 
 
 def add_notes(trans, transitions):
@@ -519,7 +521,7 @@ def add_function_as_rdf(info, species, func):
     etree.SubElement(
         bag,
         "rdf:li",
-        attrib={"rdf:resource": "urn:casq:name:" + info[species]["ref_species"]},
+        attrib={"rdf:resource": "urn:casq:cdid:" + info[species]["ref_species"]},
     )
     add_rdf(info, species, rdf)
 
