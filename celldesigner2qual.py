@@ -80,6 +80,7 @@ def species_info(model):
             "w": bound.get("w"),
             "transitions": [],
             "name": sbml.get("name"),
+            "function": sbml.get("name"),
             "ref_species": ref_species,
             "type": classtype,
             "modifications": get_mods(annot.find(".//cd:listOfModifications", NS)),
@@ -202,6 +203,8 @@ def write_qual(filename, info, width, height, ginsim_names):
             "qual:required": "true",
             "xmlns:layout": NS["layout"],
             "xmlns:qual": NS["qual"],
+            "xmlns:bqbiol": NS["bqbiol"],
+            "xmlns:rdf": NS["rdf"],
         },
     )
     model = etree.SubElement(root, "model", id="model_id")
@@ -211,9 +214,9 @@ def write_qual(filename, info, width, height, ginsim_names):
     layout = etree.SubElement(llist, "layout:layout", id="layout1")
     etree.SubElement(layout, "layout:dimensions", width=width, height=height)
     qlist = etree.SubElement(model, "qual:listOfQualitativeSpecies")
-    add_qual_species(layout, qlist, info, ginsim_names)
     tlist = etree.SubElement(model, "qual:listOfTransitions")
     add_transitions(tlist, info)
+    add_qual_species(layout, qlist, info, ginsim_names)
     etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
 
 
@@ -332,7 +335,9 @@ def add_transitions(tlist, info):
                     flist, "qual:functionTerm", {"qual:resultLevel": "1"}
                 )
                 add_function(func, data["transitions"], known)
-                info[species]["function"] = func.find("./math/*", NS)
+                func = mathml_to_ginsim(func.find("./math/*", NS), info)
+                info[species]["function"] = func
+                add_function_as_rdf(info, species, func)
                 add_notes(trans, data["transitions"])
                 add_annotations(trans, data["transitions"])
 
@@ -475,11 +480,8 @@ def write_csv(sbml_filename, info):
     with open(sbml_filename + ".csv", "w", newline="") as f:
         writer = csv.writer(f)
         for species, data in info.items():
-            if "function" in data:
-                func = mathml_to_ginsim(data["function"], info)
-            else:
-                func = species
-            writer.writerow([species, data["name"], data["ref_species"], func])
+            writer.writerow([species, data["name"], data["ref_species"],
+                             data["function"]])
 
 
 def mathml_to_ginsim(math, info):
@@ -498,6 +500,20 @@ def mathml_to_ginsim(math, info):
             return f'!{species}'
         return f'{species}'
     raise ValueError(etree.tostring(math))
+
+
+def add_function_as_rdf(info, species, func):
+    """Add a new RDF element containing the logical function."""
+    rdf = etree.Element("rdf:RDF")
+    descr = etree.SubElement(
+        rdf,
+        "rdf:Description",
+        attrib={"rdf:about": "#" + info[species]["ref_species"]}
+    )
+    bqbiol = etree.SubElement(descr, "bqbiol:isDescribedBy")
+    bag = etree.SubElement(bqbiol, "rdf:Bag")
+    etree.SubElement(bag, "rdf:li", attrib={"rdf:resource": "urn:casq:" + func})
+    add_rdf(info, species, rdf)
 
 
 def main():
