@@ -476,25 +476,27 @@ def write_csv(sbml_filename, info):
         writer = csv.writer(f)
         for species, data in info.items():
             if "function" in data:
-                func = mathml_to_ginsim(data["function"])
+                func = mathml_to_ginsim(data["function"], info)
             else:
                 func = species
             writer.writerow([species, data["name"], data["ref_species"], func])
 
 
-def mathml_to_ginsim(math):
+def mathml_to_ginsim(math, info):
     """Convert a MATHML boolean formula into its GinSIM representation."""
     if math.tag != 'apply':
         raise ValueError(etree.tostring(math))
     children = list(math)
     if children[0].tag == 'and':
-        return '&'.join(map(mathml_to_ginsim, children[1:]))
+        return '&'.join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
     if children[0].tag == 'or':
-        return '&'.join(map(mathml_to_ginsim, children[1:]))
+        return '&'.join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
     if children[0].tag == 'eq':
+        species = children[1].text
+        species = info[species]["name"]
         if children[2].text == '0':
-            return f'!{children[1].text}'
-        return f'{children[1].text}'
+            return f'!{species}'
+        return f'{species}'
     raise ValueError(etree.tostring(math))
 
 
