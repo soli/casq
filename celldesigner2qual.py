@@ -480,39 +480,47 @@ def write_csv(sbml_filename, info):
     with open(sbml_filename + ".csv", "w", newline="") as f:
         writer = csv.writer(f)
         for species, data in info.items():
-            writer.writerow([species, data["name"], data["ref_species"],
-                             data["function"]])
+            writer.writerow(
+                [species, data["name"], data["ref_species"], data["function"]]
+            )
 
 
 def mathml_to_ginsim(math, info):
     """Convert a MATHML boolean formula into its GinSIM representation."""
-    if math.tag != 'apply':
+    if math.tag != "apply":
         raise ValueError(etree.tostring(math))
     children = list(math)
-    if children[0].tag == 'and':
-        return '&'.join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
-    if children[0].tag == 'or':
-        return '&'.join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
-    if children[0].tag == 'eq':
+    if children[0].tag == "and":
+        return "&".join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
+    if children[0].tag == "or":
+        return "&".join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
+    if children[0].tag == "eq":
         species = children[1].text
         species = info[species]["name"]
-        if children[2].text == '0':
-            return f'!{species}'
-        return f'{species}'
+        if children[2].text == "0":
+            return f"!{species}"
+        return f"{species}"
     raise ValueError(etree.tostring(math))
 
 
 def add_function_as_rdf(info, species, func):
-    """Add a new RDF element containing the logical function."""
+    """Add a new RDF element containing the logical function and name."""
     rdf = etree.Element("rdf:RDF")
     descr = etree.SubElement(
-        rdf,
-        "rdf:Description",
-        attrib={"rdf:about": "#" + info[species]["ref_species"]}
+        rdf, "rdf:Description", attrib={"rdf:about": "#" + info[species]["ref_species"]}
     )
     bqbiol = etree.SubElement(descr, "bqbiol:isDescribedBy")
     bag = etree.SubElement(bqbiol, "rdf:Bag")
-    etree.SubElement(bag, "rdf:li", attrib={"rdf:resource": "urn:casq:" + func})
+    etree.SubElement(
+        bag, "rdf:li", attrib={"rdf:resource": "urn:casq:function:" + func}
+    )
+    bqbiol = etree.SubElement(descr, "bqbiol:isDescribedBy")
+    bag = etree.SubElement(bqbiol, "rdf:Bag")
+    etree.SubElement(
+        bag,
+        "rdf:li",
+        attrib={"rdf:resource": "urn:casq:name:" + info[species]["ref_species"]},
+    )
     add_rdf(info, species, rdf)
 
 
@@ -525,9 +533,11 @@ def main():
         ginsim = False
     if len(sys.argv) != 3:
         print(
-            "Usage: [python3] " + sys.argv[0] + " [--ginsim]"
+            "Usage: [python3] "
+            + sys.argv[0]
+            + " [--ginsim]"
             + " <celldesignerinfile.xml> <sbmlqualoutfile.xml>",
-            file=sys.stderr
+            file=sys.stderr,
         )
         exit(1)
     celldesignerfile = sys.argv[1]
