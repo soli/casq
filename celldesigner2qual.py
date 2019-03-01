@@ -203,8 +203,6 @@ def write_qual(filename, info, width, height, ginsim_names):
             "qual:required": "true",
             "xmlns:layout": NS["layout"],
             "xmlns:qual": NS["qual"],
-            "xmlns:bqbiol": NS["bqbiol"],
-            "xmlns:rdf": NS["rdf"],
         },
     )
     model = etree.SubElement(root, "model", id="model_id")
@@ -507,21 +505,21 @@ def mathml_to_ginsim(math, info):
 
 def add_function_as_rdf(info, species, func):
     """Add a new RDF element containing the logical function and name."""
-    rdf = etree.Element("rdf:RDF")
+    rdf = etree.Element(f"{{{NS['rdf']}}}RDF")
     descr = etree.SubElement(
-        rdf, "rdf:Description", attrib={"rdf:about": "#" + info[species]["ref_species"]}
+        rdf, f"{{{NS['rdf']}}}Description", attrib={f"{{{NS['rdf']}}}about": "#" + info[species]["ref_species"]}
     )
-    bqbiol = etree.SubElement(descr, "bqbiol:isDescribedBy")
-    bag = etree.SubElement(bqbiol, "rdf:Bag")
+    bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
+    bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
     etree.SubElement(
-        bag, "rdf:li", attrib={"rdf:resource": "urn:casq:function:" + func}
+        bag, f"{{{NS['rdf']}}}li", attrib={f"{{{NS['rdf']}}}resource": "urn:casq:function:" + func}
     )
-    bqbiol = etree.SubElement(descr, "bqbiol:isDescribedBy")
-    bag = etree.SubElement(bqbiol, "rdf:Bag")
+    bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
+    bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
     etree.SubElement(
         bag,
-        "rdf:li",
-        attrib={"rdf:resource": "urn:casq:cdid:" + info[species]["ref_species"]},
+        f"{{{NS['rdf']}}}li",
+        attrib={f"{{{NS['rdf']}}}resource": "urn:casq:cdid:" + info[species]["ref_species"]},
     )
     add_rdf(info, species, rdf)
 
