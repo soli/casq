@@ -9,6 +9,7 @@ import sys
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
 
+import networkx as nx
 
 NS = {
     "sbml": "http://www.sbml.org/sbml/level2/version4",
@@ -222,7 +223,9 @@ def write_qual(filename, info, width, height, ginsim_names, debug=False):
     etree.SubElement(layout, "layout:dimensions", width=width, height=height)
     qlist = etree.SubElement(model, "qual:listOfQualitativeSpecies")
     tlist = etree.SubElement(model, "qual:listOfTransitions")
-    add_transitions(tlist, info)
+    graph = nx.Graph()
+    add_transitions(tlist, info, graph)
+    print(list(nx.connected_components(graph)), file=sys.stderr)
     add_qual_species(layout, qlist, info, ginsim_names)
     etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
 
@@ -316,7 +319,7 @@ def add_annotation(node, rdf):
         etree.SubElement(node, "annotation").append(rdf)
 
 
-def add_transitions(tlist, info):
+def add_transitions(tlist, info, graph):
     """Create transition elements."""
     known = list(info.keys())
     for species, data in info.items():
@@ -325,7 +328,7 @@ def add_transitions(tlist, info):
                 tlist, "qual:transition", {"qual:id": "tr_" + species}
             )
             ilist = etree.SubElement(trans, "qual:listOfInputs")
-            add_inputs(ilist, data["transitions"], species, known)
+            add_inputs(ilist, data["transitions"], species, known, graph)
             # there might not be any input left after filtering known species
             if not ilist:
                 tlist.remove(trans)
@@ -458,10 +461,11 @@ def set_level(elt, modifier, level):
     math_cn.text = level
 
 
-def add_inputs(ilist, transitions, species, known):
+def add_inputs(ilist, transitions, species, known, graph):
     """Add all known inputs."""
     index = 0
     modifiers = []
+    graph.add_node(species)
     for reaction in transitions:
         # we use enumerate to get a dummy modtype for reactants
         for modtype, modifier in chain(
@@ -473,6 +477,7 @@ def add_inputs(ilist, transitions, species, known):
                 sign = "positive"
             if (modifier, sign) not in modifiers and modifier in known:
                 modifiers.append((modifier, sign))
+                graph.add_edge(species, modifier)
                 etree.SubElement(
                     ilist,
                     "qual:input",
@@ -549,6 +554,12 @@ def main():
     parser.add_argument("-g", "--ginsim", action="store_true")
     parser.add_argument("-d", "--debug", action="store_true")
     parser.add_argument(
+        "-c",
+        "--csv",
+        action="store_true",
+        help="Store the species information in a separate CSV file",
+    )
+    parser.add_argument(
         "infile",
         type=argparse.FileType("r"),
         nargs="?",
@@ -573,7 +584,7 @@ def main():
     write_qual(
         args.outfile, info, width, height, ginsim_names=args.ginsim, debug=args.debug
     )
-    if args.outfile != sys.stdout:
+    if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
 
 
