@@ -140,6 +140,7 @@ def get_transitions(model, info, debug):
         if debug:
             print("parsing reaction:", trans.get("id"), file=sys.stderr)
         annot = trans.find("./sbml:annotation/cd:extension", NS)
+        # currently not used
         rtype = annot.find("./cd:reactionType", NS).text
         reacs = [
             decomplexify(reac.get("alias"), model)
