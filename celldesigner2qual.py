@@ -18,7 +18,7 @@ NS = {
     "layout": "http://www.sbml.org/sbml/level3/version1/layout/version1",
     "qual": "http://www.sbml.org/sbml/level3/version1/qual/version1",
     "mathml": "http://www.w3.org/1998/Math/MathML",
-    "rdf": ")http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "dc": "http://purl.org/dc/elements/1.1/",
     "dcterms": "http://purl.org/dc/terms/",
     "vCard": "http://www.w3.org/2001/vcard-rdf/3.0#",
