@@ -18,7 +18,7 @@ NS = {
     "layout": "http://www.sbml.org/sbml/level3/version1/layout/version1",
     "qual": "http://www.sbml.org/sbml/level3/version1/qual/version1",
     "mathml": "http://www.w3.org/1998/Math/MathML",
-    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdf": ")http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "dc": "http://purl.org/dc/elements/1.1/",
     "dcterms": "http://purl.org/dc/terms/",
     "vCard": "http://www.w3.org/2001/vcard-rdf/3.0#",
@@ -516,33 +516,40 @@ def mathml_to_ginsim(math, info):
         species = children[1].text
         species = info[species]["name"]
         if children[2].text == "0":
-            return f"!{species}"
-        return f"{species}"
+            return "!" + species
+        return species
     raise ValueError(etree.tostring(math))
 
 
 def add_function_as_rdf(info, species, func):
     """Add a new RDF element containing the logical function and name."""
-    rdf = etree.Element(f"{{{NS['rdf']}}}RDF")
+    rdf = etree.Element("{{{rdf}}}RDF".format(rdf=NS["rdf"]))
     descr = etree.SubElement(
         rdf,
-        f"{{{NS['rdf']}}}Description",
-        attrib={f"{{{NS['rdf']}}}about": "#" + info[species]["ref_species"]},
-    )
-    bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
-    bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
-    etree.SubElement(
-        bag,
-        f"{{{NS['rdf']}}}li",
-        attrib={f"{{{NS['rdf']}}}resource": "urn:casq:function:" + func},
-    )
-    bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
-    bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
-    etree.SubElement(
-        bag,
-        f"{{{NS['rdf']}}}li",
+        "{{{rdf}}}Description".format(rdf=NS["rdf"]),
         attrib={
-            f"{{{NS['rdf']}}}resource": "urn:casq:cdid:" + info[species]["ref_species"]
+            "{{{rdf}}}about".format(rdf=NS["rdf"]): "#" + info[species]["ref_species"]
+        },
+    )
+    bqbiol = etree.SubElement(
+        descr, "{{{bqbiol}}}isDescribedBy".format(bqbiol=NS["bqbiol"])
+    )
+    bag = etree.SubElement(bqbiol, "{{{rdf}}}Bag".format(rdf=NS["rdf"]))
+    etree.SubElement(
+        bag,
+        "{{{rdf}}}li".format(rdf=NS["rdf"]),
+        attrib={"{{{rdf}}}resource".format(rdf=NS["rdf"]): "urn:casq:function:" + func},
+    )
+    bqbiol = etree.SubElement(
+        descr, "{{{bqbiol}}}isDescribedBy".format(bqbiol=NS["bqbiol"])
+    )
+    bag = etree.SubElement(bqbiol, "{{{rdf}}}Bag".format(rdf=NS["rdf"]))
+    etree.SubElement(
+        bag,
+        "{{{rdf}}}li".format(rdf=NS["rdf"]),
+        attrib={
+            "{{{rdf}}}resource".format(rdf=NS["rdf"]): "urn:casq:cdid:"
+            + info[species]["ref_species"]
         },
     )
     add_rdf(info, species, rdf)
@@ -576,7 +583,7 @@ def main():
     args = parser.parse_args()
 
     if args.debug:
-        print(f"parsing {args.infile.name}…", file=sys.stderr)
+        print("parsing", args.infile.name, "…", file=sys.stderr)
     info, width, height = read_celldesigner(args.infile, debug=args.debug)
     simplify_model(info, args.debug)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
