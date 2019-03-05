@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Convert CellDesigner models to SBML-qual with a rather strict semantics."""
 
+import argparse
 import collections
 import csv
+import os.path
 import sys
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
@@ -30,7 +32,7 @@ Transition = collections.namedtuple(
 )
 
 
-def read_celldesigner(filename):
+def read_celldesigner(filename, debug=False):
     """Parse the given file."""
     root = etree.parse(filename).getroot()
     tag = root.tag
@@ -39,13 +41,13 @@ def read_celldesigner(filename):
     model = root.find("sbml:model", NS)
     display = model.find("./sbml:annotation/cd:extension/cd:modelDisplay", NS)
     return (
-        get_transitions(model, species_info(model)),
+        get_transitions(model, species_info(model, debug), debug),
         display.get("sizeX"),
         display.get("sizeY"),
     )
 
 
-def species_info(model):
+def species_info(model, debug):
     """Create a map from species' ids to their attributes."""
     nameconv = {}
     # Find all CellDesigner species used later
@@ -65,6 +67,8 @@ def species_info(model):
     ):
         bound = species.find(".//cd:bounds", NS)
         ref_species = species.get("species")
+        if debug:
+            print("parsing ref_species:", ref_species, file=sys.stderr)
         sbml = model.find(
             './sbml:listOfSpecies/sbml:species[@id="' + ref_species + '"]', NS
         )
@@ -128,9 +132,11 @@ def add_rdf(nameconv, reference, new_rdf):
         nameconv[reference]["annotations"] = new_rdf
 
 
-def get_transitions(model, info):
+def get_transitions(model, info, debug):
     """Find all transitions."""
     for trans in model.findall("./sbml:listOfReactions/sbml:reaction", NS):
+        if debug:
+            print("parsing reaction:", trans.get("id"), file=sys.stderr)
         annot = trans.find("./sbml:annotation/cd:extension", NS)
         rtype = annot.find("./cd:reactionType", NS).text
         reacs = [
@@ -189,7 +195,7 @@ def get_mods(cd_modifications):
     return [mod.get("state") for mod in cd_modifications.findall("cd:modification", NS)]
 
 
-def write_qual(filename, info, width, height, ginsim_names):
+def write_qual(filename, info, width, height, ginsim_names, debug=False):
     """Write the SBML qual with layout file for our model."""
     for name, space in NS.items():
         etree.register_namespace(name, space)
@@ -507,45 +513,61 @@ def add_function_as_rdf(info, species, func):
     """Add a new RDF element containing the logical function and name."""
     rdf = etree.Element(f"{{{NS['rdf']}}}RDF")
     descr = etree.SubElement(
-        rdf, f"{{{NS['rdf']}}}Description", attrib={f"{{{NS['rdf']}}}about": "#" + info[species]["ref_species"]}
-    )
-    bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
-    bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
-    etree.SubElement(
-        bag, f"{{{NS['rdf']}}}li", attrib={f"{{{NS['rdf']}}}resource": "urn:casq:function:" + func}
+        rdf,
+        f"{{{NS['rdf']}}}Description",
+        attrib={f"{{{NS['rdf']}}}about": "#" + info[species]["ref_species"]},
     )
     bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
     bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
     etree.SubElement(
         bag,
         f"{{{NS['rdf']}}}li",
-        attrib={f"{{{NS['rdf']}}}resource": "urn:casq:cdid:" + info[species]["ref_species"]},
+        attrib={f"{{{NS['rdf']}}}resource": "urn:casq:function:" + func},
+    )
+    bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
+    bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
+    etree.SubElement(
+        bag,
+        f"{{{NS['rdf']}}}li",
+        attrib={
+            f"{{{NS['rdf']}}}resource": "urn:casq:cdid:" + info[species]["ref_species"]
+        },
     )
     add_rdf(info, species, rdf)
 
 
 def main():
     """Run conversion using the CLI given first argument."""
-    if len(sys.argv) > 1 and sys.argv[1] == "--ginsim":
-        ginsim = True
-        del sys.argv[1]
-    else:
-        ginsim = False
-    if len(sys.argv) != 3:
-        print(
-            "Usage: [python3] "
-            + sys.argv[0]
-            + " [--ginsim]"
-            + " <celldesignerinfile.xml> <sbmlqualoutfile.xml>",
-            file=sys.stderr,
-        )
-        exit(1)
-    celldesignerfile = sys.argv[1]
-    print(f"parsing {celldesignerfile}…", file=sys.stderr)
-    info, width, height = read_celldesigner(celldesignerfile)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("-g", "--ginsim", action="store_true")
+    parser.add_argument("-d", "--debug", action="store_true")
+    parser.add_argument(
+        "infile",
+        type=argparse.FileType("r"),
+        nargs="?",
+        default=sys.stdin,
+        help="CellDesigner File",
+    )
+    parser.add_argument(
+        "outfile",
+        type=argparse.FileType("w"),
+        nargs="?",
+        default=sys.stdout,
+        help="SBML-Qual File",
+    )
+    args = parser.parse_args()
+
+    if args.debug:
+        print(f"parsing {args.infile}…", file=sys.stderr)
+    info, width, height = read_celldesigner(args.infile, debug=args.debug)
     simplify_model(info)
-    write_qual(sys.argv[2], info, width, height, ginsim_names=ginsim)
-    write_csv(sys.argv[2], info)
+    if args.infile != sys.stdin and args.outfile == sys.stdout:
+        args.outfile = os.path.splitext(args.infile)[0] + ".sbml"
+    write_qual(
+        args.outfile, info, width, height, ginsim_names=args.ginsim, debug=args.debug
+    )
+    if args.outfile != sys.stdout:
+        write_csv(args.outfile, info)
 
 
 if __name__ == "__main__":  # pragma: no cover
