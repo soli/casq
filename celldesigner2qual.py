@@ -65,6 +65,8 @@ def species_info(model, debug):
             NS,
         ),
     ):
+        # if species.get("complexSpeciesAlias"):
+        #     continue
         bound = species.find(".//cd:bounds", NS)
         ref_species = species.get("species")
         if debug:
@@ -224,12 +226,14 @@ def write_qual(filename, info, width, height, ginsim_names, debug=False):
     etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
 
 
-def simplify_model(info):
+def simplify_model(info, debug=False):
     """Clean the model w.r.t. some active/inactive species."""
     multispecies = {}
     for key, value in list(info.items()):
         if not key.startswith("csa") and not key.startswith("sa"):
             del info[key]
+            if debug:
+                print("deleting complex:", key, "value:", value, file=sys.stderr)
             if len(value) > 1:
                 multispecies[key] = value
                 # print('multi', key, value)
@@ -237,6 +241,8 @@ def simplify_model(info):
         for val in value:
             # check that it does not appear in any other reaction than the
             # activation one
+            if debug:
+                print("looking at multispecies:", val, file=sys.stderr)
             active = None
             for species, data in info.items():
                 for trans in data["transitions"]:
@@ -558,11 +564,11 @@ def main():
     args = parser.parse_args()
 
     if args.debug:
-        print(f"parsing {args.infile}…", file=sys.stderr)
+        print(f"parsing {args.infile.name}…", file=sys.stderr)
     info, width, height = read_celldesigner(args.infile, debug=args.debug)
-    simplify_model(info)
+    simplify_model(info, args.debug)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
-        args.outfile = os.path.splitext(args.infile)[0] + ".sbml"
+        args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     write_qual(
         args.outfile, info, width, height, ginsim_names=args.ginsim, debug=args.debug
     )
