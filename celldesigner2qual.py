@@ -516,7 +516,7 @@ def add_inputs(ilist, transitions, species, known, graph):
 
 def write_csv(sbml_filename, info):
     """Write a csv file with SBML IDs, CD IDs, Names, Formulae, etc."""
-    with open(sbml_filename + ".csv", "w", newline="") as f:
+    with open(sbml_filename + ".csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         for species, data in info.items():
             writer.writerow(
