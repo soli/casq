@@ -199,7 +199,7 @@ def get_mods(cd_modifications):
     return [mod.get("state") for mod in cd_modifications.findall("cd:modification", NS)]
 
 
-def write_qual(filename, info, width, height, ginsim_names, debug=False):
+def write_qual(filename, info, width, height, ginsim_names, remove=0, debug=False):
     """Write the SBML qual with layout file for our model."""
     for name, space in NS.items():
         etree.register_namespace(name, space)
@@ -225,7 +225,10 @@ def write_qual(filename, info, width, height, ginsim_names, debug=False):
     tlist = etree.SubElement(model, "qual:listOfTransitions")
     graph = nx.Graph()
     add_transitions(tlist, info, graph)
-    print(list(nx.connected_components(graph)), file=sys.stderr)
+    print(
+        list(filter(lambda x: len(x) <= remove, list(nx.connected_components(graph)))),
+        file=sys.stderr,
+    )
     add_qual_species(layout, qlist, info, ginsim_names)
     etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
 
@@ -567,6 +570,15 @@ def main():
         help="Store the species information in a separate CSV file",
     )
     parser.add_argument(
+        "-r",
+        "--remove",
+        metavar="S",
+        type=int,
+        default="0",
+        help="""Delete connected components in the resulting
+                        model if their size is smaller than S""",
+    )
+    parser.add_argument(
         "infile",
         type=argparse.FileType("r"),
         nargs="?",
@@ -589,7 +601,13 @@ def main():
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     write_qual(
-        args.outfile, info, width, height, ginsim_names=args.ginsim, debug=args.debug
+        args.outfile,
+        info,
+        width,
+        height,
+        ginsim_names=args.ginsim,
+        remove=args.remove,
+        debug=args.debug,
     )
     if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
