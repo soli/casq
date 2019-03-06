@@ -225,12 +225,30 @@ def write_qual(filename, info, width, height, ginsim_names, remove=0, debug=Fals
     tlist = etree.SubElement(model, "qual:listOfTransitions")
     graph = nx.Graph()
     add_transitions(tlist, info, graph)
-    print(
-        list(filter(lambda x: len(x) <= remove, list(nx.connected_components(graph)))),
-        file=sys.stderr,
-    )
+    remove_connected_components(tlist, info, graph, remove, debug)
     add_qual_species(layout, qlist, info, ginsim_names)
     etree.ElementTree(root).write(filename, "UTF-8", xml_declaration=True)
+
+
+def remove_connected_components(tlist, info, graph, remove, debug):
+    """Remove connected components of size smaller than remove."""
+    # because we did not properly NameSpace all transitions, we cannot use
+    # find('./qual:transition[@qual:id=]')
+    transitions = list(tlist)
+    for cc in filter(lambda x: len(x) <= remove, nx.connected_components(graph)):
+        if debug:
+            print("removing connected component", list(cc), file=sys.stderr)
+        for species in cc:
+            if debug:
+                print("removing species", species, file=sys.stderr)
+            del info[species]
+            trans = list(
+                filter(lambda t: t.get("qual:id") == "tr_" + species, transitions)
+            )
+            if trans:
+                if debug:
+                    print("removing transition", trans[0], file=sys.stderr)
+                tlist.remove(trans[0])
 
 
 def simplify_model(info, debug=False):
