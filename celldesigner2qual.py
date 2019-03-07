@@ -8,6 +8,7 @@ import os.path
 import sys
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
+from typing import Dict, IO, List, Optional, Tuple, cast
 
 import networkx as nx
 
@@ -33,14 +34,19 @@ Transition = collections.namedtuple(
 )
 
 
-def read_celldesigner(filename, debug=False):
+def read_celldesigner(filename: IO, debug: bool = False):
     """Parse the given file."""
     root = etree.parse(filename).getroot()
     tag = root.tag
     if tag != "{" + NS["sbml"] + "}sbml":
         raise ValueError("Currently limited to SBML Level 2 Version 4")
     model = root.find("sbml:model", NS)
-    display = model.find("./sbml:annotation/cd:extension/cd:modelDisplay", NS)
+    if model:
+        display = model.find("./sbml:annotation/cd:extension/cd:modelDisplay", NS)
+    else:
+        raise ValueError("Could not find SBML model element")
+    if display is None:
+        raise ValueError("Could not find CellDesigner modelDisplay element")
     return (
         get_transitions(model, species_info(model, debug), debug),
         display.get("sizeX"),
@@ -69,13 +75,19 @@ def species_info(model, debug):
         # if species.get("complexSpeciesAlias"):
         #     continue
         bound = species.find(".//cd:bounds", NS)
+        if bound is None:
+            continue
         ref_species = species.get("species")
         if debug:
             print("parsing ref_species:", ref_species, file=sys.stderr)
         sbml = model.find(
             './sbml:listOfSpecies/sbml:species[@id="' + ref_species + '"]', NS
         )
+        if sbml is None:
+            continue
         annot = sbml.find("./sbml:annotation", NS)
+        if annot is None:
+            continue
         classtype = get_text(annot.find(".//cd:class", NS), "PROTEIN")
         if classtype == "DEGRADED":
             continue
@@ -104,7 +116,7 @@ def species_info(model, debug):
     return nameconv
 
 
-def add_subcomponents_only(nameconv, model):
+def add_subcomponents_only(nameconv, model: etree.Element):
     """Add annotations to the parent complex.
 
     For unused CD species (only subcomponents of complexes)
@@ -123,26 +135,29 @@ def add_subcomponents_only(nameconv, model):
         )
 
 
-def add_rdf(nameconv, reference, new_rdf):
+def add_rdf(nameconv, reference: str, new_rdf: Optional[etree.Element]):
     """Add the new_rdf element to nameconv[reference]['annotations']."""
     if new_rdf is None:
         return
     if nameconv[reference]["annotations"] is not None:
-        nameconv[reference]["annotations"].find("./rdf:Description", NS).extend(
-            new_rdf.find("./rdf:Description", NS)[:]
-        )
+        rdfs = new_rdf.find("./rdf:Description", NS)
+        if rdfs is None:
+            return
+        nameconv[reference]["annotations"].find("./rdf:Description", NS).extend(rdfs[:])
     else:
         nameconv[reference]["annotations"] = new_rdf
 
 
-def get_transitions(model, info, debug):
+def get_transitions(model: etree.Element, info, debug: bool):
     """Find all transitions."""
     for trans in model.findall("./sbml:listOfReactions/sbml:reaction", NS):
         if debug:
             print("parsing reaction:", trans.get("id"), file=sys.stderr)
         annot = trans.find("./sbml:annotation/cd:extension", NS)
+        if annot is None:
+            continue
         # currently not used
-        rtype = annot.find("./cd:reactionType", NS).text
+        rtype = get_text(annot.find("./cd:reactionType", NS))
         reacs = [
             decomplexify(reac.get("alias"), model)
             for reac in annot.findall("./cd:baseReactants/cd:baseReactant", NS)
@@ -169,7 +184,7 @@ def get_transitions(model, info, debug):
     return info
 
 
-def decomplexify(species, model, field="id"):
+def decomplexify(species: str, model: etree.Element, field: str = "id"):
     """Return external complex if there is one.
 
     or species unchanged otherwise.
@@ -185,21 +200,29 @@ def decomplexify(species, model, field="id"):
     return cmplx.get("complexSpeciesAlias", species)
 
 
-def get_text(cd_class, default=None):
+def get_text(cd_class: Optional[etree.Element], default=None):
     """Get the text of an XML field if it exists or return a default."""
     if cd_class is not None:
         return cd_class.text
     return default
 
 
-def get_mods(cd_modifications):
+def get_mods(cd_modifications: etree.Element) -> List[str]:
     """Celldesigner:listOfModifications to list of mods."""
     if not cd_modifications:
         return []
     return [mod.get("state") for mod in cd_modifications.findall("cd:modification", NS)]
 
 
-def write_qual(filename, info, width, height, ginsim_names, remove=0, debug=False):
+def write_qual(
+    filename: str,
+    info,
+    width: str,
+    height: str,
+    ginsim_names: bool,
+    remove: int = 0,
+    debug: bool = False,
+):
     """Write the SBML qual with layout file for our model."""
     for name, space in NS.items():
         etree.register_namespace(name, space)
@@ -230,7 +253,9 @@ def write_qual(filename, info, width, height, ginsim_names, remove=0, debug=Fals
     etree.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
 
 
-def remove_connected_components(tlist, info, graph, remove, debug):
+def remove_connected_components(
+    tlist: etree.Element, info, graph: nx.Graph, remove: int, debug: bool
+):
     """Remove connected components of size smaller than remove."""
     # because we did not properly NameSpace all transitions, we cannot use
     # find('./qual:transition[@qual:id=]')
@@ -251,9 +276,9 @@ def remove_connected_components(tlist, info, graph, remove, debug):
                 tlist.remove(trans[0])
 
 
-def simplify_model(info, debug=False):
+def simplify_model(info, debug: bool = False):
     """Clean the model w.r.t. some active/inactive species."""
-    multispecies = {}
+    multispecies: Dict[str, List[str]] = {}
     for key, value in list(info.items()):
         if not key.startswith("csa") and not key.startswith("sa"):
             del info[key]
@@ -281,7 +306,8 @@ def simplify_model(info, debug=False):
                 if active is False:
                     break
             if not info[val]["transitions"] and active in value:
-                add_rdf(info, active, info[val]["annotations"])
+                # we know that active is a str here, since it is in value
+                add_rdf(info, cast(str, active), info[val]["annotations"])
                 # print('deleting {val} [{active} is active for {key}]'.format(
                 #     val=val,
                 #     active=active,
@@ -290,7 +316,8 @@ def simplify_model(info, debug=False):
                 del info[val]
 
 
-def add_qual_species(layout, qlist, info, ginsim_names):
+def add_qual_species(layout: etree.Element, qlist: etree.Element, info,
+                     ginsim_names: bool):
     """Create layout sub-elements and species."""
     llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
     for species, data in info.items():
@@ -326,7 +353,7 @@ def add_qual_species(layout, qlist, info, ginsim_names):
         add_annotation(qspecies, data["annotations"])
 
 
-def fix_name(name, species, ginsim_names):
+def fix_name(name: str, species: str, ginsim_names: bool):
     """Change name for GINSIM compatibility or to remove subscripts."""
     if ginsim_names:
         # ginsim bug uses name as id
@@ -334,13 +361,13 @@ def fix_name(name, species, ginsim_names):
     return name.replace("_sub_", "").replace("_endsub_", "")
 
 
-def add_annotation(node, rdf):
+def add_annotation(node: etree.Element, rdf: Optional[etree.Element]):
     """Add a single RDF element as an annotation node."""
     if rdf is not None:
         etree.SubElement(node, "annotation").append(rdf)
 
 
-def add_transitions(tlist, info, graph):
+def add_transitions(tlist: etree.Element, info, graph: nx.Graph):
     """Create transition elements."""
     known = list(info.keys())
     for species, data in info.items():
@@ -370,16 +397,16 @@ def add_transitions(tlist, info, graph):
                     flist, "qual:functionTerm", {"qual:resultLevel": "1"}
                 )
                 add_function(func, data["transitions"], known)
-                func = mathml_to_ginsim(func.find("./math/*", NS), info)
-                info[species]["function"] = func
-                add_function_as_rdf(info, species, func)
+                sfunc = mathml_to_ginsim(func.find("./math/*", NS), info)
+                info[species]["function"] = sfunc
+                add_function_as_rdf(info, species, sfunc)
                 add_notes(trans, data["transitions"])
                 add_annotations(trans, data["transitions"])
         else:
             add_function_as_rdf(info, species, info[species]["function"])
 
 
-def add_notes(trans, transitions):
+def add_notes(trans: etree.Element, transitions: List[Transition]):
     """Add all the found notes."""
     notes = etree.SubElement(trans, "notes")
     html = etree.SubElement(notes, "html", xmlns=NS["xhtml"])
@@ -400,7 +427,7 @@ def add_notes(trans, transitions):
         trans.remove(notes)
 
 
-def add_annotations(trans, transitions):
+def add_annotations(trans: etree.Element, transitions: List[Transition]):
     """Add all the found annotations."""
     annotation = etree.SubElement(trans, "annotation")
     rdf = etree.SubElement(annotation, "rdf:RDF")
@@ -411,7 +438,8 @@ def add_annotations(trans, transitions):
         trans.remove(annotation)
 
 
-def add_function(func, transitions, known):
+def add_function(func: etree.Element, transitions: List[Transition], known:
+                 List[str]):
     """Add the complete boolean activation function.
 
     this is an or over all reactions having the target as product.
@@ -472,7 +500,7 @@ def add_function(func, transitions, known):
             set_level(lapply, modifier, level)
 
 
-def set_level(elt, modifier, level):
+def set_level(elt: etree.Element, modifier: str, level: str):
     """Add mathml to element elt such that modifier is equal to level."""
     trigger = etree.SubElement(elt, "apply")
     etree.SubElement(trigger, "eq")
@@ -482,10 +510,11 @@ def set_level(elt, modifier, level):
     math_cn.text = level
 
 
-def add_inputs(ilist, transitions, species, known, graph):
+def add_inputs(ilist: etree.Element, transitions: List[Transition], species:
+               str, known: List[str], graph: nx.Graph):
     """Add all known inputs."""
     index = 0
-    modifiers = []
+    modifiers: List[Tuple[str, str]] = []
     graph.add_node(species)
     for reaction in transitions:
         # we use enumerate to get a dummy modtype for reactants
@@ -514,7 +543,7 @@ def add_inputs(ilist, transitions, species, known, graph):
                 index += 1
 
 
-def write_csv(sbml_filename, info):
+def write_csv(sbml_filename: str, info):
     """Write a csv file with SBML IDs, CD IDs, Names, Formulae, etc."""
     with open(sbml_filename + ".csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
@@ -524,8 +553,10 @@ def write_csv(sbml_filename, info):
             )
 
 
-def mathml_to_ginsim(math, info):
+def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
     """Convert a MATHML boolean formula into its GinSIM representation."""
+    if math is None:
+        raise ValueError("Empty math element")
     if math.tag != "apply":
         raise ValueError(etree.tostring(math))
     children = list(math)
@@ -536,13 +567,15 @@ def mathml_to_ginsim(math, info):
     if children[0].tag == "eq":
         species = children[1].text
         species = info[species]["name"]
+        if species is None:
+            species = ""
         if children[2].text == "0":
             return "!" + species
         return species
     raise ValueError(etree.tostring(math))
 
 
-def add_function_as_rdf(info, species, func):
+def add_function_as_rdf(info, species: str, func: str):
     """Add a new RDF element containing the logical function and name."""
     rdf = etree.Element("{{{rdf}}}RDF".format(rdf=NS["rdf"]))
     descr = etree.SubElement(
@@ -603,12 +636,7 @@ def main():
         default=sys.stdin,
         help="CellDesigner File",
     )
-    parser.add_argument(
-        "outfile",
-        nargs="?",
-        default=sys.stdout,
-        help="SBML-Qual File",
-    )
+    parser.add_argument("outfile", nargs="?", default=sys.stdout, help="SBML-Qual File")
     args = parser.parse_args()
 
     if args.debug:
