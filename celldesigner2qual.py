@@ -227,7 +227,7 @@ def write_qual(filename, info, width, height, ginsim_names, remove=0, debug=Fals
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove, debug)
     add_qual_species(layout, qlist, info, ginsim_names)
-    etree.ElementTree(root).write(filename, xml_declaration=True)
+    etree.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
 
 
 def remove_connected_components(tlist, info, graph, remove, debug):
@@ -605,7 +605,6 @@ def main():
     )
     parser.add_argument(
         "outfile",
-        type=argparse.FileType("w", encoding="utf-8"),
         nargs="?",
         default=sys.stdout,
         help="SBML-Qual File",
