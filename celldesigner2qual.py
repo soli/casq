@@ -260,7 +260,10 @@ def remove_connected_components(
     # because we did not properly NameSpace all transitions, we cannot use
     # find('./qual:transition[@qual:id=]')
     transitions = list(tlist)
-    for cc in filter(lambda x: len(x) <= remove, nx.connected_components(graph)):
+    ccs = list(nx.connected_components(graph))
+    if remove < 0:
+        remove = len(max(ccs, key=len)) - 1
+    for cc in filter(lambda x: len(x) <= remove, ccs):
         if debug:
             print("removing connected component", list(cc), file=sys.stderr)
         for species in cc:
@@ -316,8 +319,9 @@ def simplify_model(info, debug: bool = False):
                 del info[val]
 
 
-def add_qual_species(layout: etree.Element, qlist: etree.Element, info,
-                     ginsim_names: bool):
+def add_qual_species(
+    layout: etree.Element, qlist: etree.Element, info, ginsim_names: bool
+):
     """Create layout sub-elements and species."""
     llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
     for species, data in info.items():
@@ -438,8 +442,7 @@ def add_annotations(trans: etree.Element, transitions: List[Transition]):
         trans.remove(annotation)
 
 
-def add_function(func: etree.Element, transitions: List[Transition], known:
-                 List[str]):
+def add_function(func: etree.Element, transitions: List[Transition], known: List[str]):
     """Add the complete boolean activation function.
 
     this is an or over all reactions having the target as product.
@@ -510,8 +513,13 @@ def set_level(elt: etree.Element, modifier: str, level: str):
     math_cn.text = level
 
 
-def add_inputs(ilist: etree.Element, transitions: List[Transition], species:
-               str, known: List[str], graph: nx.Graph):
+def add_inputs(
+    ilist: etree.Element,
+    transitions: List[Transition],
+    species: str,
+    known: List[str],
+    graph: nx.Graph,
+):
     """Add all known inputs."""
     index = 0
     modifiers: List[Tuple[str, str]] = []
@@ -626,8 +634,9 @@ def main():
         metavar="S",
         type=int,
         default="0",
-        help="""Delete connected components in the resulting
-                        model if their size is smaller than S""",
+        help="""Delete connected components in the resulting model if their
+        size is smaller than S.
+        A negative S leads to keep only the biggest(s) connected component(s)""",
     )
     parser.add_argument(
         "infile",
