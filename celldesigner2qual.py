@@ -457,9 +457,8 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
     else:
         apply = math
     for reaction in transitions:
-        # we assume that only "BOOLEAN_LOGIC_GATE_AND" has multiple modifiers
-        # it is also the only modification that has an AND and therefore ends
-        # with reactants
+        # "BOOLEAN_LOGIC_GATE_AND" is the only modification that has an AND
+        # and therefore ends with reactants
         reactants = [reac for reac in reaction.reactants if reac in known]
         reactants.extend(
             [
@@ -470,11 +469,11 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
             ]
         )
         activators = [
-            modifier
+            mod
             for (modtype, modifier) in reaction.modifiers
+            for mod in modifier.split(",")
             if modtype not in ("INHIBITION", "BOOLEAN_LOGIC_GATE_AND")
-            and modifier in known
-            and modifier not in reactants
+            and mod in known and mod not in reactants
         ]
         inhibitors = [
             modifier
