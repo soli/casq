@@ -10,6 +10,8 @@ import xml.etree.ElementTree as etree
 from itertools import chain, repeat
 from typing import Dict, IO, List, Optional, Tuple, cast
 
+from loguru import logger
+
 import networkx as nx
 
 NS = {
@@ -34,7 +36,7 @@ Transition = collections.namedtuple(
 )
 
 
-def read_celldesigner(filename: IO, debug: bool = False):
+def read_celldesigner(filename: IO):
     """Parse the given file."""
     root = etree.parse(filename).getroot()
     tag = root.tag
@@ -48,13 +50,13 @@ def read_celldesigner(filename: IO, debug: bool = False):
     if display is None:
         raise ValueError("Could not find CellDesigner modelDisplay element")
     return (
-        get_transitions(model, species_info(model, debug), debug),
+        get_transitions(model, species_info(model)),
         display.get("sizeX"),
         display.get("sizeY"),
     )
 
 
-def species_info(model, debug):
+def species_info(model):
     """Create a map from species' ids to their attributes."""
     nameconv = {}
     # Find all CellDesigner species used later
@@ -78,8 +80,7 @@ def species_info(model, debug):
         if bound is None:
             continue
         ref_species = species.get("species")
-        if debug:
-            print("parsing ref_species:", ref_species, file=sys.stderr)
+        logger.debug("parsing ref_species: {ref}", ref=ref_species)
         sbml = model.find(
             './sbml:listOfSpecies/sbml:species[@id="' + ref_species + '"]', NS
         )
@@ -148,11 +149,10 @@ def add_rdf(nameconv, reference: str, new_rdf: Optional[etree.Element]):
         nameconv[reference]["annotations"] = new_rdf
 
 
-def get_transitions(model: etree.Element, info, debug: bool):
+def get_transitions(model: etree.Element, info):
     """Find all transitions."""
     for trans in model.findall("./sbml:listOfReactions/sbml:reaction", NS):
-        if debug:
-            print("parsing reaction:", trans.get("id"), file=sys.stderr)
+        logger.debug("parsing reaction: {tid}", tid=trans.get("id"))
         annot = trans.find("./sbml:annotation/cd:extension", NS)
         if annot is None:
             continue
@@ -215,13 +215,7 @@ def get_mods(cd_modifications: etree.Element) -> List[str]:
 
 
 def write_qual(
-    filename: str,
-    info,
-    width: str,
-    height: str,
-    ginsim_names: bool,
-    remove: int = 0,
-    debug: bool = False,
+    filename: str, info, width: str, height: str, ginsim_names: bool, remove: int = 0
 ):
     """Write the SBML qual with layout file for our model."""
     for name, space in NS.items():
@@ -248,13 +242,13 @@ def write_qual(
     tlist = etree.SubElement(model, "qual:listOfTransitions")
     graph = nx.Graph()
     add_transitions(tlist, info, graph)
-    remove_connected_components(tlist, info, graph, remove, debug)
+    remove_connected_components(tlist, info, graph, remove)
     add_qual_species(layout, qlist, info, ginsim_names)
     etree.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
 
 
 def remove_connected_components(
-    tlist: etree.Element, info, graph: nx.Graph, remove: int, debug: bool
+    tlist: etree.Element, info, graph: nx.Graph, remove: int
 ):
     """Remove connected components of size smaller than remove."""
     # because we did not properly NameSpace all transitions, we cannot use
@@ -264,29 +258,25 @@ def remove_connected_components(
     if remove < 0:
         remove = len(max(ccs, key=len)) - 1
     for cc in filter(lambda x: len(x) <= remove, ccs):
-        if debug:
-            print("removing connected component", list(cc), file=sys.stderr)
+        logger.debug("removing connected component {cc}", cc=list(cc))
         for species in cc:
-            if debug:
-                print("removing species", species, file=sys.stderr)
+            logger.debug("removing species {sp}", sp=species)
             del info[species]
             trans = list(
                 filter(lambda t: t.get("qual:id") == "tr_" + species, transitions)
             )
             if trans:
-                if debug:
-                    print("removing transition", trans[0], file=sys.stderr)
+                logger.debug("removing transition {tr}", tr=trans[0])
                 tlist.remove(trans[0])
 
 
-def simplify_model(info, debug: bool = False):
+def simplify_model(info):
     """Clean the model w.r.t. some active/inactive species."""
     multispecies: Dict[str, List[str]] = {}
     for key, value in list(info.items()):
         if not key.startswith("csa") and not key.startswith("sa"):
             del info[key]
-            if debug:
-                print("deleting complex:", key, "value:", value, file=sys.stderr)
+            logger.debug("deleting complex: {cplx} value: {val}", cplx=key, val=value)
             if len(value) > 1:
                 multispecies[key] = value
                 # print('multi', key, value)
@@ -294,8 +284,7 @@ def simplify_model(info, debug: bool = False):
         for val in value:
             # check that it does not appear in any other reaction than the
             # activation one
-            if debug:
-                print("looking at multispecies:", val, file=sys.stderr)
+            logger.debug("looking at multispecies: {mul}", mul=val)
             active = None
             for species, data in info.items():
                 for trans in data["transitions"]:
@@ -648,20 +637,15 @@ def main():
     parser.add_argument("outfile", nargs="?", default=sys.stdout, help="SBML-Qual File")
     args = parser.parse_args()
 
-    if args.debug:
-        print("parsing", args.infile.name, "…", file=sys.stderr)
-    info, width, height = read_celldesigner(args.infile, debug=args.debug)
-    simplify_model(info, args.debug)
+    if not args.debug:
+        logger.disable("casq")
+    logger.debug("parsing {fname}…", fname=args.infile.name)
+    info, width, height = read_celldesigner(args.infile)
+    simplify_model(info)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     write_qual(
-        args.outfile,
-        info,
-        width,
-        height,
-        ginsim_names=args.ginsim,
-        remove=args.remove,
-        debug=args.debug,
+        args.outfile, info, width, height, ginsim_names=args.ginsim, remove=args.remove
     )
     if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
