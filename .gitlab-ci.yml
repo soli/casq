@@ -2,7 +2,6 @@
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  # PATH: "$CI_PROJECT_DIR/.local/bin:$PATH"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
@@ -30,12 +29,12 @@ test:
 run:
   script:
   - python3 setup.py bdist_wheel
-  # an alternative approach is to install and run:
-  - pip install dist/*
-  # run the command here
-  artifacts:
-    paths:
-    - dist/*.whl
+#   # an alternative approach is to install and run:
+#   - pip install dist/*
+#   # run the command here
+#   artifacts:
+#     paths:
+#     - dist/*.whl
 
 # pages:
 #  script:
