@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
 with open("README.md", "r") as file:
     readme = file.read()
@@ -18,11 +18,13 @@ setup(
         "Source Code": "https://gitlab.inria.fr/soliman/sbgnpd2sbmlq",
     },
     license="MIT",
-    packages=["casq"],
+    packages=find_packages(),
     author="Sylvain Soliman",
     author_email="Sylvain.Soliman@inria.fr",
     install_requires=["networkx>=2.2"],
     python_requires=">=3.5",
+    setup_requires=["pytest-runner"],
+    tests_require=["pytest"],
     include_package_data=True,
     zip_safe=False,
     entry_points={
