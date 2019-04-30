@@ -2,7 +2,7 @@
 # only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  PATH: "$CI_PROJECT_DIR/.local/bin:$$PATH"
+  PATH: "$CI_PROJECT_DIR/.local/bin:$PATH"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
@@ -16,6 +16,7 @@ cache:
 
 before_script:
   - python3 -V # Print out python version for debugging
+  - echo $$PATH
   - pip3 install virtualenv
   - virtualenv venv
   - source venv/bin/activate
