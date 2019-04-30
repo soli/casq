@@ -1,19 +1,28 @@
 from setuptools import setup
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+with open("README.md", "r") as file:
+    readme = file.read()
+
+with open("casq/__init__.py", "r") as file:
+    for line in file.readlines():
+        if line.startswith("version ="):
+            version = line.split()[2]
 
 setup(
     name="casq",
-    version="0.1.0",
+    version=version,
     description="CaSQ: Celldesigner as Sbml-Qual",
-    long_description=long_description,
+    long_description=readme,
     url="https://lifeware.inria.fr/~soliman/post/casq/",
+    project_urls={
+        "Source Code": "https://gitlab.inria.fr/soliman/sbgnpd2sbmlq",
+    },
     license="MIT",
     packages=["casq"],
     author="Sylvain Soliman",
     author_email="Sylvain.Soliman@inria.fr",
-    install_requires=["networkx"],
+    install_requires=["networkx>=2.2"],
+    python_requires=">=3.5",
     include_package_data=True,
     zip_safe=False,
     entry_points={
@@ -22,6 +31,7 @@ setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
