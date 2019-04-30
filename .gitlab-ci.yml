@@ -16,7 +16,7 @@ cache:
 
 before_script:
   - python3 -V # Print out python version for debugging
-  - echo $$PATH
+  - export PATH=$PATH:$CI_PROJECT_DIR/.local/bin
   - pip3 install virtualenv
   - virtualenv venv
   - source venv/bin/activate
