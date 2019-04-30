@@ -14,6 +14,11 @@ setup(
     author="Sylvain Soliman",
     author_email="Sylvain.Soliman@inria.fr",
     install_requires=["networkx"],
+    include_package_data=True,
+    zip_safe=False,
+    entry_points={
+        "console_scripts": ["celldesigner2qual=casq.celldesigner2qual.main"],
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
