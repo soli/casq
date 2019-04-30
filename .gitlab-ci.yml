@@ -1,6 +1,6 @@
 test:
   script:
-  - python setup.py test
+  - python3 setup.py test
 
 run:
   script:
