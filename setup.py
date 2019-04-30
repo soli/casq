@@ -21,7 +21,10 @@ setup(
     packages=find_packages(),
     author="Sylvain Soliman",
     author_email="Sylvain.Soliman@inria.fr",
-    install_requires=["networkx>=2.2"],
+    install_requires=[
+        "networkx>=2.2",
+        "loguru>=0.2.5",
+    ],
     python_requires=">=3.5",
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
