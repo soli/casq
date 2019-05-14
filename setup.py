@@ -31,7 +31,9 @@ setup(
     include_package_data=True,
     zip_safe=False,
     entry_points={
-        "console_scripts": ["celldesigner2qual=casq.celldesigner2qual.main"],
+        "console_scripts": [
+            "casq = casq.celldesigner2qual:main",
+        ],
     },
     classifiers=[
         "Development Status :: 3 - Alpha",

@@ -253,10 +253,15 @@ def remove_connected_components(
     """Remove connected components of size smaller than remove."""
     # because we did not properly NameSpace all transitions, we cannot use
     # find('./qual:transition[@qual:id=]')
+    logger.debug("remove value {S}", S=remove)
     transitions = list(tlist)
     ccs = list(nx.connected_components(graph))
+    # add completely isolated nodes
+    ccs.extend({species} for (species, data) in info.items() if not data["transitions"])
+    logger.debug("CCs: {ccs}", ccs=ccs)
     if remove < 0:
         remove = len(max(ccs, key=len)) - 1
+    logger.debug("remove value {S}", S=remove)
     for cc in filter(lambda x: len(x) <= remove, ccs):
         logger.debug("removing connected component {cc}", cc=list(cc))
         for species in cc:
@@ -347,7 +352,7 @@ def add_qual_species(
 
 
 def fix_name(name: str, species: str, ginsim_names: bool):
-    """Change name for GINSIM compatibility or to remove subscripts."""
+    """Change name for GINSIM compatibility or to remove subscripts."""
     if ginsim_names:
         # ginsim bug uses name as id
         return name.replace(" ", "_").replace(",", "").replace("/", "_") + "_" + species
