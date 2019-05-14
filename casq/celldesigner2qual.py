@@ -257,7 +257,8 @@ def remove_connected_components(
     transitions = list(tlist)
     ccs = list(nx.connected_components(graph))
     # add completely isolated nodes
-    ccs.extend({species} for (species, data) in info.items() if not data["transitions"])
+    nodes = graph.nodes()
+    ccs.extend({species} for (species, data) in info.items() if species not in nodes)
     logger.debug("CCs: {ccs}", ccs=ccs)
     if remove < 0:
         remove = len(max(ccs, key=len)) - 1
