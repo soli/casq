@@ -10,9 +10,11 @@ import xml.etree.ElementTree as etree
 from itertools import chain, repeat
 from typing import Dict, IO, List, Optional, Tuple, cast
 
-from loguru import logger   # type: ignore
+from loguru import logger  # type: ignore
 
-import networkx as nx   # type: ignore
+import networkx as nx  # type: ignore
+
+from . import version
 
 NS = {
     "sbml": "http://www.sbml.org/sbml/level2/version4",
@@ -624,8 +626,18 @@ def add_function_as_rdf(info, species: str, func: str):
 def main():
     """Run conversion using the CLI given first argument."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("-g", "--ginsim", action="store_true")
-    parser.add_argument("-d", "--debug", action="store_true")
+    parser.add_argument(
+        "-v", "--version", action="version", version=f"%(prog)s v{version}"
+    )
+    parser.add_argument(
+        "-g",
+        "--ginsim",
+        action="store_true",
+        help="Make names unique by adding the ID at the end",
+    )
+    parser.add_argument(
+        "-d", "--debug", action="store_true", help="Display a lot of debug information"
+    )
     parser.add_argument(
         "-c",
         "--csv",
