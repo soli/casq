@@ -10,9 +10,9 @@ import xml.etree.ElementTree as etree
 from itertools import chain, repeat
 from typing import Dict, IO, List, Optional, Tuple, cast
 
-from loguru import logger
+from loguru import logger   # type: ignore
 
-import networkx as nx
+import networkx as nx   # type: ignore
 
 NS = {
     "sbml": "http://www.sbml.org/sbml/level2/version4",
