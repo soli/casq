@@ -286,7 +286,7 @@ def simplify_model(info):
             if len(value) > 1:
                 multispecies[key] = value
                 # print('multi', key, value)
-    for _key, value in multispecies.items():
+    for key, value in multispecies.items():
         for val in value:
             # check that it does not appear in any other reaction than the
             # activation one
@@ -295,22 +295,31 @@ def simplify_model(info):
             for species, data in info.items():
                 for trans in data["transitions"]:
                     if val in trans.reactants or val in [
-                        mod[0] for mod in trans.modifiers
+                        mod
+                        for (_modtype, modifier_list) in trans.modifiers
+                        for mod in modifier_list.split(",")
                     ]:
                         if active is None:
                             active = species
+                            logger.debug(
+                                "{val} activates {active}", val=val, active=active
+                            )
                         else:
                             active = False
+                            logger.debug(
+                                "{val} also activates {active}", val=val, active=species
+                            )
                 if active is False:
                     break
             if not info[val]["transitions"] and active in value:
                 # we know that active is a str here, since it is in value
                 add_rdf(info, cast(str, active), info[val]["annotations"])
-                # print('deleting {val} [{active} is active for {key}]'.format(
-                #     val=val,
-                #     active=active,
-                #     key=key,
-                # ))
+                logger.debug(
+                    "deleting {val} [{active} is active for {key}]",
+                    val=val,
+                    active=active,
+                    key=key,
+                )
                 del info[val]
 
 
