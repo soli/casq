@@ -101,7 +101,7 @@ def species_info(model):
             "h": bound.get("h"),
             "w": bound.get("w"),
             "transitions": [],
-            "name": sbml.get("name"),
+            "name": sbml.get("name") + "_" + classtype.lower(),
             "function": sbml.get("name"),
             "ref_species": ref_species,
             "type": classtype,
