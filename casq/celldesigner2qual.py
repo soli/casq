@@ -390,6 +390,13 @@ def add_transitions(tlist: etree.Element, info, graph: nx.Graph):
             # there might not be any input left after filtering known species
             if not ilist:
                 tlist.remove(trans)
+                logger.debug(
+                    "transition for {species} exists {trans} but has no inputs",
+                    trans=data["transitions"],
+                    species=species,
+                )
+                info[species]["transitions"] = []
+                add_function_as_rdf(info, species, info[species]["function"])
             else:
                 olist = etree.SubElement(trans, "qual:listOfOutputs")
                 etree.SubElement(
