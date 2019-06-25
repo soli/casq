@@ -94,6 +94,7 @@ def species_info(model):
         classtype = get_text(annot.find(".//cd:class", NS), "PROTEIN")
         if classtype == "DEGRADED":
             continue
+        mods = get_mods(annot.find(".//cd:listOfModifications", NS))
         nameconv[species.get("id")] = {
             "activity": get_text(species.find(".//cd:activity", NS), "inactive"),
             "x": bound.get("x"),
@@ -101,11 +102,11 @@ def species_info(model):
             "h": bound.get("h"),
             "w": bound.get("w"),
             "transitions": [],
-            "name": sbml.get("name") + "_" + classtype.lower(),
+            "name": make_name_precise(sbml.get("name"), classtype, mods),
             "function": sbml.get("name"),
             "ref_species": ref_species,
             "type": classtype,
-            "modifications": get_mods(annot.find(".//cd:listOfModifications", NS)),
+            "modifications": mods,
             "annotations": annot.find(".//rdf:RDF", NS),
         }
         # also store in nameconv the reverse mapping from SBML species to CD
@@ -117,6 +118,11 @@ def species_info(model):
             nameconv[prot_ref] = [species.get("id")]
     add_subcomponents_only(nameconv, model)
     return nameconv
+
+
+def make_name_precise(name, ctype, mods):
+    """Append molecule type and modifications to its name."""
+    return "_".join([name, ctype.lower()] + mods)
 
 
 def add_subcomponents_only(nameconv, model: etree.Element):
