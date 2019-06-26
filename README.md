@@ -7,6 +7,7 @@
 ```
 
 [![pipeline status](https://gitlab.inria.fr/soliman/sbgnpd2sbmlq/badges/master/pipeline.svg)](https://gitlab.inria.fr/soliman/sbgnpd2sbmlq/commits/master)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 **CaSQ** converts [CellDesigner](http://celldesigner.org) models to Boolean
 models encoded in [SBML-Qual](http://sbml.org) with a rather strict semantics

@@ -48,7 +48,7 @@ def read_celldesigner(filename: IO):
     if model:
         display = model.find("./sbml:annotation/cd:extension/cd:modelDisplay", NS)
     else:
-        raise ValueError("Could not find SBML model element")
+        raise ValueError("Could not find SBML model element")
     if display is None:
         raise ValueError("Could not find CellDesigner modelDisplay element")
     return (
@@ -109,7 +109,7 @@ def species_info(model):
             "modifications": mods,
             "annotations": annot.find(".//rdf:RDF", NS),
         }
-        # also store in nameconv the reverse mapping from SBML species to CD
+        # also store in nameconv the reverse mapping from SBML species to CD
         # species using the corresponding reference protein
         prot_ref = "__" + sbml.get("name")
         if prot_ref in nameconv:
@@ -128,7 +128,7 @@ def make_name_precise(name, ctype, mods):
 def add_subcomponents_only(nameconv, model: etree.Element):
     """Add annotations to the parent complex.
 
-    For unused CD species (only subcomponents of complexes)
+    For unused CD species (only subcomponents of complexes)
     """
     for species in model.findall(
         "./sbml:annotation/cd:extension/"
@@ -655,7 +655,7 @@ def main():
         "-c",
         "--csv",
         action="store_true",
-        help="Store the species information in a separate CSV file",
+        help="Store the species information in a separate CSV file",
     )
     parser.add_argument(
         "-r",
