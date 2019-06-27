@@ -94,6 +94,10 @@ def species_info(model):
         classtype = get_text(annot.find(".//cd:class", NS), "PROTEIN")
         if classtype == "DEGRADED":
             continue
+        if classtype == "PROTEIN":
+            is_receptor = find_protein_type(annot, model) == "RECEPTOR"
+        else:
+            is_receptor = False
         mods = get_mods(annot.find(".//cd:listOfModifications", NS))
         name = make_name_precise(sbml.get("name"), classtype, mods)
         nameconv[species.get("id")] = {
@@ -108,6 +112,7 @@ def species_info(model):
             "ref_species": ref_species,
             "type": classtype,
             "modifications": mods,
+            "receptor": is_receptor,
             "annotations": annot.find(".//rdf:RDF", NS),
         }
         # also store in nameconv the reverse mapping from SBML species to CD
@@ -119,6 +124,16 @@ def species_info(model):
             nameconv[prot_ref] = [species.get("id")]
     add_subcomponents_only(nameconv, model)
     return nameconv
+
+
+def find_protein_type(annotation, model):
+    """Look for the cd:protein type for an annotation's reference protein."""
+    ref = get_text(annotation.find(".//cd:proteinReference", NS))
+    if ref:
+        protein = model.find('.//cd:protein[@id="' + ref + '"]', NS)
+        if protein is not None:
+            return protein.get("type")
+    return "GENERIC"
 
 
 def make_name_precise(name, ctype, mods):
@@ -281,10 +296,7 @@ def remove_connected_components(
             logger.debug("removing species {sp}", sp=species)
             del info[species]
             trans_id = "tr_" + species
-            trans = next(
-                (t for t in transitions if t.get("qual:id") == trans_id),
-                None
-            )
+            trans = next((t for t in transitions if t.get("qual:id") == trans_id), None)
             if trans:
                 logger.debug("removing transition {tr}", tr=trans)
                 tlist.remove(trans)
@@ -293,39 +305,33 @@ def remove_connected_components(
 def simplify_model(info):
     """Clean the model w.r.t. some active/inactive species."""
     multispecies: Dict[str, List[str]] = {}
+    # first, delete complexes and store multispecies
+    # we have to create the list since info will change during iteration
     for key, value in list(info.items()):
         if not key.startswith("csa") and not key.startswith("sa"):
             del info[key]
             logger.debug("deleting complex: {cplx} value: {val}", cplx=key, val=value)
             if len(value) > 1:
                 multispecies[key] = value
-                # print('multi', key, value)
+        # delete receptors that only contribute to their complex
+        elif value["receptor"] and not value["transitions"]:
+            logger.debug("{key} is a RECEPTOR (and an input)", key=key)
+            active = get_active(key, info)
+            if active:
+                logger.debug(
+                    "deleting input RECEPTOR {key} that activates {active}",
+                    key=key,
+                    active=active,
+                )
+                add_rdf(info, cast(str, active), info[key]["annotations"])
+                del info[key]
     # pylint: disable=too-many-nested-blocks
     for key, value in multispecies.items():
         for val in value:
             # check that it does not appear in any other reaction than the
             # activation one
             logger.debug("looking at multispecies: {mul}", mul=val)
-            active = None
-            for species, data in info.items():
-                for trans in data["transitions"]:
-                    if val in trans.reactants or val in [
-                        mod
-                        for (_modtype, modifier_list) in trans.modifiers
-                        for mod in modifier_list.split(",")
-                    ]:
-                        if active is None:
-                            active = species
-                            logger.debug(
-                                "{val} activates {active}", val=val, active=active
-                            )
-                        else:
-                            active = False
-                            logger.debug(
-                                "{val} also activates {active}", val=val, active=species
-                            )
-                if active is False:
-                    break
+            active = get_active(val, info)
             if not info[val]["transitions"] and active in value:
                 # we know that active is a str here, since it is in value
                 add_rdf(info, cast(str, active), info[val]["annotations"])
@@ -336,6 +342,28 @@ def simplify_model(info):
                     key=key,
                 )
                 del info[val]
+
+
+def get_active(val, info):
+    """Find who val activates."""
+    active = None
+    for species, data in info.items():
+        if species.startswith("csa") or species.startswith("sa"):
+            for trans in data["transitions"]:
+                if val in trans.reactants or val in [
+                    mod
+                    for (_modtype, modifier_list) in trans.modifiers
+                    for mod in modifier_list.split(",")
+                ]:
+                    if active is None:
+                        active = species
+                        logger.debug("{val} activates {active}", val=val, active=active)
+                    else:
+                        logger.debug(
+                            "{val} also activates {active}", val=val, active=species
+                        )
+                        return False
+    return active
 
 
 def add_qual_species(
