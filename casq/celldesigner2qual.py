@@ -95,6 +95,7 @@ def species_info(model):
         if classtype == "DEGRADED":
             continue
         mods = get_mods(annot.find(".//cd:listOfModifications", NS))
+        name = make_name_precise(sbml.get("name"), classtype, mods)
         nameconv[species.get("id")] = {
             "activity": get_text(species.find(".//cd:activity", NS), "inactive"),
             "x": bound.get("x"),
@@ -102,8 +103,8 @@ def species_info(model):
             "h": bound.get("h"),
             "w": bound.get("w"),
             "transitions": [],
-            "name": make_name_precise(sbml.get("name"), classtype, mods),
-            "function": sbml.get("name"),
+            "name": name,
+            "function": name,
             "ref_species": ref_species,
             "type": classtype,
             "modifications": mods,
@@ -225,6 +226,7 @@ def get_mods(cd_modifications: etree.Element) -> List[str]:
 def write_qual(
     filename: str, info, width: str, height: str, ginsim_names: bool, remove: int = 0
 ):
+    # pylint: disable=too-many-arguments, too-many-locals
     """Write the SBML qual with layout file for our model."""
     for name, space in NS.items():
         etree.register_namespace(name, space)
@@ -271,17 +273,21 @@ def remove_connected_components(
     if remove < 0:
         remove = len(max(ccs, key=len)) - 1
     logger.debug("remove value {S}", S=remove)
-    for cc in filter(lambda x: len(x) <= remove, ccs):
-        logger.debug("removing connected component {cc}", cc=list(cc))
-        for species in cc:
+    for component in filter(lambda x: len(x) <= remove, ccs):
+        logger.debug(
+            "removing connected component {component}", component=list(component)
+        )
+        for species in component:
             logger.debug("removing species {sp}", sp=species)
             del info[species]
-            trans = list(
-                filter(lambda t: t.get("qual:id") == "tr_" + species, transitions)
+            trans_id = "tr_" + species
+            trans = next(
+                (t for t in transitions if t.get("qual:id") == trans_id),
+                None
             )
             if trans:
-                logger.debug("removing transition {tr}", tr=trans[0])
-                tlist.remove(trans[0])
+                logger.debug("removing transition {tr}", tr=trans)
+                tlist.remove(trans)
 
 
 def simplify_model(info):
@@ -294,6 +300,7 @@ def simplify_model(info):
             if len(value) > 1:
                 multispecies[key] = value
                 # print('multi', key, value)
+    # pylint: disable=too-many-nested-blocks
     for key, value in multispecies.items():
         for val in value:
             # check that it does not appear in any other reaction than the
@@ -572,6 +579,7 @@ def add_inputs(
 
 def write_csv(sbml_filename: str, info):
     """Write a csv file with SBML IDs, CD IDs, Names, Formulae, etc."""
+    # pylint: disable=invalid-name
     with open(sbml_filename + ".csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         for species, data in info.items():
