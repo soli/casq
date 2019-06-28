@@ -138,7 +138,11 @@ def find_protein_type(annotation, model):
 
 def make_name_precise(name, ctype, mods):
     """Append molecule type and modifications to its name."""
-    return "_".join([name, ctype.lower()] + mods)
+    if ctype == "PROTEIN":
+        basis = [name]
+    else:
+        basis = [name, ctype.lower()]
+    return "_".join(basis + mods)
 
 
 def add_subcomponents_only(nameconv, model: etree.Element):
