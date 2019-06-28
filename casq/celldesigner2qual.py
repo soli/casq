@@ -137,11 +137,19 @@ def find_protein_type(annotation, model):
 
 
 def make_name_precise(name, ctype, mods):
-    """Append molecule type and modifications to its name."""
+    """Append molecule type and modifications to its cleaned-up name."""
+    to_map = {"&": "", "|": "", "!": "", "underscore": ""}
+    to_remove = {"sub", "endsub"}
+    newname = "_".join(
+        map(
+            lambda s: to_map[s] if s in to_map else s,
+            filter(lambda t: t not in to_remove, name.split("_")),
+        )
+    ).replace("__", "_")
     if ctype == "PROTEIN":
-        basis = [name]
+        basis = [newname]
     else:
-        basis = [name, ctype.lower()]
+        basis = [newname, ctype.lower()]
     return "_".join(basis + mods)
 
 
@@ -414,13 +422,10 @@ def fix_name(name: str, species: str, ginsim_names: bool):
         # ginsim bug uses name as id
         return name.replace(" ", "_").replace(",", "").replace("/", "_") + "_" + species
     return (
-        name.replace("_sub", "")
-        .replace("_endsub", "")
-        .replace("_minus", "-")
-        .replace("_plus", "+")
-        .replace("_slash", "/")
-        .replace("_super", "")
-        .replace("_underscore", "")
+        name.replace("_minus_", "-")
+        .replace("_plus_", "+")
+        .replace("_super", "^")
+        .replace("_slash_", "/")
     )
 
 
