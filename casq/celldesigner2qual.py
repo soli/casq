@@ -413,7 +413,15 @@ def fix_name(name: str, species: str, ginsim_names: bool):
     if ginsim_names:
         # ginsim bug uses name as id
         return name.replace(" ", "_").replace(",", "").replace("/", "_") + "_" + species
-    return name.replace("_sub_", "").replace("_endsub_", "")
+    return (
+        name.replace("_sub", "")
+        .replace("_endsub", "")
+        .replace("_minus", "-")
+        .replace("_plus", "+")
+        .replace("_slash", "/")
+        .replace("_super", "")
+        .replace("_underscore", "")
+    )
 
 
 def add_annotation(node: etree.Element, rdf: Optional[etree.Element]):
