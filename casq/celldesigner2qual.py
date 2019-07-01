@@ -344,6 +344,9 @@ def simplify_model(info):
             # activation one
             logger.debug("looking at multispecies: {mul}", mul=val)
             active = get_active(val, info)
+            if val not in info:
+                # val has been deleted just above
+                continue
             if not info[val]["transitions"] and active in value:
                 # we know that active is a str here, since it is in value
                 add_rdf(info, cast(str, active), info[val]["annotations"])
