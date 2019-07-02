@@ -347,16 +347,33 @@ def simplify_model(info):
             if val not in info:
                 # val has been deleted just above
                 continue
-            if not info[val]["transitions"] and active in value:
-                # we know that active is a str here, since it is in value
-                add_rdf(info, cast(str, active), info[val]["annotations"])
-                logger.debug(
-                    "deleting {val} [{active} is active for {key}]",
-                    val=val,
-                    active=active,
-                    key=key,
-                )
-                del info[val]
+            if active in value:
+                if not info[val]["transitions"]:
+                    # we know that active is a str here, since it is in value
+                    add_rdf(info, cast(str, active), info[val]["annotations"])
+                    logger.debug(
+                        "deleting {val} [{active} is active for {key}]",
+                        val=val,
+                        active=active,
+                        key=key,
+                    )
+                    del info[val]
+                elif len(info[active]["transitions"]) == 1:
+                    reac = info[active]["transitions"][0]
+                    if (
+                        reac.type == "TRANSPORT"
+                        and reac.modifiers == []
+                        and reac.reactants == [val]
+                    ):
+                        info[active]["transitions"] = info[val]["transitions"]
+                        add_rdf(info, cast(str, active), info[val]["annotations"])
+                        logger.debug(
+                            "merging {val} into {active} because of transport for {key}]",
+                            val=val,
+                            active=active,
+                            key=key,
+                        )
+                        del info[val]
 
 
 def get_active(val, info):
