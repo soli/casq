@@ -316,27 +316,7 @@ def remove_connected_components(
 
 def simplify_model(info):
     """Clean the model w.r.t. some active/inactive species."""
-    multispecies: Dict[str, List[str]] = {}
-    # first, delete complexes and store multispecies
-    # we have to create the list since info will change during iteration
-    for key, value in list(info.items()):
-        if not key.startswith("csa") and not key.startswith("sa"):
-            del info[key]
-            logger.debug("deleting complex: {cplx} value: {val}", cplx=key, val=value)
-            if len(value) > 1:
-                multispecies[key] = value
-        # delete receptors that only contribute to their complex
-        elif value["receptor"] and not value["transitions"]:
-            logger.debug("{key} is a RECEPTOR (and an input)", key=key)
-            active = get_active(key, info)
-            if active:
-                logger.debug(
-                    "deleting input RECEPTOR {key} that activates {active}",
-                    key=key,
-                    active=active,
-                )
-                add_rdf(info, cast(str, active), info[key]["annotations"])
-                del info[key]
+    multispecies = delete_complexes_and_store_multispecies(info)
     # pylint: disable=too-many-nested-blocks
     for key, value in multispecies.items():
         for val in value:
@@ -374,6 +354,57 @@ def simplify_model(info):
                             key=key,
                         )
                         del info[val]
+
+
+def delete_complexes_and_store_multispecies(info):
+    """Delete useless species and store multispecies.
+
+    Useless species are ligand binding to a receptor, or otherwise unused
+    proteins that bind to form a complex.
+    """
+    multispecies: Dict[str, List[str]] = {}
+    # we have to create the list since info will change during iteration
+    for key, value in list(info.items()):
+        if not key.startswith("csa") and not key.startswith("sa"):
+            del info[key]
+            logger.debug("deleting complex: {cplx} value: {val}", cplx=key, val=value)
+            if len(value) > 1:
+                multispecies[key] = value
+        # delete receptors that only contribute to their complex
+        elif value["receptor"] and not value["transitions"]:
+            logger.debug("{key} is a RECEPTOR (and an input)", key=key)
+            active = get_active(key, info)
+            if active:
+                logger.debug(
+                    "deleting input RECEPTOR {key} that activates {active}",
+                    key=key,
+                    active=active,
+                )
+                add_rdf(info, cast(str, active), info[key]["annotations"])
+                del info[key]
+        elif value["type"] == "COMPLEX":
+            for trans in value["transitions"]:
+                if trans.type == "HETERODIMER_ASSOCIATION":
+                    [reac1, reac2] = trans.reactants
+                    active1 = get_active(reac1, info)
+                    active2 = get_active(reac2, info)
+                    if (
+                        active1 == key
+                        and active2 == key
+                        and not info[reac1]["receptor"]
+                        and not info[reac2]["receptor"]
+                    ):
+                        logger.debug(
+                            "deleting {reac1} and {reac2} for complex {key}",
+                            reac1=reac1,
+                            reac2=reac2,
+                            key=key,
+                        )
+                        add_rdf(info, key, info[reac1]["annotations"])
+                        add_rdf(info, key, info[reac2]["annotations"])
+                        del info[reac1]
+                        del info[reac2]
+    return multispecies
 
 
 def get_active(val, info):
