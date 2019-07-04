@@ -402,6 +402,8 @@ def delete_complexes_and_store_multispecies(info):
                         )
                         add_rdf(info, key, info[reac1]["annotations"])
                         add_rdf(info, key, info[reac2]["annotations"])
+                        info[key]["transitions"].extend(info[reac1]["transitions"])
+                        info[key]["transitions"].extend(info[reac2]["transitions"])
                         del info[reac1]
                         del info[reac2]
     return multispecies
