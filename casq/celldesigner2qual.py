@@ -61,6 +61,7 @@ def read_celldesigner(filename: IO):
 def species_info(model):
     """Create a map from species' ids to their attributes."""
     nameconv = {}
+    compartments = {}
     # Find all CellDesigner species used later
     for species in chain(
         model.findall(
@@ -76,8 +77,6 @@ def species_info(model):
             NS,
         ),
     ):
-        # if species.get("complexSpeciesAlias"):
-        #     continue
         bound = species.find(".//cd:bounds", NS)
         if bound is None:
             continue
@@ -100,6 +99,12 @@ def species_info(model):
             is_receptor = False
         mods = get_mods(annot.find(".//cd:listOfModifications", NS))
         name = make_name_precise(sbml.get("name"), classtype, mods)
+        comp_id = species.get("compartmentAlias")
+        if comp_id in compartments:
+            compartment = compartments[comp_id]
+        else:
+            compartment = find_compartment(comp_id, model)
+            compartments[comp_id] = compartment
         nameconv[species.get("id")] = {
             "activity": get_text(species.find(".//cd:activity", NS), "inactive"),
             "x": bound.get("x"),
@@ -114,6 +119,7 @@ def species_info(model):
             "modifications": mods,
             "receptor": is_receptor,
             "annotations": annot.find(".//rdf:RDF", NS),
+            "compartment": compartment,
         }
         # also store in nameconv the reverse mapping from SBML species to CD
         # species using the corresponding reference protein
@@ -134,6 +140,14 @@ def find_protein_type(annotation, model):
         if protein is not None:
             return protein.get("type")
     return "GENERIC"
+
+
+def find_compartment(comp_id, model):
+    """Look for the name of the SBML compartment associated to a CD one."""
+    sbml_id = model.find('.//cd:compartmentAlias[@id="' + comp_id + '"]', NS).get(
+        "compartment"
+    )
+    return model.find('.//sbml:compartment[@id="' + sbml_id + '"]', NS).get("name")
 
 
 def make_name_precise(name, ctype, mods):
@@ -436,6 +450,10 @@ def add_qual_species(
 ):
     """Create layout sub-elements and species."""
     llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
+    count_names = collections.Counter(value["name"] for value in info.values())
+    ambiguous_name = {
+        key: count_names[value["name"]] > 1 for key, value in info.items()
+    }
     for species, data in info.items():
         glyph = etree.SubElement(
             llist,
@@ -461,7 +479,13 @@ def add_qual_species(
             {
                 "qual:maxLevel": "1",
                 "qual:compartment": "comp1",
-                "qual:name": fix_name(data["name"], species, ginsim_names),
+                "qual:name": fix_name(
+                    data["name"],
+                    species,
+                    ginsim_names,
+                    ambiguous_name[species],
+                    data["compartment"],
+                ),
                 "qual:constant": constant,
                 "qual:id": species,
             },
@@ -469,13 +493,26 @@ def add_qual_species(
         add_annotation(qspecies, data["annotations"])
 
 
-def fix_name(name: str, species: str, ginsim_names: bool):
-    """Change name for GINSIM compatibility or to remove subscripts."""
+def fix_name(
+    name: str, species: str, ginsim_names: bool, ambiguous: bool, compartment: str
+):
+    """Change name for GINSIM compatibility or to remove subscripts.
+
+    Also add compartment to the name in case of ambiguity.
+    """
+    if ambiguous:
+        new_name = name + "_" + compartment
+    else:
+        new_name = name
     if ginsim_names:
         # ginsim bug uses name as id
-        return name.replace(" ", "_").replace(",", "").replace("/", "_") + "_" + species
+        return (
+            new_name.replace(" ", "_").replace(",", "").replace("/", "_")
+            + "_"
+            + species
+        )
     return (
-        name.replace("_minus_", "-")
+        new_name.replace("_minus_", "-")
         .replace("_plus_", "+")
         .replace("_super", "^")
         .replace("_slash_", "/")
