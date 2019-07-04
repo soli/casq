@@ -146,7 +146,7 @@ def make_name_precise(name, ctype, mods):
             filter(lambda t: t not in to_remove, name.split("_")),
         )
     ).replace("__", "_")
-    if ctype in ("PROTEIN", "COMPLEX"):
+    if ctype == "PROTEIN":
         basis = [newname]
     else:
         basis = [newname, ctype.lower()]
