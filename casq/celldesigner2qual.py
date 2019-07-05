@@ -388,9 +388,13 @@ def delete_complexes_and_store_multispecies(info):
         elif value["receptor"] and not value["transitions"]:
             logger.debug("{key} is a RECEPTOR (and an input)", key=key)
             active = get_active(key, info)
-            if active:
+            if active and [
+                trans
+                for trans in info[active]["transitions"]
+                if key in trans.reactants and trans.type == "HETERODIMER_ASSOCIATION"
+            ]:
                 logger.debug(
-                    "deleting input RECEPTOR {key} that activates {active}",
+                    "deleting input RECEPTOR {key} that dimerizes to form {active}",
                     key=key,
                     active=active,
                 )
