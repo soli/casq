@@ -404,6 +404,8 @@ def delete_complexes_and_store_multispecies(info):
             for trans in value["transitions"]:
                 if trans.type == "HETERODIMER_ASSOCIATION":
                     [reac1, reac2] = trans.reactants
+                    if reac1 not in info or reac2 not in info:
+                        continue
                     active1 = get_active(reac1, info)
                     active2 = get_active(reac2, info)
                     if (
