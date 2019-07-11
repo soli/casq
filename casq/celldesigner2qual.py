@@ -790,7 +790,10 @@ def main():
     """Run conversion using the CLI given first argument."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "-v", "--version", action="version", version=f"%(prog)s v{version}"
+        "-v",
+        "--version",
+        action="version",
+        version="%(prog)s v{version}".format(version=version),
     )
     parser.add_argument(
         "-g",

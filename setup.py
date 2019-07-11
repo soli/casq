@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup     # type: ignore
+from setuptools import find_packages, setup  # type: ignore
 
 with open("README.md", "r") as file:
     README = file.read()
