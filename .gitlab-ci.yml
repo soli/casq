@@ -1,6 +1,6 @@
 test:
   script:
-  - python3 setup.py test
+  - tox -e ALL
 
 run:
   script:
