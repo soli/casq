@@ -690,7 +690,7 @@ def add_inputs(
 ):
     """Add all known inputs."""
     index = 0
-    modifiers: List[Tuple[str, str]] = []
+    modifiers = []  # type: List[Tuple[str, str]]
     graph.add_node(species)
     for reaction in transitions:
         # we use enumerate to get a dummy modtype for reactants
