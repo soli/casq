@@ -18,7 +18,7 @@ defined in a currently-being-written article.
 CaSQ is provided as a Python (>= 3.5) package, you can install it with `pip`,
 `conda` or your Python package manager of choice:
 
-```
+```bash
 $ pip3 install casq
 ```
 
@@ -26,6 +26,6 @@ $ pip3 install casq
 
 Just follow the instructions:
 
-```
+```bash
 $ casq --help
 ```

@@ -13,6 +13,7 @@ setup(
     version=version,
     description="CaSQ: Celldesigner as Sbml-Qual",
     long_description=readme,
+    long_description_content="text/markdown",
     url="https://lifeware.inria.fr/~soliman/post/casq/",
     project_urls={
         "Source Code": "https://gitlab.inria.fr/soliman/sbgnpd2sbmlq",
@@ -39,6 +40,8 @@ setup(
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
