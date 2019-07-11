@@ -376,7 +376,7 @@ def delete_complexes_and_store_multispecies(info):
     Useless species are ligand binding to a receptor, or otherwise unused
     proteins that bind to form a complex.
     """
-    multispecies: Dict[str, List[str]] = {}
+    multispecies = {}  # type: Dict[str, List[str]]
     # we have to create the list since info will change during iteration
     for key, value in list(info.items()):
         if not key.startswith("csa") and not key.startswith("sa"):
