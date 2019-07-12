@@ -12,7 +12,7 @@ def validate(filename: str) -> str:
     command = "curl -s -F file=@{filename} -F output=json -F offcheck=u {url}".format(
         filename=filename, url=url
     )
-    process = subprocess.run(command.split(), capture_output=True, check=True)
+    process = subprocess.run(command.split(), stdout=subprocess.PIPE, check=True)
     result = json.loads(process.stdout)["validation-results"]
     if "no-errors" in result:
         return "OK"
