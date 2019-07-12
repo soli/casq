@@ -7,11 +7,11 @@
 
 |pipeline status| |coverage report| |black|
 
-.. |pipeline status| image:: https://gitlab.inria.fr/soliman/sbgnpd2sbmlq/badges/master/pipeline.svg
-    :target: https://gitlab.inria.fr/soliman/sbgnpd2sbmlq/commits/master
+.. |pipeline status| image:: https://gitlab.inria.fr/soliman/casq/badges/master/pipeline.svg
+    :target: https://gitlab.inria.fr/soliman/casq/commits/master
     :alt: pipeline status
 
-.. |coverage report| image:: https://gitlab.inria.fr/soliman/casq/badges/master/coverage.sys
+.. |coverage report| image:: https://gitlab.inria.fr/soliman/casq/badges/master/coverage.svg
     :target: https://gitlab.inria.fr/soliman/casq/commits/master
     :alt: coverage report
 
@@ -43,3 +43,4 @@ Just follow the instructions:
 
 .. code:: bash
     $ casq --help
+
