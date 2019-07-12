@@ -1,18 +1,29 @@
 test:
   script:
+  - pip3 install tox
   - tox -e ALL
 
 run:
   script:
   - python3 setup.py bdist_wheel
 
-# pages:
-#  script:
-#   - pip install sphinx sphinx-rtd-theme
-#   - cd doc ; make html
-#   - mv build/html/ ../public/
-#   artifacts:
-#     paths:
-#     - public
-#   only:
-#   - master
+pages:
+ script:
+  - pip3 install sphinx
+  - sphinx-build -W -b html docs docs/_build/html
+  - mv docs/_build/html/ ../public/
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+
+# [testenv:docs]
+# basepython = python3.7
+# deps = sphinx
+# extras = docs
+# commands =
+#    sphinx-build -W -b html -d {envtmpdir}/doctrees docs docs/_build/html
+#    sphinx-build -W -b coverage -d {envtmpdir}/doctrees docs docs/_build/html
+#    sphinx-build -W -b doctest -d {envtmpdir}/doctrees docs docs/_build/html
+#    python -m doctest README.rst
