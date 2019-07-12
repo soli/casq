@@ -362,7 +362,7 @@ def simplify_model(info):
                         info[active]["transitions"] = info[val]["transitions"]
                         add_rdf(info, cast(str, active), info[val]["annotations"])
                         logger.debug(
-                            "merging {val} into {active} because of transport for {key}]",
+                            "merging {val} into {active} in transport for {key}]",
                             val=val,
                             active=active,
                             key=key,
