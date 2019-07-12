@@ -591,7 +591,7 @@ def add_notes(trans: etree.Element, transitions: List[Transition]):
         if reaction.notes is not None:
             some_notes = True
             reaction.notes.tag = "p"
-            for element in reaction.notes.getiterator():
+            for element in reaction.notes.iter():
                 for prefix in ("xhtml", "sbml"):
                     prefix_len = len(NS[prefix]) + 2
                     if element.tag.startswith("{" + NS[prefix] + "}"):
