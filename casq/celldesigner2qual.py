@@ -8,7 +8,7 @@ import os.path
 import sys
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
-from typing import Dict, IO, List, Optional, Tuple, cast
+from typing import Dict, IO, List, Optional, Tuple, cast    # noqa: F401
 
 from loguru import logger  # type: ignore
 
