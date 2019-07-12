@@ -3,7 +3,7 @@ import json
 import subprocess
 
 
-def validate(filename: str):
+def validate(filename: str) -> str:
     """Validate an SBML file using the online validator API.
 
     Unit consistency verification is off
@@ -15,6 +15,6 @@ def validate(filename: str):
     process = subprocess.run(command.split(), capture_output=True, check=True)
     result = json.loads(process.stdout)["validation-results"]
     if "no-errors" in result:
-        print("OK")
+        return "OK"
     else:
-        print(json.dumps(result["problem"], indent=2))
+        return json.dumps(result["problem"], indent=2)
