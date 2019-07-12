@@ -24,7 +24,7 @@ setup(
     python_requires=">=3.5",
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
-    extras_require={"dev": ["black", "check-manifest", "flake8"]},
+    extras_require={"dev": ["black", "check-manifest", "flake8-mypy"]},
     include_package_data=True,
     data_files=[("utils", ["utils/validate.sh"])],
     zip_safe=False,
