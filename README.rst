@@ -1,4 +1,5 @@
 .. code::
+
    ______      _____ ____ 
   / ____/___ _/ ___// __ \
  / /   / __ `/\__ \/ / / /
@@ -42,5 +43,5 @@ Usage
 Just follow the instructions:
 
 .. code:: bash
-    $ casq --help
 
+    $ casq --help
