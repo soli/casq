@@ -2,7 +2,7 @@
 # pylint: disable=missing-docstring
 from setuptools import find_packages, setup  # type: ignore
 
-with open("README.md", "r") as file:
+with open("README.rst", "r") as file:
     README = file.read()
 
 with open("casq/__init__.py", "r") as file:
@@ -15,7 +15,7 @@ setup(
     version=version,
     description="CaSQ: Celldesigner as Sbml-Qual",
     long_description=README,
-    long_description_content="text/markdown",
+    long_description_content="text/x-rst",
     url="https://lifeware.inria.fr/~soliman/post/casq/",
     project_urls={"Source Code": "https://gitlab.inria.fr/soliman/casq/"},
     license="MIT",
