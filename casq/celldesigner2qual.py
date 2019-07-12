@@ -726,7 +726,7 @@ def write_csv(sbml_filename: str, info):
     # pylint: disable=invalid-name
     with open(sbml_filename + ".csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        for species, data in info.items():
+        for species, data in sorted(info.items()):
             writer.writerow(
                 [species, data["name"], data["ref_species"], data["function"]]
             )
