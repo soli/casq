@@ -28,7 +28,6 @@ setup(
     tests_require=["pytest"],
     extras_require={"dev": ["black", "check-manifest", "flake8-mypy"]},
     include_package_data=True,
-    data_files=[("utils", ["utils/validate.sh"])],
     zip_safe=False,
     entry_points={"console_scripts": ["casq = casq.celldesigner2qual:main"]},
     classifiers=[
