@@ -13,7 +13,7 @@ def validate(filename: str) -> str:
         filename=filename, url=url
     )
     process = subprocess.run(command.split(), stdout=subprocess.PIPE, check=True)
-    result = json.loads(process.stdout)["validation-results"]
+    result = json.loads(process.stdout.decode("utf-8"))["validation-results"]
     if "no-errors" in result:
         return "OK"
     else:
