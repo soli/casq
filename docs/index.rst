@@ -2,14 +2,10 @@ Welcome to CaSQ's documentation!
 ================================
 
 .. toctree::
-    :maxdepth: 2
-    :caption: Contents:
+   :maxdepth: 2
+   :caption: Contents:
 
-CaSQ functions
-==============
-
-.. automodule:: casq.celldesigner2qual
-    :members:
+   casq
 
 Indices and tables
 ==================

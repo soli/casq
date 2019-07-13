@@ -9,16 +9,16 @@
 |pipeline status| |coverage report| |black|
 
 .. |pipeline status| image:: https://gitlab.inria.fr/soliman/casq/badges/master/pipeline.svg
-    :target: https://gitlab.inria.fr/soliman/casq/commits/master
-    :alt: pipeline status
+   :target: https://gitlab.inria.fr/soliman/casq/commits/master
+   :alt: pipeline status
 
 .. |coverage report| image:: https://gitlab.inria.fr/soliman/casq/badges/master/coverage.svg
-    :target: https://gitlab.inria.fr/soliman/casq/commits/master
-    :alt: coverage report
+   :target: https://gitlab.inria.fr/soliman/casq/commits/master
+   :alt: coverage report
 
 .. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/python/black
-    :alt: Code style: black
+   :target: https://github.com/python/black
+   :alt: Code style: black
 
 **CaSQ** converts `CellDesigner`_ models to Boolean models encoded in
 `SBML-Qual`_ with a rather strict semantics defined in a
@@ -35,7 +35,7 @@ CaSQ is provided as a Python (>= 3.5) package, you can install it with ``pip``,
 
 .. code:: bash
 
-    $ pip3 install casq
+   $ pip3 install casq
 
 Usage
 =====
@@ -44,4 +44,4 @@ Just follow the instructions:
 
 .. code:: bash
 
-    $ casq --help
+   $ casq --help
