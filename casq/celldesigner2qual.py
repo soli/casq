@@ -438,11 +438,11 @@ def get_active(val, info):
     for species, data in info.items():
         if species.startswith("csa") or species.startswith("sa"):
             for trans in data["transitions"]:
-                if val in trans.reactants or val in [
+                if val in trans.reactants or val in (
                     mod
                     for (_modtype, modifier_list) in trans.modifiers
                     for mod in modifier_list.split(",")
-                ]:
+                ):
                     if active is None:
                         active = species
                         logger.debug("{val} activates {active}", val=val, active=active)
