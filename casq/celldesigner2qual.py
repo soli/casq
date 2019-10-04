@@ -380,7 +380,7 @@ def delete_complexes_and_store_multispecies(info):
     multispecies = {}  # type: Dict[str, List[str]]
     # we have to create the list since info will change during iteration
     for key, value in list(info.items()):
-        if not key.startswith("csa") and not key.startswith("sa"):
+        if key.startswith("__"):
             del info[key]
             logger.debug("deleting complex: {cplx} value: {val}", cplx=key, val=value)
             if len(value) > 1:
