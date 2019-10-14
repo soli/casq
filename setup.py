@@ -18,7 +18,7 @@ setup(
     long_description_content="text/x-rst",
     url="https://lifeware.inria.fr/~soliman/post/casq/",
     project_urls={"Source Code": "https://gitlab.inria.fr/soliman/casq/"},
-    license="MIT",
+    license="GPLv3",
     packages=find_packages(),
     author="Sylvain Soliman",
     author_email="Sylvain.Soliman@inria.fr",
@@ -36,7 +36,7 @@ setup(
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
 )
