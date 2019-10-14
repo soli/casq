@@ -807,7 +807,7 @@ def add_function_as_rdf(info, species: str, func: str):
 def main():
     """Run conversion using the CLI given first argument."""
     parser = argparse.ArgumentParser(
-        description=' '.join(__doc__.splitlines()[:3]) + ' GPLv3'
+        description=' '.join(__doc__.splitlines()[:3]) + " GPLv3"
     )
     parser.add_argument(
         "-v",
