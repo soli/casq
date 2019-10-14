@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 """Convert CellDesigner models to SBML-qual with a rather strict semantics.
 
-Copyright (C) 2019 Sylvain Soliman
+Copyright (C) 2019 Sylvain.Soliman@inria.fr
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -807,7 +806,9 @@ def add_function_as_rdf(info, species: str, func: str):
 
 def main():
     """Run conversion using the CLI given first argument."""
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=' '.join(__doc__.splitlines()[:3]) + ' GPLv3'
+    )
     parser.add_argument(
         "-v",
         "--version",
