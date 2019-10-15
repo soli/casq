@@ -26,7 +26,7 @@ author = 'Sylvain Soliman'
 release = casq.version
 
 # needed for readthedocs
-master_doc = 'casq'
+master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------
 
