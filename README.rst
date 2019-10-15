@@ -6,7 +6,7 @@
     / /___/ /_/ /___/ / /_/ / 
     \____/\__,_//____/\___\_\ 
 
-|pipeline status| |coverage report| |black|
+|pipeline status| |coverage report| |black| |rtd|
 
 .. |pipeline status| image:: https://gitlab.inria.fr/soliman/casq/badges/master/pipeline.svg
    :target: https://gitlab.inria.fr/soliman/casq/commits/master
