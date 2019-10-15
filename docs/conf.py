@@ -67,6 +67,14 @@ html_sidebars = {
     ]
 }
 
+html_theme_options = {
+    'description': casq.__doc__.splitlines()[0],
+    'github_user': 'soli',
+    'github_repo': 'casq',
+    'github_button': True,
+    'github_type': 'star',
+}
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
