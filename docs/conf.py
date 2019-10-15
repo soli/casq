@@ -25,6 +25,8 @@ author = 'Sylvain Soliman'
 # The full version, including alpha/beta/rc tags
 release = casq.version
 
+# needed for readthedocs
+master_doc = 'casq'
 
 # -- General configuration ---------------------------------------------------
 
