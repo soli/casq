@@ -20,6 +20,10 @@
    :target: https://github.com/python/black
    :alt: Code style: black
 
+.. |rtd| image:: https://readthedocs.org/projects/casq/badge/?version=latest
+   :target: https://casq.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 **CaSQ** converts `CellDesigner`_ models to Boolean models encoded in
 `SBML-Qual`_ with a rather strict semantics defined in a
 currently-being-written article.
