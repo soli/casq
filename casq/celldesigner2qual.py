@@ -281,7 +281,7 @@ def get_mods(cd_modifications: etree.Element) -> List[str]:
 
 
 def write_qual(
-    filename: str, info, width: str, height: str, ginsim_names: bool, remove: int = 0
+    filename: str, info, width: str, height: str, remove: int = 0
 ):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the SBML qual with layout file for our model."""
@@ -308,9 +308,10 @@ def write_qual(
     qlist = etree.SubElement(model, "qual:listOfQualitativeSpecies")
     tlist = etree.SubElement(model, "qual:listOfTransitions")
     graph = nx.Graph()
+    fix_all_names(info)
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove)
-    add_qual_species(layout, qlist, info, ginsim_names)
+    add_qual_species(layout, qlist, info)
     etree.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
 
 
@@ -469,15 +470,23 @@ def get_active(val, info):
     return active
 
 
-def add_qual_species(
-    layout: etree.Element, qlist: etree.Element, info, ginsim_names: bool
-):
-    """Create layout sub-elements and species."""
-    llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
+def fix_all_names(info):
+    """Use more descriptive names."""
     count_names = collections.Counter(value["name"] for value in info.values())
     ambiguous_name = {
         key: count_names[value["name"]] > 1 for key, value in info.items()
     }
+    for species, data in info.items():
+        data["name"] = fix_name(
+            data["name"],
+            ambiguous_name[species],
+            data["compartment"],
+        )
+
+
+def add_qual_species(layout: etree.Element, qlist: etree.Element, info):
+    """Create layout sub-elements and species."""
+    llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
     for species, data in info.items():
         glyph = etree.SubElement(
             llist,
@@ -503,13 +512,7 @@ def add_qual_species(
             {
                 "qual:maxLevel": "1",
                 "qual:compartment": "comp1",
-                "qual:name": fix_name(
-                    data["name"],
-                    species,
-                    ginsim_names,
-                    ambiguous_name[species],
-                    data["compartment"],
-                ),
+                "qual:name": data["name"],
                 "qual:constant": constant,
                 "qual:id": species,
             },
@@ -518,7 +521,7 @@ def add_qual_species(
 
 
 def fix_name(
-    name: str, species: str, ginsim_names: bool, ambiguous: bool, compartment: str
+    name: str, ambiguous: bool, compartment: str
 ):
     """Change name for GINSIM compatibility or to remove subscripts.
 
@@ -528,13 +531,6 @@ def fix_name(
         new_name = name + "_" + compartment
     else:
         new_name = name
-    if ginsim_names:
-        # ginsim bug uses name as id
-        return (
-            new_name.replace(" ", "_").replace(",", "").replace("/", "_")
-            + "_"
-            + species
-        )
     return (
         new_name.replace("_minus_", "-")
         .replace("_plus_", "+")
@@ -816,12 +812,6 @@ def main():
         version="%(prog)s v{version}".format(version=version),
     )
     parser.add_argument(
-        "-g",
-        "--ginsim",
-        action="store_true",
-        help="Make names unique by adding the ID at the end",
-    )
-    parser.add_argument(
         "-d", "--debug", action="store_true", help="Display a lot of debug information"
     )
     parser.add_argument(
@@ -858,7 +848,7 @@ def main():
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     write_qual(
-        args.outfile, info, width, height, ginsim_names=args.ginsim, remove=args.remove
+        args.outfile, info, width, height, remove=args.remove
     )
     if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
