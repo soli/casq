@@ -280,9 +280,7 @@ def get_mods(cd_modifications: etree.Element) -> List[str]:
     return [mod.get("state") for mod in cd_modifications.findall("cd:modification", NS)]
 
 
-def write_qual(
-    filename: str, info, width: str, height: str, remove: int = 0
-):
+def write_qual(filename: str, info, width: str, height: str, remove: int = 0):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the SBML qual with layout file for our model."""
     for name, space in NS.items():
@@ -478,9 +476,7 @@ def fix_all_names(info):
     }
     for species, data in info.items():
         data["name"] = fix_name(
-            data["name"],
-            ambiguous_name[species],
-            data["compartment"],
+            data["name"], ambiguous_name[species], data["compartment"]
         )
 
 
@@ -520,9 +516,7 @@ def add_qual_species(layout: etree.Element, qlist: etree.Element, info):
         add_annotation(qspecies, data["annotations"])
 
 
-def fix_name(
-    name: str, ambiguous: bool, compartment: str
-):
+def fix_name(name: str, ambiguous: bool, compartment: str):
     """Change name for GINSIM compatibility or to remove subscripts.
 
     Also add compartment to the name in case of ambiguity.
@@ -847,9 +841,7 @@ def main():
     simplify_model(info)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
-    write_qual(
-        args.outfile, info, width, height, remove=args.remove
-    )
+    write_qual(args.outfile, info, width, height, remove=args.remove)
     if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
 
