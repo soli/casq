@@ -34,8 +34,9 @@ currently-being-written article.
 Install
 =======
 
-CaSQ is provided as a Python (>= 3.5) package, you can install it with ``pip``,
-``conda`` or your Python package manager of choice:
+CaSQ is provided as a Python (>= 3.5) package, you can install it from the `Python package index`_ with ``pip``, ``conda`` or your Python package manager of choice:
+
+.. _`Python package index`: https://pypi.org/project/casq/
 
 .. code:: bash
 

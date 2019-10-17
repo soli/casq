@@ -8,7 +8,7 @@ with open("README.rst", "r") as file:
 with open("casq/__init__.py", "r") as file:
     for line in file.readlines():
         if line.startswith("version ="):
-            version = line.split()[2]
+            version = line.split('"')[1]
 
 setup(
     name="casq",
