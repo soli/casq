@@ -26,7 +26,7 @@
 
 **CaSQ** converts `CellDesigner`_ models to Boolean models encoded in
 `SBML-Qual`_ with a rather strict semantics defined in a
-currently-being-written article.
+*submitted* article.
 
 .. _`CellDesigner`: http://celldesigner.org
 .. _`SBML-Qual`: http://sbml.org
