@@ -19,4 +19,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 # Don't forget to git tag v<version> && git push --tags
 # and to python3 setup.py sdist bdist_wheel && python3 -m twine upload dist/*
-version = "0.7.1"  # pylint: disable=invalid-name
+version = "0.7.2"  # pylint: disable=invalid-name

@@ -17,7 +17,11 @@ setup(
     long_description=README,
     long_description_content="text/x-rst",
     url="https://lifeware.inria.fr/~soliman/post/casq/",
-    project_urls={"Source Code": "https://gitlab.inria.fr/soliman/casq/"},
+    project_urls={
+        "Documentation": "https://readthedocs.org/projects/casq/",
+        "Code": "https://gitlab.inria.fr/soliman/casq/",
+        "Online version": "https://lifeware.inria.fr/~soliman/post/casq/",
+    },
     license="GPLv3",
     packages=find_packages(),
     author="Sylvain Soliman",
