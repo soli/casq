@@ -20,7 +20,7 @@ setup(
     project_urls={
         "Documentation": "https://readthedocs.org/projects/casq/",
         "Code": "https://gitlab.inria.fr/soliman/casq/",
-        "Online version": "https://lifeware.inria.fr/~soliman/post/casq/",
+        "Mirror": "https://github.com/soli/casq",
     },
     license="GPLv3",
     packages=find_packages(),
