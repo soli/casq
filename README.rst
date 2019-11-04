@@ -7,6 +7,7 @@
     \____/\__,_//____/\___\_\ 
 
 |pipeline status| |coverage report| |black| |rtd| |gpl|
+
 |pypi-version| |pypi-python| |pypi-wheel| |pypi-downloads| |deps|
 
 .. |pipeline status| image:: https://gitlab.inria.fr/soliman/casq/badges/master/pipeline.svg
@@ -46,6 +47,7 @@
    :alt: PyPI - Downloads
 
 .. |deps| image:: https://img.shields.io/librariesio/release/pypi/casq
+   :target: https://pypi.org/project/casq/
    :alt: Libraries.io dependency status for latest release
 
 **CaSQ** converts `CellDesigner`_ models to Boolean models encoded in
