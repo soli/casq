@@ -1,11 +1,20 @@
 test:
   script:
-  - pip3 install tox
+  - python3 -m pip install tox
   - tox -e ALL
 
 run:
   script:
   - python3 setup.py bdist_wheel
+
+deploy:
+  only:
+    tags
+  script:
+  - python3 -m pip install --upgrade pip
+  - python3 -m pip install setuptools wheel twine
+  - python3 setup.py sdist bdist_wheel
+  - python3 -m twine upload dist/*
 
 pages:
   script:
