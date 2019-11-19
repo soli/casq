@@ -2,6 +2,7 @@ stages:
   - build
   - test
   - release
+  - deploy
 
 test:
   stage: test
@@ -25,7 +26,7 @@ pypi:
   - python3 -m twine upload dist/*
 
 pages:
-  stage: release
+  stage: deploy
   script:
   - pip3 install loguru networkx sphinx
   - sphinx-build -W -b html docs docs/_build/html
