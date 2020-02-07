@@ -478,6 +478,7 @@ def fix_all_names(info):
         data["name"] = fix_name(
             data["name"], ambiguous_name[species], data["compartment"]
         )
+        data["function"] = data["name"]
 
 
 def add_qual_species(layout: etree.Element, qlist: etree.Element, info):
