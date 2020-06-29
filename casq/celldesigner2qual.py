@@ -280,7 +280,9 @@ def get_mods(cd_modifications: etree.Element) -> List[str]:
     return [mod.get("state") for mod in cd_modifications.findall("cd:modification", NS)]
 
 
-def write_qual(filename: str, info, width: str, height: str, remove: int = 0, sif: bool = False):
+def write_qual(
+    filename: str, info, width: str, height: str, remove: int = 0, sif: bool = False
+):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the SBML qual with layout file for our model."""
     for name, space in NS.items():
@@ -348,8 +350,8 @@ def remove_connected_components(
 def write_sif(sbml_filename: str, info, graph: nx.Graph):
     """Write a SIF file with influences."""
     with open(sbml_filename + ".sif", "w", encoding="utf-8", newline="") as f:
-        for target, source, sign in graph.edges.data('sign'):
-            print(info[source]['name'], sign.upper(), info[target]['name'], file=f)
+        for target, source, sign in graph.edges.data("sign"):
+            print(info[source]["name"], sign.upper(), info[target]["name"], file=f)
 
 
 def simplify_model(info):
