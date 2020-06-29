@@ -280,7 +280,7 @@ def get_mods(cd_modifications: etree.Element) -> List[str]:
     return [mod.get("state") for mod in cd_modifications.findall("cd:modification", NS)]
 
 
-def write_qual(filename: str, info, width: str, height: str, remove: int = 0):
+def write_qual(filename: str, info, width: str, height: str, remove: int = 0, sif: bool = False):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the SBML qual with layout file for our model."""
     for name, space in NS.items():
@@ -309,6 +309,8 @@ def write_qual(filename: str, info, width: str, height: str, remove: int = 0):
     fix_all_names(info)
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove)
+    if sif:
+        write_sif(filename, info, graph)
     add_qual_species(layout, qlist, info)
     etree.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
 
@@ -341,6 +343,13 @@ def remove_connected_components(
             if trans:
                 logger.debug("removing transition {tr}", tr=trans)
                 tlist.remove(trans)
+
+
+def write_sif(sbml_filename: str, info, graph: nx.Graph):
+    """Write a SIF file with influences."""
+    with open(sbml_filename + ".sif", "w", encoding="utf-8", newline="") as f:
+        for target, source, sign in graph.edges.data('sign'):
+            print(info[source]['name'], sign.upper(), info[target]['name'], file=f)
 
 
 def simplify_model(info):
@@ -712,7 +721,7 @@ def add_inputs(
                 sign = "positive"
             if (modifier, sign) not in modifiers and modifier in known:
                 modifiers.append((modifier, sign))
-                graph.add_edge(species, modifier)
+                graph.add_edge(species, modifier, sign=sign)
                 etree.SubElement(
                     ilist,
                     "qual:input",
@@ -816,6 +825,12 @@ def main():
         help="Store the species information in a separate CSV file",
     )
     parser.add_argument(
+        "-s",
+        "--sif",
+        action="store_true",
+        help="Store the influence information in a separate SIF file",
+    )
+    parser.add_argument(
         "-r",
         "--remove",
         metavar="S",
@@ -842,7 +857,7 @@ def main():
     simplify_model(info)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
-    write_qual(args.outfile, info, width, height, remove=args.remove)
+    write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif)
     if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
 
