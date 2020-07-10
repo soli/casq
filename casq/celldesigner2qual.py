@@ -744,7 +744,6 @@ def add_inputs(
             # otherwise non-SBGN compliant
             if reaction.type == "NEGATIVE_INFLUENCE":
                 sign = negate(sign)
-                print(f'Neg Infl {modifier} {sign} {species}')
             if (modifier, sign) not in modifiers and modifier in known:
                 modifiers.append((modifier, sign))
                 graph.add_edge(modifier, species, sign=sign)
