@@ -204,7 +204,8 @@ def add_subcomponents_only(nameconv, model: etree.Element):
 
 def add_rdf(nameconv, reference: str, new_rdf: Optional[etree.Element]):
     """Add the new_rdf element to nameconv[reference]['annotations']."""
-    if new_rdf is None:
+    # reference might still be a complex, then we ignore it (is this correct?)
+    if new_rdf is None or reference not in nameconv:
         return
     if nameconv[reference]["annotations"] is not None:
         rdfs = new_rdf.find("./rdf:Description", NS)
