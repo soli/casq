@@ -222,7 +222,6 @@ def get_transitions(model: etree.Element, info):
         annot = trans.find("./sbml:annotation/cd:extension", NS)
         if annot is None:
             continue
-        # currently not used
         rtype = get_text(annot.find("./cd:reactionType", NS))
         reacs = [
             decomplexify(reac.get("alias"), model)
