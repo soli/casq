@@ -675,7 +675,8 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
             for (modtype, modifier) in reaction.modifiers
             if modtype == "INHIBITION" and modifier in known
         ]
-        # this should only appear when species is of type PHENOTYPE otherwise non-SBGN compliant
+        # this should only appear when species is of type PHENOTYPE otherwise
+        # non-SBGN compliant
         # just swap reactants and inhibitors, there should not be any activator
         if reaction.type == "NEGATIVE_INFLUENCE":
             reactants, inhibitors = inhibitors, reactants
@@ -738,7 +739,8 @@ def add_inputs(
                 sign = "negative"
             else:
                 sign = "positive"
-            # this should only appear when species is of type PHENOTYPE otherwise non-SBGN compliant
+            # this should only appear when species is of type PHENOTYPE
+            # otherwise non-SBGN compliant
             if reaction.type == "NEGATIVE_INFLUENCE":
                 sign = negate(sign)
             if (modifier, sign) not in modifiers and modifier in known:
