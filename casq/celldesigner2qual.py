@@ -313,7 +313,7 @@ def write_qual(
     etree.SubElement(layout, "layout:dimensions", width=width, height=height)
     qlist = etree.SubElement(model, "qual:listOfQualitativeSpecies")
     tlist = etree.SubElement(model, "qual:listOfTransitions")
-    graph = nx.Graph()
+    graph = nx.DiGraph()
     fix_all_names(info)
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove)
@@ -324,14 +324,14 @@ def write_qual(
 
 
 def remove_connected_components(
-    tlist: etree.Element, info, graph: nx.Graph, remove: int
+    tlist: etree.Element, info, graph: nx.DiGraph, remove: int
 ):
     """Remove connected components of size smaller than remove."""
     # because we did not properly NameSpace all transitions, we cannot use
     # find('./qual:transition[@qual:id=]')
     logger.debug("remove value {S}", S=remove)
     transitions = list(tlist)
-    ccs = list(nx.connected_components(graph))
+    ccs = list(nx.connected_components(graph.to_undirected()))
     # add completely isolated nodes
     nodes = graph.nodes()
     ccs.extend({species} for (species, data) in info.items() if species not in nodes)
@@ -353,11 +353,13 @@ def remove_connected_components(
                 tlist.remove(trans)
 
 
-def write_sif(sbml_filename: str, info, graph: nx.Graph):
+def write_sif(sbml_filename: str, info, graph: nx.DiGraph):
     """Write a SIF file with influences."""
-    with open(sbml_filename + ".sif", "w", encoding="utf-8", newline="") as f:
-        for target, source, sign in graph.edges.data("sign"):
-            print(info[source]["name"], sign.upper(), info[target]["name"], file=f)
+    with open(sbml_filename[:-4] + "sif", "w", encoding="utf-8", newline="") as f:
+        with open(sbml_filename[:-5] + "_raw.sif", "w", encoding="utf-8", newline="") as fraw:
+            for source, target, sign in graph.edges.data("sign"):
+                print(source, sign.upper(), target, file=fraw)
+                print(info[source]["name"], sign.upper(), info[target]["name"], file=f)
 
 
 def simplify_model(info):
@@ -557,7 +559,7 @@ def add_annotation(node: etree.Element, rdf: Optional[etree.Element]):
         etree.SubElement(node, "annotation").append(rdf)
 
 
-def add_transitions(tlist: etree.Element, info, graph: nx.Graph):
+def add_transitions(tlist: etree.Element, info, graph: nx.DiGraph):
     """Create transition elements."""
     known = list(info.keys())
     for species, data in info.items():
@@ -724,7 +726,7 @@ def add_inputs(
     transitions: List[Transition],
     species: str,
     known: List[str],
-    graph: nx.Graph,
+    graph: nx.DiGraph,
 ):
     """Add all known inputs."""
     index = 0
@@ -743,9 +745,10 @@ def add_inputs(
             # otherwise non-SBGN compliant
             if reaction.type == "NEGATIVE_INFLUENCE":
                 sign = negate(sign)
+                print(f'Neg Infl {modifier} {sign} {species}')
             if (modifier, sign) not in modifiers and modifier in known:
                 modifiers.append((modifier, sign))
-                graph.add_edge(species, modifier, sign=sign)
+                graph.add_edge(modifier, species, sign=sign)
                 etree.SubElement(
                     ilist,
                     "qual:input",
@@ -764,7 +767,7 @@ def add_inputs(
 def write_csv(sbml_filename: str, info):
     """Write a csv file with SBML IDs, CD IDs, Names, Formulae, etc."""
     # pylint: disable=invalid-name
-    with open(sbml_filename + ".csv", "w", encoding="utf-8", newline="") as f:
+    with open(sbml_filename[:-4] + "csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         for species, data in sorted(info.items()):
             writer.writerow(
