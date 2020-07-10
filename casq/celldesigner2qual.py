@@ -355,7 +355,9 @@ def remove_connected_components(
 def write_sif(sbml_filename: str, info, graph: nx.DiGraph):
     """Write a SIF file with influences."""
     with open(sbml_filename[:-4] + "sif", "w", encoding="utf-8", newline="") as f:
-        with open(sbml_filename[:-5] + "_raw.sif", "w", encoding="utf-8", newline="") as fraw:
+        with open(
+            sbml_filename[:-5] + "_raw.sif", "w", encoding="utf-8", newline=""
+        ) as fraw:
             for source, target, sign in graph.edges.data("sign"):
                 print(source, sign.upper(), target, file=fraw)
                 print(info[source]["name"], sign.upper(), info[target]["name"], file=f)
