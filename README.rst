@@ -77,4 +77,4 @@ Just follow the instructions:
 
    $ casq --help
 
-..literalinclude: help.txt
+..literalinclude:: help.txt
