@@ -226,11 +226,17 @@ def get_transitions(model: etree.Element, info):
         rtype = get_text(annot.find("./cd:reactionType", NS))
         reacs = [
             decomplexify(reac.get("alias"), model)
-            for reac in annot.findall("./cd:baseReactants/cd:baseReactant", NS)
+            for reac in chain(
+                annot.findall("./cd:baseReactants/cd:baseReactant", NS),
+                annot.findall("./cd:listOfReactantLinks/cd:reactantLink", NS),
+            )
         ]
         prods = [
             decomplexify(prod.get("alias"), model)
-            for prod in annot.findall("./cd:baseProducts/cd:baseProduct", NS)
+            for prod in chain(
+                annot.findall("./cd:baseProducts/cd:baseProduct", NS),
+                annot.findall("./cd:listOfProductLinks/cd:productLink", NS),
+            )
         ]
         mods = [
             (mod.get("type"), decomplexify(mod.get("aliases"), model))
