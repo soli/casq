@@ -77,6 +77,7 @@ Just follow the instructions:
 
    $ casq --help
 
+::
     usage: casq [-h] [-v] [-d] [-c] [-s] [-r S] [infile] [outfile]
     
     Convert CellDesigner models to SBML-qual with a rather strict semantics.
