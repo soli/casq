@@ -71,9 +71,7 @@ CaSQ is provided as a Python (>= 3.5) package, you can install it from the `Pyth
 Usage
 =====
 
-Just follow the instructions:
-
-.. code:: none
+Just follow the instructions::
 
    $ casq --help
    usage: casq [-h] [-v] [-d] [-c] [-s] [-r S] [infile] [outfile]
