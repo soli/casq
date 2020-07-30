@@ -1,0 +1,45 @@
+{% set name = "casq" %}
+{% set version = "0.7.8" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  path: ../
+
+build:
+  number: 1
+  entry_points:
+    - casq = casq.celldesigner2qual:main
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+  noarch: python
+
+requirements:
+  host:
+    - loguru >=0.2.5
+    - pytest-runner >=5.2
+    - networkx >=2.2
+    - python
+  run:
+    - loguru >=0.2.5
+    - networkx >=2.2
+    - python
+
+test:
+  imports:
+    - casq
+  commands:
+    - casq --help
+  requires:
+    - pytest
+
+about:
+  home: "https://lifeware.inria.fr/~soliman/post/casq/"
+  license: "GNU General Public v3 (GPLv3)"
+  license_family: GPL3
+  license_file: 
+  summary: "CaSQ: Celldesigner as Sbml-Qual"
+  doc_url: 
+  dev_url: 
+
