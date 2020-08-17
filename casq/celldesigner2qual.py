@@ -360,8 +360,18 @@ def write_sif(sbml_filename: str, info, graph: nx.DiGraph):
             sbml_filename[:-5] + "_raw.sif", "w", encoding="utf-8", newline=""
         ) as fraw:
             for source, target, sign in graph.edges.data("sign"):
-                print(source.replace(" ", "_"), sign.upper(), target.replace(" ", "_"), file=fraw)
-                print(info[source]["name"].replace(" ", "_"), sign.upper(), info[target]["name"].replace(" ", "_"), file=f)
+                print(
+                    source.replace(" ", "_"),
+                    sign.upper(),
+                    target.replace(" ", "_"),
+                    file=fraw,
+                )
+                print(
+                    info[source]["name"].replace(" ", "_"),
+                    sign.upper(),
+                    info[target]["name"].replace(" ", "_"),
+                    file=f,
+                )
 
 
 def simplify_model(info):
