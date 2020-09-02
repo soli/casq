@@ -83,18 +83,19 @@ def species_info(model):
         model.findall(
             "./sbml:annotation/cd:extension/"
             + "cd:listOfComplexSpeciesAliases/"
-            + "cd:complexSpeciesAlias[@compartmentAlias]",
+            + "cd:complexSpeciesAlias",
             NS,
         ),
         model.findall(
             "./sbml:annotation/cd:extension/"
             + "cd:listOfSpeciesAliases/"
-            + "cd:speciesAlias[@compartmentAlias]",
+            + "cd:speciesAlias",
             NS,
         ),
     ):
         bound = species.find(".//cd:bounds", NS)
-        if bound is None:
+        in_complex = species.get("complexSpeciesAlias")
+        if bound is None or in_complex is not None:
             continue
         ref_species = species.get("species")
         logger.debug("parsing ref_species: {ref}", ref=ref_species)
@@ -160,6 +161,8 @@ def find_protein_type(annotation, model):
 
 def find_compartment(comp_id, model):
     """Look for the name of the SBML compartment associated to a CD one."""
+    if comp_id is None:
+        return "default_compartment"
     sbml_id = model.find('.//cd:compartmentAlias[@id="' + comp_id + '"]', NS).get(
         "compartment"
     )
