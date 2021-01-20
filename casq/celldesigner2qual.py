@@ -437,6 +437,8 @@ def delete_complexes_and_store_multispecies(info):
     proteins that bind to form a complex.
     """
     multispecies = {}  # type: Dict[str, List[str]]
+    duplicate_nodes = {}
+    replacements = {}
     # we have to create the list since info will change during iteration
     for key, value in list(info.items()):
         if key.startswith("__"):
@@ -444,6 +446,23 @@ def delete_complexes_and_store_multispecies(info):
             logger.debug("deleting complex: {cplx} value: {val}", cplx=key, val=value)
             if len(value) > 1:
                 multispecies[key] = value
+        # merge nodes that have the same reference species
+        elif value["ref_species"] in duplicate_nodes:
+            into = duplicate_nodes[value["ref_species"]]
+            logger.debug(
+                "merging {key} into {into} for {ref} ({name})",
+                key=key,
+                into=into,
+                ref=value["ref_species"],
+                name=value["name"],
+            )
+            # put our annotations with those of into
+            add_rdf(info, into, info[key]["annotations"])
+            # put our transitions with those of into
+            info[into]["transitions"].extend(info[key]["transitions"])
+            # replace key in other transitions with into
+            replacements[key] = into
+            del info[key]
         # delete receptors that only contribute to their complex
         elif value["receptor"] and not value["transitions"]:
             logger.debug("{key} is a RECEPTOR (and an input)", key=key)
@@ -488,7 +507,31 @@ def delete_complexes_and_store_multispecies(info):
                         info[key]["transitions"].extend(info[reac2]["transitions"])
                         del info[reac1]
                         del info[reac2]
+        else:
+            duplicate_nodes[value["ref_species"]] = key
+    replace_in_transitions(info, replacements)
     return multispecies
+
+
+def replace_in_transitions(info, replacements):
+    """Change transitions in info to reflect replacements."""
+    for species, data in info.items():
+        for trans in data["transitions"]:
+            for val in trans.reactants.copy():
+                if val in replacements:
+                    trans.reactants.append(replacements[val])
+                    trans.reactants.remove(val)
+            for (modtype, mod_list) in trans.modifiers.copy():
+                mlist = mod_list.split(",")
+                changed = False
+                for val in mlist:
+                    if val in replacements:
+                        mlist.append(replacements[val])
+                        mlist.remove(val)
+                        changed = True
+                if changed:
+                    trans.modifiers.append((modtype, ",".join(mlist)))
+                    trans.modifiers.remove((modtype, mod_list))
 
 
 def get_active(val, info):
@@ -521,9 +564,7 @@ def fix_all_names(info):
     }
     namedict = {}
     for species, data in info.items():
-        name = fix_name(
-            data["name"], ambiguous_name[species], data["compartment"]
-        )
+        name = fix_name(data["name"], ambiguous_name[species], data["compartment"])
         activity = data["activity"]
         if ambiguous_name[species]:
             if name in namedict:
