@@ -536,7 +536,8 @@ def fix_all_names(info):
                     info[other_id]["function"] = name + "_active"
                 else:
                     # FIXME don't know what to do
-                    print(f"active is {activity}, other was {other_activity}")
+                    # print(f"active is {activity}, other was {other_activity}")
+                    pass
             namedict[name] = (species, activity)
         data["name"] = name
         data["function"] = name
