@@ -543,8 +543,6 @@ def fix_all_names(info):
         data["function"] = name
 
 
-
-
 def add_qual_species(layout: etree.Element, qlist: etree.Element, info):
     """Create layout sub-elements and species."""
     llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
