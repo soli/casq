@@ -447,7 +447,11 @@ def delete_complexes_and_store_multispecies(info):
             if len(value) > 1:
                 multispecies[key] = value
         # merge nodes that have the same reference species
-        elif value["ref_species"] in duplicate_nodes:
+        elif (
+            value["ref_species"] in duplicate_nodes
+            and key in info
+            and duplicate_nodes[value["ref_species"]] in info
+        ):
             into = duplicate_nodes[value["ref_species"]]
             logger.debug(
                 "merging {key} into {into} for {ref} ({name})",
@@ -505,6 +509,10 @@ def delete_complexes_and_store_multispecies(info):
                         add_rdf(info, key, info[reac2]["annotations"])
                         info[key]["transitions"].extend(info[reac1]["transitions"])
                         info[key]["transitions"].extend(info[reac2]["transitions"])
+                        if info[reac1]["ref_species"] in duplicate_nodes:
+                            duplicate_nodes[info[reac1]["ref_species"]] = key
+                        if info[reac2]["ref_species"] in duplicate_nodes:
+                            duplicate_nodes[info[reac2]["ref_species"]] = key
                         del info[reac1]
                         del info[reac2]
         else:
@@ -515,7 +523,7 @@ def delete_complexes_and_store_multispecies(info):
 
 def replace_in_transitions(info, replacements):
     """Change transitions in info to reflect replacements."""
-    for species, data in info.items():
+    for _species, data in info.items():
         for trans in data["transitions"]:
             for val in trans.reactants.copy():
                 if val in replacements:
