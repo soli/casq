@@ -115,6 +115,11 @@ def species_info(model):
         else:
             is_receptor = False
         mods = get_mods(annot.find(".//cd:listOfModifications", NS))
+        activity = annot.find(".//cd:structuralState", NS)
+        if activity is not None:
+            activity = activity.get("structuralState")
+        else:
+            activity = "inactive"
         name = make_name_precise(sbml.get("name"), classtype, mods)
         comp_id = species.get("compartmentAlias")
         if comp_id in compartments:
@@ -122,8 +127,9 @@ def species_info(model):
         else:
             compartment = find_compartment(comp_id, model)
             compartments[comp_id] = compartment
-        nameconv[species.get("id")] = {
-            "activity": get_text(species.find(".//cd:activity", NS), "inactive"),
+        species_id = species.get("id")
+        nameconv[species_id] = {
+            "activity": activity,
             "x": bound.get("x"),
             "y": bound.get("y"),
             "h": bound.get("h"),
@@ -513,11 +519,29 @@ def fix_all_names(info):
     ambiguous_name = {
         key: count_names[value["name"]] > 1 for key, value in info.items()
     }
+    namedict = {}
     for species, data in info.items():
-        data["name"] = fix_name(
+        name = fix_name(
             data["name"], ambiguous_name[species], data["compartment"]
         )
-        data["function"] = data["name"]
+        activity = data["activity"]
+        if ambiguous_name[species]:
+            if name in namedict:
+                other_id, other_activity = namedict[name]
+                if activity == "active":
+                    # FIXME what if name_active in namedict?
+                    name = name + "_active"
+                elif other_activity == "active":
+                    info[other_id]["name"] = name + "_active"
+                    info[other_id]["function"] = name + "_active"
+                else:
+                    # FIXME don't know what to do
+                    print(f"active is {activity}, other was {other_activity}")
+            namedict[name] = (species, activity)
+        data["name"] = name
+        data["function"] = name
+
+
 
 
 def add_qual_species(layout: etree.Element, qlist: etree.Element, info):
