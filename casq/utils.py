@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import json
 import subprocess
+import time
 
 
 def validate(filename: str) -> str:
@@ -28,7 +29,14 @@ def validate(filename: str) -> str:
     command = "curl -s -F file=@{filename} -F output=json -F offcheck=u {url}".format(
         filename=filename, url=url
     )
-    process = subprocess.run(command.split(), stdout=subprocess.PIPE, check=True)
+    try:
+        process = subprocess.run(command.split(), stdout=subprocess.PIPE, check=True)
+    except subprocess.CalledProcessError as e:
+        # failure to receive data
+        if e.returncode == 56:
+            time.sleep(2)
+            return validate(filename)
+        return e.output
     result = json.loads(process.stdout.decode("utf-8"))["validation-results"]
     if "no-errors" in result:
         return "OK"
