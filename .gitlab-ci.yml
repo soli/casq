@@ -36,13 +36,3 @@ pages:
     - public
   only:
   - master
-
-# [testenv:docs]
-# basepython = python3.7
-# deps = sphinx
-# extras = docs
-# commands =
-#    sphinx-build -W -b html -d {envtmpdir}/doctrees docs docs/_build/html
-#    sphinx-build -W -b coverage -d {envtmpdir}/doctrees docs docs/_build/html
-#    sphinx-build -W -b doctest -d {envtmpdir}/doctrees docs docs/_build/html
-#    python -m doctest README.rst
