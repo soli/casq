@@ -77,7 +77,7 @@ Just follow the instructions::
    usage: casq [-h] [-v] [-d] [-c] [-s] [-r S] [infile] [outfile]
 
    Convert CellDesigner models to SBML-qual with a rather strict semantics.
-   Copyright (C) 2019-2020 Sylvain.Soliman@inria.fr GPLv3
+   Copyright (C) 2019-2021 Sylvain.Soliman@inria.fr GPLv3
 
    positional arguments:
      infile            CellDesigner File
