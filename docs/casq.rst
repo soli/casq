@@ -1,16 +1,17 @@
 What CaSQ does
 ==============
 
-CaSQ, is a tool that can convert a molecular interaction map built with
-CellDesigner (Ref) to an executable Boolean model. The tool is developed in
+CaSQ [1]_, is a tool that can convert a molecular interaction map built with
+CellDesigner_ to an executable Boolean model. The tool is developed in
 Python and uses as source the xml file of CellDesigner, in order to infer
 preliminary Boolean rules based solely on network topology and semantic
 annotations (e.g., certain arcs are noted as catalysis, inhibition, etc.). The
 aim is to convert a Process Description representation, i.e., a reaction
 model, into a full logical model. The resulting structure is closer to an
-Activity Flow diagram, see Fig. 2, though not in a strict SBGN-PD to SBGN-AF
+Activity Flow diagram, though not in a strict SBGN-PD to SBGN-AF
 notion. Moreover logical rules that make the model executable are also
-obtained.
+obtained. CaSQ is being used by the `Covid-19 DiseaseMaps consortium`__ to
+automatically obtain logical models from maps [2]_.
 
 The conversion happens in 4 steps.
 
@@ -21,7 +22,7 @@ The conversion happens in 4 steps.
    The idea of this reduction is that a single qualitative species of the
    logical model often represents by its state (active/inactive) several
    species of the original map.
-   
+
    The rules are the following:
 
    #. if two species of the map are only reactants in a single reaction, i.e.,
@@ -89,10 +90,16 @@ The conversion happens in 4 steps.
 
 CaSQ generates two output files, the proper logical model encoded in
 SBML-qual, a format that is compatible for further analysis with modelling
-tools such as GINsim [33] or CellCollective [34] and a CSV file that contains
+tools such as GINsim [3]_ or CellCollective [4]_ and a CSV file that contains
 information about the names, the logic formulae and the CellDesigner alias.
 The second file is mostly for automated treatment.
 
+.. _[1]: https://academic.oup.com/bioinformatics/article/36/16/4473/5836892
+.. _CellDesigner: http://celldesigner.org/
+__ https://covid.pages.uni.lu/
+.. _[2]: https://www.biorxiv.org/content/10.1101/2020.10.26.356014v1
+.. _[3]: http://ginsim.org/
+.. _[4]: https://cellcollective.org/
 
 CaSQ functions
 ==============
