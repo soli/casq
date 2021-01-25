@@ -18,7 +18,7 @@ setup(
     long_description_content_type="text/x-rst",
     url="https://lifeware.inria.fr/~soliman/post/casq/",
     project_urls={
-        "Documentation": "https://readthedocs.org/projects/casq/",
+        "Documentation": "https://casq.readthedocs.io/en/latest/",
         "Code": "https://gitlab.inria.fr/soliman/casq/",
         "Mirror": "https://github.com/soli/casq",
     },
@@ -40,6 +40,7 @@ setup(
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
