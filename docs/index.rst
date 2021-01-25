@@ -14,6 +14,9 @@ obtained. CaSQ was used on maps of the Rheumatoïd Arthritis, of the MAP-Kinase 
 and is now being used by the `Covid-19 DiseaseMaps consortium`__ to
 automatically obtain logical models from maps [#]_.
 
+CaSQ has recently been added to the CoLoMoTo Docker image and can be used
+in such a `notebook`_.
+
 What CaSQ does
 ==============
 
@@ -102,6 +105,7 @@ The second file is mostly for automated treatment.
 .. [#] http://celldesigner.org/
 __ https://covid.pages.uni.lu/
 .. [#] https://www.biorxiv.org/content/10.1101/2020.10.26.356014v1
+.. _`notebook`: https://github.com/colomoto/colomoto-docker/blob/for-next/tutorials/CaSQ/CaSQ_from_CellDesigner_to_GINsim.ipynb
 .. [#] http://ginsim.org/
 .. [#] https://cellcollective.org/
 
@@ -110,7 +114,6 @@ API
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    api
 
