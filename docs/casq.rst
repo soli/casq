@@ -1,8 +1,8 @@
 What CaSQ does
 ==============
 
-CaSQ [1]_, is a tool that can convert a molecular interaction map built with
-CellDesigner_ to an executable Boolean model. The tool is developed in
+CaSQ [#]_, is a tool that can convert a molecular interaction map built with
+CellDesigner [#]_ to an executable Boolean model. The tool is developed in
 Python and uses as source the xml file of CellDesigner, in order to infer
 preliminary Boolean rules based solely on network topology and semantic
 annotations (e.g., certain arcs are noted as catalysis, inhibition, etc.). The
@@ -11,7 +11,7 @@ model, into a full logical model. The resulting structure is closer to an
 Activity Flow diagram, though not in a strict SBGN-PD to SBGN-AF
 notion. Moreover logical rules that make the model executable are also
 obtained. CaSQ is being used by the `Covid-19 DiseaseMaps consortium`__ to
-automatically obtain logical models from maps [2]_.
+automatically obtain logical models from maps [#]_.
 
 The conversion happens in 4 steps.
 
@@ -90,16 +90,16 @@ The conversion happens in 4 steps.
 
 CaSQ generates two output files, the proper logical model encoded in
 SBML-qual, a format that is compatible for further analysis with modelling
-tools such as GINsim [3]_ or CellCollective [4]_ and a CSV file that contains
+tools such as GINsim [#]_ or CellCollective [#]_ and a CSV file that contains
 information about the names, the logic formulae and the CellDesigner alias.
 The second file is mostly for automated treatment.
 
-.. _[1]: https://academic.oup.com/bioinformatics/article/36/16/4473/5836892
-.. _CellDesigner: http://celldesigner.org/
+.. [#] https://academic.oup.com/bioinformatics/article/36/16/4473/5836892
+.. [#] http://celldesigner.org/
 __ https://covid.pages.uni.lu/
-.. _[2]: https://www.biorxiv.org/content/10.1101/2020.10.26.356014v1
-.. _[3]: http://ginsim.org/
-.. _[4]: https://cellcollective.org/
+.. [#] https://www.biorxiv.org/content/10.1101/2020.10.26.356014v1
+.. [#] http://ginsim.org/
+.. [#] https://cellcollective.org/
 
 CaSQ functions
 ==============
