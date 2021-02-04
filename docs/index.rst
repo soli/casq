@@ -2,12 +2,12 @@ Welcome to CaSQ
 ===============
 
 CaSQ [#]_, is a tool that can convert a molecular interaction map built with
-CellDesigner [#]_ to an executable Boolean model. The tool is developed in
-Python (download and install instructions can be found here [#]_)
-and uses as source the xml file of CellDesigner, in order to infer
-preliminary Boolean rules based solely on network topology and semantic
-annotations (e.g., certain arcs are noted as catalysis, inhibition, etc.). The
-aim is to convert a Process Description representation, i.e., a reaction
+`CellDesigner`__, or any similar SBML-capable tool, to an executable Boolean model.
+CaSQ is developed in Python (download and install instructions can be found
+`on the Python package index`__) and uses as source the xml file of CellDesigner,
+in order to infer preliminary Boolean rules based solely on network topology and
+semantic annotations (e.g., certain arcs are noted as catalysis, inhibition, etc.).
+The aim is to convert a Process Description representation, i.e., a reaction
 model, into a full logical model. The resulting structure is closer to an
 Activity Flow diagram, though not in a strict SBGN-PD to SBGN-AF
 notion. Moreover logical rules that make the model executable are also
@@ -98,18 +98,18 @@ The conversion happens in 4 steps.
 
 CaSQ generates two output files, the proper logical model encoded in
 SBML-qual, a format that is compatible for further analysis with modelling
-tools such as GINsim [#]_ or CellCollective [#]_ and a CSV file that contains
+tools such as `GINsim`__ or `CellCollective`__ and a CSV file that contains
 information about the names, the logic formulae and the CellDesigner alias.
 The second file is mostly for automated treatment.
 
 .. [#] https://academic.oup.com/bioinformatics/article/36/16/4473/5836892
-.. [#] http://celldesigner.org/
-.. [#] https://pypi.org/project/casq/
+__ http://celldesigner.org/
+__ https://pypi.org/project/casq/
 __ https://covid.pages.uni.lu/
 .. [#] https://www.biorxiv.org/content/10.1101/2020.10.26.356014v1
 .. _`notebook`: https://github.com/colomoto/colomoto-docker/blob/for-next/tutorials/CaSQ/CaSQ_from_CellDesigner_to_GINsim.ipynb
-.. [#] http://ginsim.org/
-.. [#] https://cellcollective.org/
+__ http://ginsim.org/
+__ https://cellcollective.org/
 
 API
 ===
