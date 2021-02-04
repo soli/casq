@@ -1,9 +1,10 @@
-Welcome to CaSQ's documentation!
-================================
+Welcome to CaSQ
+===============
 
 CaSQ [#]_, is a tool that can convert a molecular interaction map built with
 CellDesigner [#]_ to an executable Boolean model. The tool is developed in
-Python and uses as source the xml file of CellDesigner, in order to infer
+Python (download and install instructions can be found here [#]_)
+and uses as source the xml file of CellDesigner, in order to infer
 preliminary Boolean rules based solely on network topology and semantic
 annotations (e.g., certain arcs are noted as catalysis, inhibition, etc.). The
 aim is to convert a Process Description representation, i.e., a reaction
@@ -103,6 +104,7 @@ The second file is mostly for automated treatment.
 
 .. [#] https://academic.oup.com/bioinformatics/article/36/16/4473/5836892
 .. [#] http://celldesigner.org/
+.. [#] https://pypi.org/project/casq/
 __ https://covid.pages.uni.lu/
 .. [#] https://www.biorxiv.org/content/10.1101/2020.10.26.356014v1
 .. _`notebook`: https://github.com/colomoto/colomoto-docker/blob/for-next/tutorials/CaSQ/CaSQ_from_CellDesigner_to_GINsim.ipynb
