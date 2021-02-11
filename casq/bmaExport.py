@@ -77,7 +77,7 @@ def get_relationships(info,idMap,count):
     return(relationships, allFormulae)
 
 def cleanName(name):
-    result= name.replace(' ' , '_').replace(',' , '_').replace('-', '_').replace('(','').replace(')','')
+    result= name.replace(' ' , '_').replace(',' , '_').replace('-', '_').replace('(','').replace(')','').replace('+','').replace(':','').replace('/','').replace('\\','')
     return(result)
 
 def bma_model_variable(vid, infoVariable, formulaDict, v):
