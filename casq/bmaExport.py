@@ -26,13 +26,21 @@ class counter():
         self.value += 1
         return(result)
 
-class formulaBuilder():
+class booleanFormulaBuilder():
     def __init__(self):
         self.value = "1"
     def addActivator(self,vid):
         self.value = "(min(var({vid}),{current}))".format(vid = vid, current = self.value)
     def addInhibitor(self,vid):
         self.value = "(min(1-var({vid}),{current}))".format(vid = vid, current = self.value)
+
+class multiStateFormulaBuilder():
+    def __init__(self):
+        self.value = ""
+    def addActivator(self,vid):
+        pass
+    def addInhibitor(self,vid):
+        pass
 
 def bma_relationship(source,target,idMap,count,which="Activator"):
     result = {
@@ -43,14 +51,17 @@ def bma_relationship(source,target,idMap,count,which="Activator"):
                 }
     return(result)
 
-def get_relationships(info,idMap,count):
+def get_relationships(info,idMap,count,granularity):
     relationships = []
     allFormulae = {}
     for item in info.keys():
         #skip if there are no transitions
         if len(info[item]["transitions"])==0: continue
         product = item
-        formula = formulaBuilder()
+        if granularity == 1: 
+            formula = booleanFormulaBuilder()
+        else:
+            formula = multiStateFormulaBuilder()
         #variables may be missing from the "simplified" model. Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
             #reactant
@@ -80,17 +91,17 @@ def cleanName(name):
     result= name.replace(' ' , '_').replace(',' , '_').replace('-', '_').replace('(','').replace(')','').replace('+','').replace(':','').replace('/','').replace('\\','')
     return(result)
 
-def bma_model_variable(vid, infoVariable, formulaDict, v):
+def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
     if v in formulaDict:
         formula=formulaDict[v]
     else:
         #Assume that nodes with no incoming edges are active
-        formula = "1"
+        formula = str(granularity)
     result = {
         'Name':cleanName(infoVariable["name"]),
         'Id':vid,
         'RangeFrom':0,
-        'RangeTo':1,
+        'RangeTo':granularity,
         'Formula': formula
         }
     return(result)
@@ -112,16 +123,19 @@ def bma_layout_variable(vid, infoVariable):
     return(result)
 
 def write_bma(
-    filename: str, info
+    filename: str, info, granularity=1
 ):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the BMA json with layout file for our model."""
+    #granularity must be a non-zero natural
+    assert(granularity>0)
+
     idGenerator = counter(1)
     idMap = dict([(k,idGenerator.next()) for k in info.keys()])
 
-    rm,formula = get_relationships(info, idMap, idGenerator)
+    rm,formula = get_relationships(info, idMap, idGenerator, granularity)
 
-    vm = [bma_model_variable(idMap[v],info[v],formula,v) for v in info.keys()]
+    vm = [bma_model_variable(idMap[v],info[v],formula,v,granularity) for v in info.keys()]
     vl = [bma_layout_variable(idMap[v],info[v]) for v in info.keys()]
 
     model = {"Name":"CaSQ-BMA","Variables":vm,"Relationships":rm}

@@ -948,6 +948,15 @@ def main():
         action="store_true",
         help="Output to BMA json format",
     )
+
+parser.add_argument(
+        "-g",
+        "--granularity",
+        type=int,
+        default="1",
+        help="When exporting to BMA, use this granularity",
+    )
+    
     parser.add_argument(
         "-s",
         "--sif",
@@ -982,7 +991,7 @@ def main():
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     if args.bma:
-        bmaExport.write_bma(args.outfile, info)
+        bmaExport.write_bma(args.outfile, info, args.granularity)
     else:
         write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif)
     if args.csv and args.outfile != sys.stdout:
