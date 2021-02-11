@@ -26,6 +26,14 @@ class counter():
         self.value += 1
         return(result)
 
+class formulaBuilder():
+    def __init__(self):
+        self.value = "1"
+    def addActivator(self,vid):
+        self.value = "(min(var({vid}),{current}))".format(vid = vid, current = self.value)
+    def addInhibitor(self,vid):
+        self.value = "(min(1-var({vid}),{current}))".format(vid = vid, current = self.value)
+
 def bma_relationship(source,target,idMap,count,which="Activator"):
     result = {
                 'ToVariable': idMap[target],
@@ -37,17 +45,19 @@ def bma_relationship(source,target,idMap,count,which="Activator"):
 
 def get_relationships(info,idMap,count):
     relationships = []
-    formulae = {}
+    allFormulae = {}
     for item in info.keys():
         #skip if there are no transitions
         if len(info[item]["transitions"])==0: continue
         product = item
+        formula = formulaBuilder()
         #variables may be missing from the "simplified" model. Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
             #reactant
             for reactant in transition[1]:
                 if reactant in idMap:
                     relationships.append(bma_relationship(reactant,product,idMap,count))
+                    formula.addActivator(idMap[reactant])
                 else:
                     pass
             #now modifiers
@@ -57,26 +67,38 @@ def get_relationships(info,idMap,count):
                 if m in idMap:
                     if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION" :
                         relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
+                        formula.addInhibitor(idMap[m])
                     else:
                         relationships.append(bma_relationship(m,product,idMap,count))
+                        formula.addActivator(idMap[m])
                 else:
                     pass
-    return(relationships)
+        allFormulae[item] = formula.value
+    return(relationships, allFormulae)
 
-def bma_model_variable(vid, infoVariable):
+def cleanName(name):
+    result= name.replace(' ' , '_').replace(',' , '_').replace('-', '_').replace('(','').replace(')','')
+    return(result)
+
+def bma_model_variable(vid, infoVariable, formulaDict, v):
+    if v in formulaDict:
+        formula=formulaDict[v]
+    else:
+        #Assume that nodes with no incoming edges are active
+        formula = "1"
     result = {
-        'Name':infoVariable["name"],
+        'Name':cleanName(infoVariable["name"]),
         'Id':vid,
         'RangeFrom':0,
         'RangeTo':1,
-        'Formula': ""
+        'Formula': formula
         }
     return(result)
 
 def bma_layout_variable(vid, infoVariable):
     result = {
         'Id': vid,
-        'Name':infoVariable["name"],
+        'Name':cleanName(infoVariable["name"]),
         'Type':"Constant",
         'ContainerId':0,
         'PositionX':float(infoVariable["x"]),
@@ -97,13 +119,10 @@ def write_bma(
     idGenerator = counter(1)
     idMap = dict([(k,idGenerator.next()) for k in info.keys()])
 
-    vm = [bma_model_variable(idMap[v],info[v]) for v in info.keys()]
+    rm,formula = get_relationships(info, idMap, idGenerator)
+
+    vm = [bma_model_variable(idMap[v],info[v],formula,v) for v in info.keys()]
     vl = [bma_layout_variable(idMap[v],info[v]) for v in info.keys()]
-
-    rm = get_relationships(info, idMap, idGenerator)
-
-    #add_transitions(tlist, info, graph)
-    #add_qual_species(layout, qlist, info)
 
     model = {"Name":"CaSQ-BMA","Variables":vm,"Relationships":rm}
     layout = {"Variables":vl,"Containers":[],"Description":""}
