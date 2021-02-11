@@ -28,30 +28,32 @@ class counter():
 
 def bma_relationship(source,target,idMap,count,which="Activator"):
     result = {
-                'ToVariable': idMap[source],
+                'ToVariable': idMap[target],
                 'Type': which, 
-                'FromVariable': idMap[target], 
+                'FromVariable': idMap[source], 
                 'Id': count.next()
                 }
     return(result)
 
 def get_relationships(info,idMap,count):
     relationships = []
+    formulae = {}
     for item in info.keys():
-         #reactants first
+        #skip if there are no transitions
         if len(info[item]["transitions"])==0: continue
         product = item
-        for reactants in info[item]["transitions"]:
-            for r in reactants[1]:
-                relationships.append(bma_relationship(r,product,idMap,count))
-        #Now modifiers
-        if len(info[item]["transitions"][0][2]) == 0: continue
-        modifiers = info[item]["transitions"][0][2]
-        for (impact,m) in modifiers:
-            if impact == "Inhibition":
-                relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
-            else:
-                relationships.append(bma_relationship(m,product,idMap,count))
+        for transition in info[item]["transitions"]:
+            #reactant
+            for reactant in transition[1]:
+                relationships.append(bma_relationship(reactant,product,idMap,count))
+            #now modifiers
+            if len(transition[2]) == 0: continue
+            modifiers = transition[2]
+            for (impact,m) in modifiers:
+                if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION" :
+                    relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
+                else:
+                    relationships.append(bma_relationship(m,product,idMap,count))
     return(relationships)
 
 def bma_model_variable(vid, infoVariable):
