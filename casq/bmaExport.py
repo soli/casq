@@ -1,3 +1,21 @@
+"""Convert CellDesigner models to BMA json
+
+Copyright (C) 2021 b.hall@ucl.ac.uk
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import json
 
 class counter():
@@ -19,22 +37,16 @@ def bma_relationship(source,target,idMap,count,which="Activator"):
 
 def get_relationships(info,idMap,count):
     relationships = []
-    #reactants first
     for item in info.keys():
+         #reactants first
+        if len(info[item]["transitions"])==0: continue
         product = item
-        print(item)
-        print(info[item])
-        print(info[item]["transitions"][0])
-        print(info[item]["transitions"][0][1])
-        reactants = info[item]["transitions"][0][1]
-        for r in reactants:
-            relationships.append(bma_relationship(r,product,idMap,count))
-    #Now modifiers
-    for item in info.keys():
-        product = item
+        for reactants in info[item]["transitions"]:
+            for r in reactants[1]:
+                relationships.append(bma_relationship(r,product,idMap,count))
+        #Now modifiers
         if len(info[item]["transitions"][0][2]) == 0: continue
         modifiers = info[item]["transitions"][0][2]
-        print(modifiers)
         for (impact,m) in modifiers:
             if impact == "Inhibition":
                 relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
