@@ -42,18 +42,25 @@ def get_relationships(info,idMap,count):
         #skip if there are no transitions
         if len(info[item]["transitions"])==0: continue
         product = item
+        #variables may be missing from the "simplified" model. Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
             #reactant
             for reactant in transition[1]:
-                relationships.append(bma_relationship(reactant,product,idMap,count))
+                if reactant in idMap:
+                    relationships.append(bma_relationship(reactant,product,idMap,count))
+                else:
+                    pass
             #now modifiers
             if len(transition[2]) == 0: continue
             modifiers = transition[2]
             for (impact,m) in modifiers:
-                if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION" :
-                    relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
+                if m in idMap:
+                    if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION" :
+                        relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
+                    else:
+                        relationships.append(bma_relationship(m,product,idMap,count))
                 else:
-                    relationships.append(bma_relationship(m,product,idMap,count))
+                    pass
     return(relationships)
 
 def bma_model_variable(vid, infoVariable):
