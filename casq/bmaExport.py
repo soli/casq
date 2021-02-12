@@ -127,7 +127,7 @@ def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
         }
     return(result)
 
-def bma_layout_variable(vid, infoVariable,fill=None):
+def bma_layout_variable(vid, infoVariable,fill=None,description=""):
     result = {
         'Id': vid,
         'Name':cleanName(infoVariable["name"]),
@@ -138,7 +138,7 @@ def bma_layout_variable(vid, infoVariable,fill=None):
         'CellY':0,
         'CellX':0,
         'Angle':0,
-        'Description':"",
+        'Description':description,
         }
     if fill != None: result['Fill'] = fill
     return(result)
@@ -171,7 +171,7 @@ def write_bma(
     rm,formula = get_relationships(info, idMap, idGenerator, granularity, ignoreSelfLoops)
 
     vm = [bma_model_variable(idMap[v],info[v],formula,v,granularity) for v in info.keys()]
-    vl = [bma_layout_variable(idMap[v],info[v],compartmentColour[info[v]['compartment']]) for v in info.keys()]
+    vl = [bma_layout_variable(idMap[v],info[v],compartmentColour[info[v]['compartment']],info[v]['compartment']) for v in info.keys()]
 
     model = {"Name":"CaSQ-BMA","Variables":vm,"Relationships":rm}
     layout = {"Variables":vl,"Containers":[],"Description":""}
