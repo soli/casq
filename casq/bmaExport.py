@@ -68,7 +68,7 @@ def bma_relationship(source,target,idMap,count,which="Activator"):
                 }
     return(result)
 
-def get_relationships(info,idMap,count,granularity):
+def get_relationships(info,idMap,count,granularity,ignoreSelfLoops):
     relationships = []
     allFormulae = {}
     for item in info.keys():
@@ -84,6 +84,7 @@ def get_relationships(info,idMap,count,granularity):
             formula.addTransition()
             #reactant
             for reactant in transition[1]:
+                if ignoreSelfLoops and reactant == product: continue
                 if reactant in idMap:
                     relationships.append(bma_relationship(reactant,product,idMap,count))
                     formula.addActivator(idMap[reactant])
@@ -93,6 +94,7 @@ def get_relationships(info,idMap,count,granularity):
             if len(transition[2]) == 0: continue
             modifiers = transition[2]
             for (impact,m) in modifiers:
+                if ignoreSelfLoops and m == product: continue
                 if m in idMap:
                     if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION" :
                         relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
@@ -142,7 +144,7 @@ def bma_layout_variable(vid, infoVariable,fill=None):
     return(result)
 
 def write_bma(
-    filename: str, info, granularity=1
+    filename: str, info, granularity=1, ignoreSelfLoops=False
 ):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the BMA json with layout file for our model."""
@@ -166,7 +168,7 @@ def write_bma(
     idGenerator = counter(1)
     idMap = dict([(k,idGenerator.next()) for k in info.keys()])
 
-    rm,formula = get_relationships(info, idMap, idGenerator, granularity)
+    rm,formula = get_relationships(info, idMap, idGenerator, granularity, ignoreSelfLoops)
 
     vm = [bma_model_variable(idMap[v],info[v],formula,v,granularity) for v in info.keys()]
     vl = [bma_layout_variable(idMap[v],info[v],compartmentColour[info[v]['compartment']]) for v in info.keys()]
