@@ -36,6 +36,11 @@ class booleanFormulaBuilder():
         self.transition = "(min(1-var({vid}),{current}))".format(vid = vid, current = self.transition)
     def addTransition(self):
         self.transition = "1"
+    def addCatalysis(self,vidList):
+        base = "0"
+        for vid in vidList:
+            base = "(max(var({vid}),{base}))".format(vid=vid,base=base)
+        self.value = "(min({base},{current}))".format(base=base, current=self.value)
     def finishTransition(self):
         self.value = "(max({transition},{current}))".format(transition=self.transition, current=self.value)
         self.transition = "1"
@@ -46,6 +51,8 @@ class multiStateFormulaBuilder():
     def addActivator(self,vid):
         pass
     def addInhibitor(self,vid):
+        pass
+    def addCatalysis(self,vidList):
         pass
     def addTransition(self):
         pass
@@ -93,13 +100,30 @@ def get_relationships(info,idMap,count,granularity,ignoreSelfLoops):
             #now modifiers
             if len(transition[2]) == 0: continue
             modifiers = transition[2]
+            #catalysts are a special case
+            catalysts = []
+            for (impact,m) in modifiers:
+                if ignoreSelfLoops and m == product: continue
+                if m in idMap:
+                    if impact == "CATALYSIS" or impact == "UNKNOWN_CATALYSIS":
+                        catalysts.append(idMap[m])
+                        relationships.append(bma_relationship(m,product,idMap,count))
+                    else:
+                        pass
+                else:
+                    pass
+            formula.addCatalysis(catalysts)
+            #everything else
             for (impact,m) in modifiers:
                 if ignoreSelfLoops and m == product: continue
                 if m in idMap:
                     if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION" :
                         relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
                         formula.addInhibitor(idMap[m])
+                    elif impact == "CATALYSIS" or impact == "UNKNOWN_CATALYSIS":
+                        pass #deal with this earlier
                     else:
+                        #treat all other modifiers as reactants
                         relationships.append(bma_relationship(m,product,idMap,count))
                         formula.addActivator(idMap[m])
                 else:
