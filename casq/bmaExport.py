@@ -52,6 +52,13 @@ class multiStateFormulaBuilder():
     def finishTransition(self):
         pass
 
+def colourMap(n):
+    if   n == 0: return("BMA_Green")
+    elif n == 1: return("BMA_Orange")
+    elif n == 2: return("BMA_Purple")
+    elif n == 3: return("BMA_Mint")
+    else: return(None)
+
 def bma_relationship(source,target,idMap,count,which="Activator"):
     result = {
                 'ToVariable': idMap[target],
@@ -118,7 +125,7 @@ def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
         }
     return(result)
 
-def bma_layout_variable(vid, infoVariable):
+def bma_layout_variable(vid, infoVariable,fill=None):
     result = {
         'Id': vid,
         'Name':cleanName(infoVariable["name"]),
@@ -130,8 +137,8 @@ def bma_layout_variable(vid, infoVariable):
         'CellX':0,
         'Angle':0,
         'Description':"",
-        
         }
+    if fill != None: result['Fill'] = fill
     return(result)
 
 def write_bma(
@@ -142,13 +149,27 @@ def write_bma(
     #granularity must be a non-zero natural
     assert(granularity>0)
 
+    #calculate the compartments for colours; four largest compartments are coloured BMA colours, all else default
+    compartments = {}
+    for k in info.keys():
+        location = info[k]['compartment']
+        if location in compartments:
+            compartments[location] += 1
+        else:
+            compartments[location] = 1
+    compList = list(compartments.items())
+    compList.sort(key= lambda i: -i[1])
+    compartmentColour = {}
+    for i in range(len(compartments)):
+        compartmentColour[compList[i][0]] = colourMap(i)
+
     idGenerator = counter(1)
     idMap = dict([(k,idGenerator.next()) for k in info.keys()])
 
     rm,formula = get_relationships(info, idMap, idGenerator, granularity)
 
     vm = [bma_model_variable(idMap[v],info[v],formula,v,granularity) for v in info.keys()]
-    vl = [bma_layout_variable(idMap[v],info[v]) for v in info.keys()]
+    vl = [bma_layout_variable(idMap[v],info[v],compartmentColour[info[v]['compartment']]) for v in info.keys()]
 
     model = {"Name":"CaSQ-BMA","Variables":vm,"Relationships":rm}
     layout = {"Variables":vl,"Containers":[],"Description":""}
