@@ -28,11 +28,17 @@ class counter():
 
 class booleanFormulaBuilder():
     def __init__(self):
-        self.value = "1"
+        self.value = "0"
+        self.transition ="1"
     def addActivator(self,vid):
-        self.value = "(min(var({vid}),{current}))".format(vid = vid, current = self.value)
+        self.transition = "(min(var({vid}),{current}))".format(vid = vid, current = self.transition)
     def addInhibitor(self,vid):
-        self.value = "(min(1-var({vid}),{current}))".format(vid = vid, current = self.value)
+        self.transition = "(min(1-var({vid}),{current}))".format(vid = vid, current = self.transition)
+    def addTransition(self):
+        self.transition = "1"
+    def finishTransition(self):
+        self.value = "(max({transition},{current}))".format(transition=self.transition, current=self.value)
+        self.transition = "1"
 
 class multiStateFormulaBuilder():
     def __init__(self):
@@ -40,6 +46,10 @@ class multiStateFormulaBuilder():
     def addActivator(self,vid):
         pass
     def addInhibitor(self,vid):
+        pass
+    def addTransition(self):
+        pass
+    def finishTransition(self):
         pass
 
 def bma_relationship(source,target,idMap,count,which="Activator"):
@@ -64,6 +74,7 @@ def get_relationships(info,idMap,count,granularity):
             formula = multiStateFormulaBuilder()
         #variables may be missing from the "simplified" model. Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
+            formula.addTransition()
             #reactant
             for reactant in transition[1]:
                 if reactant in idMap:
@@ -84,6 +95,7 @@ def get_relationships(info,idMap,count,granularity):
                         formula.addActivator(idMap[m])
                 else:
                     pass
+            formula.finishTransition()
         allFormulae[item] = formula.value
     return(relationships, allFormulae)
 
