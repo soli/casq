@@ -949,12 +949,12 @@ def main():
         help="Output to BMA json format",
     )
 
-parser.add_argument(
-        "-g",
-        "--granularity",
-        type=int,
-        default="1",
-        help="When exporting to BMA, use this granularity",
+    parser.add_argument(
+            "-g",
+            "--granularity",
+            type=int,
+            default="1",
+            help="When exporting to BMA, use this granularity",
     )
     
     parser.add_argument(
