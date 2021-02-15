@@ -132,8 +132,22 @@ def get_relationships(info,idMap,count,granularity,ignoreSelfLoops):
         allFormulae[item] = formula.value
     return(relationships, allFormulae)
 
+def translateGreek(name):
+    greek_alphabet = 'ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσςΤτΥυΦφΧχΨψΩω'
+    latin_alphabet = 'AaBbGgDdEeZzHhJjIiKkLlMmNnXxOoPpRrSssTtUuFfQqYyWw'
+    greek2latin = str.maketrans(greek_alphabet, latin_alphabet)
+    return(name.translate(greek2latin))
+
+def depunctuate(name):
+    #name.replace(' ' , '_').replace(',' , '_').replace('-', '_').replace('(','').replace(')','').replace('+','').replace(':','').replace('/','').replace('\\','').replace("'",'')
+    badChars =     ' ,-()+:/\\\''
+    alternatives = '__________'
+    cleanup = str.maketrans(badChars,alternatives)
+    return(name.translate(cleanup))
+
 def cleanName(name):
-    result= name.replace(' ' , '_').replace(',' , '_').replace('-', '_').replace('(','').replace(')','').replace('+','').replace(':','').replace('/','').replace('\\','')
+    noPunctuation = depunctuate(name)
+    result = translateGreek(noPunctuation)
     return(result)
 
 def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
