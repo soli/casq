@@ -102,17 +102,6 @@ def get_relationships(info,idMap,count,granularity,ignoreSelfLoops):
             modifiers = transition[2]
             #catalysts are a special case
             catalysts = []
-            for (impact,m) in modifiers:
-                if ignoreSelfLoops and m == product: continue
-                if m in idMap:
-                    if impact == "CATALYSIS" or impact == "UNKNOWN_CATALYSIS":
-                        catalysts.append(idMap[m])
-                        relationships.append(bma_relationship(m,product,idMap,count))
-                    else:
-                        pass
-                else:
-                    pass
-            formula.addCatalysis(catalysts)
             #everything else
             for (impact,m) in modifiers:
                 if ignoreSelfLoops and m == product: continue
@@ -120,14 +109,13 @@ def get_relationships(info,idMap,count,granularity,ignoreSelfLoops):
                     if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION" :
                         relationships.append(bma_relationship(m,product,idMap,count,"Inhibitor"))
                         formula.addInhibitor(idMap[m])
-                    elif impact == "CATALYSIS" or impact == "UNKNOWN_CATALYSIS":
-                        pass #deal with this earlier
                     else:
-                        #treat all other modifiers as reactants
+                        #treat all other modifiers as catalysts, following casq approach
+                        catalysts.append(idMap[m])
                         relationships.append(bma_relationship(m,product,idMap,count))
-                        formula.addActivator(idMap[m])
                 else:
                     pass
+                formula.addCatalysis(catalysts)
             formula.finishTransition()
         allFormulae[item] = formula.value
     return(relationships, allFormulae)
@@ -140,8 +128,8 @@ def translateGreek(name):
 
 def depunctuate(name):
     #name.replace(' ' , '_').replace(',' , '_').replace('-', '_').replace('(','').replace(')','').replace('+','').replace(':','').replace('/','').replace('\\','').replace("'",'')
-    badChars =     ' ,-()+:/\\\''
-    alternatives = '__________'
+    badChars =     ' ,-()+:/\\\'*~'
+    alternatives = '____________'
     cleanup = str.maketrans(badChars,alternatives)
     return(name.translate(cleanup))
 
@@ -155,6 +143,7 @@ def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
         formula=formulaDict[v]
     else:
         #Assume that nodes with no incoming edges are active
+        # different from standard casq that assumes maintainance (i.e. self loop in BMA)
         formula = str(granularity)
     result = {
         'Name':cleanName(infoVariable["name"]),
