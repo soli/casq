@@ -1,45 +1,50 @@
-{% set name = "casq" %}
-{% set version = "0.7.8" %}
+{% set setup_data = load_setup_py_data()}
 
 package:
-  name: '{{ name|lower }}'
-  version: '{{ version }}'
+  name: {{ setup_data['name']|lower }}
+  version: {{ setup_data['version'] }}
 
 source:
   path: ../
 
 build:
-  number: 1
+  number: 0
   entry_points:
-    - casq = casq.celldesigner2qual:main
+    - {{ setup_data['entry_points']['console_scripts'] }}
   script: python setup.py install --single-version-externally-managed --record=record.txt
   noarch: python
 
 requirements:
   host:
-    - loguru >=0.2.5
-    - pytest-runner >=5.2
-    - networkx >=2.2
-    - python
+  {% for package in setup_data['setup_requires'] %}
+    - {{ package }}
+  {% endfor %}
+  {% for package in setup_data['install_requires'] %}
+    - {{ package }}
+  {% endfor %}
+    - python {{ setup_data['python_requires'] }}
   run:
-    - loguru >=0.2.5
-    - networkx >=2.2
-    - python
+  {% for package in setup_data['install_requires'] %}
+    - {{ package }}
+  {% endfor %}
+    - python {{ setup_data['python_requires'] }}
 
 test:
   imports:
-    - casq
+    - {{ setup_data['name'] }}
+  requires:
+  {% for package in setup_data['tests_require'] %}
+    - {{ package }}
+  {% endfor %}
   commands:
     - casq --help
-  requires:
     - pytest
 
 about:
-  home: "https://lifeware.inria.fr/~soliman/post/casq/"
+  home: {{ setup_data['url'] }}
   license: "GNU General Public v3 (GPLv3)"
-  license_family: GPL3
-  license_file: 
-  summary: "CaSQ: Celldesigner as Sbml-Qual"
-  doc_url: 
-  dev_url: 
-
+  license_family: {{ setup_data['license'] }}
+  license_file: LICENSE
+  summary: {{ setup_data['description'] }}
+  doc_url: {{ setup_data['project_urls']['Documentation'] }}
+  dev_url: {{ setup_data['project_urls']['Code'] }}
