@@ -1,4 +1,4 @@
-"""Convert CellDesigner models to BMA json
+"""Convert CellDesigner models to BMA json.
 
 Copyright (C) 2021 b.hall@ucl.ac.uk
 
@@ -16,44 +16,43 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import itertools
 import json
 
 
-class counter:
-    def __init__(self, first):
-        self.value = first
-
-    def next(self):
-        result = self.value
-        self.value += 1
-        return result
-
-
 class booleanFormulaBuilder:
+    """Builds a boolean formula."""
+
     def __init__(self):
+        """Init."""
         self.value = "0"
         self.transition = "1"
 
     def addActivator(self, vid):
+        """AddActivator."""
         self.transition = "(min(var({vid}),{current}))".format(
             vid=vid, current=self.transition
         )
 
     def addInhibitor(self, vid):
+        """AddInhibitor."""
         self.transition = "(min(1-var({vid}),{current}))".format(
             vid=vid, current=self.transition
         )
 
     def addTransition(self):
+        """AddTransition."""
         self.transition = "1"
 
     def addCatalysis(self, vidList):
+        """AddCatalysis."""
         base = "0"
         for vid in vidList:
             base = "(max(var({vid}),{base}))".format(vid=vid, base=base)
         self.value = "(min({base},{current}))".format(base=base, current=self.value)
 
     def finishTransition(self):
+        """FinishTransition."""
         self.value = "(max({transition},{current}))".format(
             transition=self.transition, current=self.value
         )
@@ -61,49 +60,54 @@ class booleanFormulaBuilder:
 
 
 class multiStateFormulaBuilder:
+    """Builds a multistate formula."""
+
     def __init__(self):
+        """Init."""
         self.value = ""
 
     def addActivator(self, vid):
+        """Do nothing."""
         pass
 
     def addInhibitor(self, vid):
+        """Do nothing."""
         pass
 
     def addCatalysis(self, vidList):
+        """Do nothing."""
         pass
 
     def addTransition(self):
+        """Do nothing."""
         pass
 
     def finishTransition(self):
+        """Do nothing."""
         pass
 
 
-def colourMap(n):
-    if n == 0:
-        return "BMA_Green"
-    elif n == 1:
-        return "BMA_Orange"
-    elif n == 2:
-        return "BMA_Purple"
-    elif n == 3:
-        return "BMA_Mint"
-    else:
-        return None
+COLOURMAP = {
+    0: "BMA_Green",
+    1: "BMA_Orange",
+    2: "BMA_Purple",
+    3: "BMA_Mint",
+}
 
 
 def bma_relationship(source, target, idMap, count, which="Activator"):
+    """Return BMA relationship dict."""
     result = {
         "ToVariable": idMap[target],
         "Type": which,
         "FromVariable": idMap[source],
-        "Id": count.next(),
+        "Id": next(count),
     }
     return result
 
 
 def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
+    """Return all BMA relationships."""
     relationships = []
     allFormulae = {}
     for item in info.keys():
@@ -115,7 +119,8 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
             formula = booleanFormulaBuilder()
         else:
             formula = multiStateFormulaBuilder()
-        # variables may be missing from the "simplified" model. Test for variable in the ID map before appending
+        # variables may be missing from the "simplified" model.
+        # Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
             formula.addTransition()
             # reactant
@@ -171,6 +176,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
 
 
 def translateGreek(name):
+    """Translate Greek to Latin alphabet."""
     greek_alphabet = "ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσςΤτΥυΦφΧχΨψΩω"
     latin_alphabet = "AaBbGgDdEeZzHhJjIiKkLlMmNnXxOoPpRrSssTtUuFfQqYyWw"
     greek2latin = str.maketrans(greek_alphabet, latin_alphabet)
@@ -178,7 +184,7 @@ def translateGreek(name):
 
 
 def depunctuate(name):
-    # name.replace(' ' , '_').replace(',' , '_').replace('-', '_').replace('(','').replace(')','').replace('+','').replace(':','').replace('/','').replace('\\','').replace("'",'')
+    """Replace punctuation by underscores."""
     badChars = " ,-()+:/\\'"
     alternatives = "__________"
     cleanup = str.maketrans(badChars, alternatives)
@@ -186,12 +192,14 @@ def depunctuate(name):
 
 
 def cleanName(name):
+    """Remove punctuation and replace Greek letters."""
     noPunctuation = depunctuate(name)
     result = translateGreek(noPunctuation)
     return result
 
 
 def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
+    """Do something."""
     if v in formulaDict:
         formula = formulaDict[v]
     else:
@@ -208,6 +216,7 @@ def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
 
 
 def bma_layout_variable(vid, infoVariable, fill=None, description=""):
+    """Do something else."""
     result = {
         "Id": vid,
         "Name": cleanName(infoVariable["name"]),
@@ -231,7 +240,8 @@ def write_bma(filename: str, info, granularity=1, ignoreSelfLoops=False):
     # granularity must be a non-zero natural
     assert granularity > 0
 
-    # calculate the compartments for colours; four largest compartments are coloured BMA colours, all else default
+    # calculate the compartments for colours;
+    # four largest compartments are coloured BMA colours, all else default
     compartments = {}
     for k in info.keys():
         location = info[k]["compartment"]
@@ -243,10 +253,10 @@ def write_bma(filename: str, info, granularity=1, ignoreSelfLoops=False):
     compList.sort(key=lambda i: -i[1])
     compartmentColour = {}
     for i in range(len(compartments)):
-        compartmentColour[compList[i][0]] = colourMap(i)
+        compartmentColour[compList[i][0]] = COLOURMAP.get(i)
 
-    idGenerator = counter(1)
-    idMap = dict([(k, idGenerator.next()) for k in info.keys()])
+    idGenerator = itertools.count(1)
+    idMap = {k: next(idGenerator) for k in info.keys()}
 
     rm, formula = get_relationships(
         info, idMap, idGenerator, granularity, ignoreSelfLoops
