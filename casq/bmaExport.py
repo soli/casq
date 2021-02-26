@@ -22,8 +22,10 @@ import json
 
 class booleanFormulaBuilder:
     """Builds a formula for a boolean network encoded in BMA.
+
     The formula is a max applied to a series of reactions (transitions),
-    so that if at least one reaction is active the variable becomes active"""
+    so that if at least one reaction is active the variable becomes active
+    """
 
     def __init__(self):
         """Init."""
@@ -31,7 +33,10 @@ class booleanFormulaBuilder:
         self.transition = "1"
 
     def addActivator(self, vid):
-        """A reaction may only take place if all reactants/activators are present."""
+        """Update transition to add an activator.
+
+        A reaction may only take place if all reactants/activators are present.
+        """
         self.transition = "(min(var({vid}),{current}))".format(
             vid=vid, current=self.transition
         )
@@ -48,8 +53,10 @@ class booleanFormulaBuilder:
 
     def addCatalysis(self, vidList):
         """All non-reactants, non-inhibitors in casq are treated as catalysts.
+
         If at least one catalyst is active, the reaction can proceed.
-        This is achieved in BMA with a min function"""
+        This is achieved in BMA with a min function
+        """
         base = "0"
         for vid in vidList:
             base = "(max(var({vid}),{base}))".format(vid=vid, base=base)
@@ -57,7 +64,9 @@ class booleanFormulaBuilder:
 
     def finishTransition(self):
         """Add a single transition formula to the current state.
-        Resets the transition formula to 1."""
+
+        Resets the transition formula to 1.
+        """
         self.value = "(max({transition},{current}))".format(
             transition=self.transition, current=self.value
         )
@@ -65,8 +74,10 @@ class booleanFormulaBuilder:
 
 
 class multiStateFormulaBuilder:
-    """Builds a multistate formula. 
-    This is more simple as BMA defaults to avg(pos)-avg(neg)"""
+    """Builds a multistate formula.
+
+    This is more simple as BMA defaults to avg(pos)-avg(neg).
+    """
 
     def __init__(self):
         """Init."""
@@ -157,7 +168,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         )
                         formula.addInhibitor(idMap[m])
                     else:
-                        # treat all other modifiers as catalysts, following casq approach
+                        # treat all other modifiers as catalysts (casq approach)
                         catalysts.append(idMap[m])
                         relationships.append(bma_relationship(m, product, idMap, count))
                 else:
@@ -192,7 +203,7 @@ def cleanName(name):
 
 
 def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
-    """Returns BMA model variable as a dict."""
+    """Return BMA model variable as a dict."""
     if v in formulaDict:
         formula = formulaDict[v]
     else:
@@ -209,7 +220,7 @@ def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
 
 
 def bma_layout_variable(vid, infoVariable, fill=None, description=""):
-    """Returns BMA layout variable as a dict."""
+    """Return BMA layout variable as a dict."""
     result = {
         "Id": vid,
         "Name": cleanName(infoVariable["name"]),
