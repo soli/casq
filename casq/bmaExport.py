@@ -140,9 +140,10 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
             modifiers = transition[2]
             # catalysts are a special case
             catalysts = []
-            #everything else
-            for (impact,m) in modifiers:
-                if ignoreSelfLoops and m == product: continue
+            # everything else
+            for (impact, m) in modifiers:
+                if ignoreSelfLoops and m == product:
+                    continue
                 if m in idMap:
                     if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION":
                         relationships.append(
@@ -150,9 +151,9 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         )
                         formula.addInhibitor(idMap[m])
                     else:
-                        #treat all other modifiers as catalysts, following casq approach
+                        # treat all other modifiers as catalysts, following casq approach
                         catalysts.append(idMap[m])
-                        relationships.append(bma_relationship(m,product,idMap,count))
+                        relationships.append(bma_relationship(m, product, idMap, count))
                 else:
                     pass
                 formula.addCatalysis(catalysts)
@@ -185,7 +186,7 @@ def cleanName(name):
 
 
 def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
-    """Do something."""
+    """Returns BMA model variable as a dict."""
     if v in formulaDict:
         formula = formulaDict[v]
     else:
@@ -202,7 +203,7 @@ def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
 
 
 def bma_layout_variable(vid, infoVariable, fill=None, description=""):
-    """Do something else."""
+    """Returns BMA layout variable as a dict."""
     result = {
         "Id": vid,
         "Name": cleanName(infoVariable["name"]),
