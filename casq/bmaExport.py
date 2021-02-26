@@ -56,8 +56,8 @@ class booleanFormulaBuilder:
         self.value = "(min({base},{current}))".format(base=base, current=self.value)
 
     def finishTransition(self):
-        """Add a single transition formula to the current state,
-        resetting the transition formula to 1."""
+        """Add a single transition formula to the current state.
+        Resets the transition formula to 1."""
         self.value = "(max({transition},{current}))".format(
             transition=self.transition, current=self.value
         )
@@ -65,8 +65,8 @@ class booleanFormulaBuilder:
 
 
 class multiStateFormulaBuilder:
-    """Builds a multistate formula. This is more simple
-    as BMA defaults to avg(pos)-avg(neg)"""
+    """Builds a multistate formula. 
+    This is more simple as BMA defaults to avg(pos)-avg(neg)"""
 
     def __init__(self):
         """Init."""
