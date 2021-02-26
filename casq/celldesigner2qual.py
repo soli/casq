@@ -29,6 +29,7 @@ from loguru import logger  # type: ignore
 
 import networkx as nx  # type: ignore
 
+from . import bmaExport
 from . import version
 
 NS = {
@@ -330,7 +331,6 @@ def write_qual(
         write_sif(filename, info, graph)
     add_qual_species(layout, qlist, info)
     etree.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
-
 
 def remove_connected_components(
     tlist: etree.Element, info, graph: nx.DiGraph, remove: int
@@ -943,6 +943,21 @@ def main():
         help="Store the species information in a separate CSV file",
     )
     parser.add_argument(
+        "-b",
+        "--bma",
+        action="store_true",
+        help="Output to BMA json format",
+    )
+
+    parser.add_argument(
+            "-g",
+            "--granularity",
+            type=int,
+            default="1",
+            help="When exporting to BMA, use this granularity",
+    )
+    
+    parser.add_argument(
         "-s",
         "--sif",
         action="store_true",
@@ -965,7 +980,7 @@ def main():
         default=sys.stdin,
         help="CellDesigner File",
     )
-    parser.add_argument("outfile", nargs="?", default=sys.stdout, help="SBML-Qual File")
+    parser.add_argument("outfile", nargs="?", default=sys.stdout, help="SBML-Qual/BMA json File")
     args = parser.parse_args()
 
     if not args.debug:
@@ -975,7 +990,10 @@ def main():
     simplify_model(info)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
-    write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif)
+    if args.bma:
+        bmaExport.write_bma(args.outfile, info, args.granularity)
+    else:
+        write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif)
     if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
 
