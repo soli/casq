@@ -16,7 +16,7 @@ setup(
     description="CaSQ: Celldesigner as Sbml-Qual",
     long_description=README,
     long_description_content_type="text/x-rst",
-    url="https://lifeware.inria.fr/~soliman/post/casq/",
+    url="https://soliman.gitlabpages.inria.fr/casq/",
     project_urls={
         "Documentation": "https://casq.readthedocs.io/en/latest/",
         "Code": "https://gitlab.inria.fr/soliman/casq/",

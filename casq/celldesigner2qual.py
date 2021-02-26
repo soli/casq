@@ -332,6 +332,7 @@ def write_qual(
     add_qual_species(layout, qlist, info)
     etree.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
 
+
 def remove_connected_components(
     tlist: etree.Element, info, graph: nx.DiGraph, remove: int
 ):
@@ -948,15 +949,13 @@ def main():
         action="store_true",
         help="Output to BMA json format",
     )
-
     parser.add_argument(
-            "-g",
-            "--granularity",
-            type=int,
-            default="1",
-            help="When exporting to BMA, use this granularity",
+        "-g",
+        "--granularity",
+        type=int,
+        default="1",
+        help="When exporting to BMA, use this granularity",
     )
-    
     parser.add_argument(
         "-s",
         "--sif",
@@ -980,7 +979,9 @@ def main():
         default=sys.stdin,
         help="CellDesigner File",
     )
-    parser.add_argument("outfile", nargs="?", default=sys.stdout, help="SBML-Qual/BMA json File")
+    parser.add_argument(
+        "outfile", nargs="?", default=sys.stdout, help="SBML-Qual/BMA json File"
+    )
     args = parser.parse_args()
 
     if not args.debug:
