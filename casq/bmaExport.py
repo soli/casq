@@ -21,7 +21,9 @@ import json
 
 
 class booleanFormulaBuilder:
-    """Builds a boolean formula."""
+    """Builds a formula for a boolean network encoded in BMA.
+    The formula is a max applied to a series of reactions (transitions),
+    so that if at least one reaction is active the variable becomes active"""
 
     def __init__(self):
         """Init."""
@@ -29,13 +31,13 @@ class booleanFormulaBuilder:
         self.transition = "1"
 
     def addActivator(self, vid):
-        """AddActivator."""
+        """A reaction may only take place if all reactants/activators are present."""
         self.transition = "(min(var({vid}),{current}))".format(
             vid=vid, current=self.transition
         )
 
     def addInhibitor(self, vid):
-        """AddInhibitor."""
+        """If any inhibitor is active, the reaction is stopped."""
         self.transition = "(min(1-var({vid}),{current}))".format(
             vid=vid, current=self.transition
         )
@@ -45,14 +47,17 @@ class booleanFormulaBuilder:
         self.transition = "1"
 
     def addCatalysis(self, vidList):
-        """AddCatalysis."""
+        """All non-reactants, non-inhibitors in casq are treated as catalysts.
+        If at least one catalyst is active, the reaction can proceed.
+        This is achieved in BMA with a min function"""
         base = "0"
         for vid in vidList:
             base = "(max(var({vid}),{base}))".format(vid=vid, base=base)
         self.value = "(min({base},{current}))".format(base=base, current=self.value)
 
     def finishTransition(self):
-        """FinishTransition."""
+        """Add a single transition formula to the current state,
+        resetting the transition formula to 1."""
         self.value = "(max({transition},{current}))".format(
             transition=self.transition, current=self.value
         )
@@ -60,7 +65,8 @@ class booleanFormulaBuilder:
 
 
 class multiStateFormulaBuilder:
-    """Builds a multistate formula."""
+    """Builds a multistate formula. This is more simple
+    as BMA defaults to avg(pos)-avg(neg)"""
 
     def __init__(self):
         """Init."""
