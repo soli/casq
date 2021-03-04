@@ -830,7 +830,7 @@ def add_inputs(
         for modtype, modifier in chain(
             enumerate(reaction.reactants), reaction.modifiers
         ):
-            if modtype == "INHIBITION":
+            if modtype in ("INHIBITION", "UNKNOWN_INHIBITION"):
                 sign = "negative"
             else:
                 sign = "positive"
