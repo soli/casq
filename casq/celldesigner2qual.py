@@ -221,7 +221,15 @@ def add_rdf(nameconv, reference: str, new_rdf: Optional[etree.Element]):
         rdfs = new_rdf.find("./rdf:Description", NS)
         if rdfs is None:
             return
-        nameconv[reference]["annotations"].find("./rdf:Description", NS).extend(rdfs[:])
+        logger.debug(
+            "adding annotations from {rdfs} to {reference}",
+            rdfs=rdfs[:],
+            reference=reference,
+        )
+        description = nameconv[reference]["annotations"].find("./rdf:Description", NS)
+        for element in rdfs[:]:
+            if element not in description:
+                description.append(element)
     else:
         nameconv[reference]["annotations"] = new_rdf
 
