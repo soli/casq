@@ -769,14 +769,15 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
         activators = [
             modifier
             for (modtype, modifier) in reaction.modifiers
-            if modtype not in ("INHIBITION", "BOOLEAN_LOGIC_GATE_AND")
+            if modtype
+            not in ("INHIBITION", "UNKNOWN_INHIBITION", "BOOLEAN_LOGIC_GATE_AND")
             and modifier in known
             and modifier not in reactants
         ]
         inhibitors = [
             modifier
             for (modtype, modifier) in reaction.modifiers
-            if modtype == "INHIBITION" and modifier in known
+            if modtype in ("INHIBITION", "UNKNOWN_INHIBITION") and modifier in known
         ]
         # this should only appear when species is of type PHENOTYPE otherwise
         # non-SBGN compliant
