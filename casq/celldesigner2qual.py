@@ -55,6 +55,10 @@ Transition = collections.namedtuple(
 )
 
 
+INHIBITION = ("INHIBITION", "UNKNOWN_INHIBITION")
+NEGATIVE = ("INHIBITION", "NEGATIVE_INFLUENCE", "UNKNOWN_INHIBITION")
+
+
 def read_celldesigner(filename: IO):
     """Parse the given file."""
     root = etree.parse(filename).getroot()
@@ -777,12 +781,12 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
         inhibitors = [
             modifier
             for (modtype, modifier) in reaction.modifiers
-            if modtype in ("INHIBITION", "UNKNOWN_INHIBITION") and modifier in known
+            if modtype in INHIBITION and modifier in known
         ]
         # this should only appear when species is of type PHENOTYPE otherwise
         # non-SBGN compliant, and there should be a single reactant and no inhibitors
         # just swap reactants and inhibitors, there should not be any activator
-        if reaction.type in ("INHIBITION", "NEGATIVE_INFLUENCE"):
+        if reaction.type in NEGATIVE:
             reactants, inhibitors = inhibitors, reactants
             if activators or reactants:
                 logger.debug("non-SBGN direct inhibition encountered")
@@ -841,13 +845,13 @@ def add_inputs(
         for modtype, modifier in chain(
             enumerate(reaction.reactants), reaction.modifiers
         ):
-            if modtype in ("INHIBITION", "UNKNOWN_INHIBITION"):
+            if modtype in INHIBITION:
                 sign = "negative"
             else:
                 sign = "positive"
             # this should only appear when species is of type PHENOTYPE
             # otherwise non-SBGN compliant
-            if reaction.type == "NEGATIVE_INFLUENCE":
+            if reaction.type in NEGATIVE:
                 sign = negate(sign)
             if (modifier, sign) not in modifiers and modifier in known:
                 modifiers.append((modifier, sign))
