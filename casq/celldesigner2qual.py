@@ -51,7 +51,7 @@ NS = {
 
 # TODO use attrs, see https://www.attrs.org/en/latest/why.html#namedtuples
 Transition = collections.namedtuple(
-    "Transition", ["type", "reactants", "modifiers", "notes", "annotations"]
+    "Transition", ["type", "reactants", "modifiers", "notes", "annotations", "products"]
 )
 
 
@@ -148,7 +148,7 @@ def species_info(model):
             "receptor": is_receptor,
             "annotations": annot.find(".//rdf:RDF", NS),
             "compartment": compartment,
-            "contents": []
+            "contents": [],
         }
         # also store in nameconv the reverse mapping from SBML species to CD
         # species using the corresponding reference protein
@@ -210,7 +210,9 @@ def add_subcomponents_only(nameconv, model: etree.Element):
         + "rdf:RDF/../../../..",
         NS,
     ):
-        species_name = species.get("name")
+        ctype = get_text(species.find(".//cd:class", NS), "PROTEIN")
+        mods = get_mods(species.find(".//cd:listOfModifications", NS))
+        species_name = make_name_precise(species.get("name"), ctype, mods)
         cmplx = decomplexify(species.get("id"), model, field="species")
         add_rdf(
             nameconv,
@@ -218,7 +220,12 @@ def add_subcomponents_only(nameconv, model: etree.Element):
             new_rdf=species.find(".//rdf:RDF", NS),
         )
         nameconv[cmplx]["contents"].append(species_name)
-        print(f"added {species_name} to {cmplx}: {nameconv[cmplx]['contents']}")
+        logger.debug(
+            "added {species_name} to {cmplx}: {contents}",
+            species_name=species_name,
+            cmplx=cmplx,
+            contents=nameconv[cmplx]["contents"],
+        )
 
 
 def add_rdf(nameconv, reference: str, new_rdf: Optional[etree.Element]):
@@ -278,7 +285,7 @@ def get_transitions(model: etree.Element, info):
         # affecting that species
         for species in prods:
             info[species]["transitions"].append(
-                Transition(rtype, reacs, mods, notes, rdf)
+                Transition(rtype, reacs, mods, notes, rdf, prods)
             )
     return info
 
@@ -505,34 +512,31 @@ def delete_complexes_and_store_multispecies(info):
             for trans in value["transitions"]:
                 if trans.type == "HETERODIMER_ASSOCIATION":
                     if len(trans.reactants) != 2:
-                        continue
-                    [reac1, reac2] = trans.reactants
-                    if reac1 not in info or reac2 not in info:
-                        continue
-                    active1 = get_active(reac1, info)
-                    active2 = get_active(reac2, info)
-                    if (
-                        active1 == key
-                        and active2 == key
-                        and not info[reac1]["receptor"]
-                        and not info[reac2]["receptor"]
-                    ):
                         logger.debug(
-                            "deleting {reac1} and {reac2} for complex {key}",
-                            reac1=reac1,
-                            reac2=reac2,
-                            key=key,
+                            "complex {key} has a non binary HETERODIMER_ASSOCIATION"
                         )
-                        add_rdf(info, key, info[reac1]["annotations"])
-                        add_rdf(info, key, info[reac2]["annotations"])
-                        info[key]["transitions"].extend(info[reac1]["transitions"])
-                        info[key]["transitions"].extend(info[reac2]["transitions"])
-                        if info[reac1]["ref_species"] in duplicate_nodes:
-                            duplicate_nodes[info[reac1]["ref_species"]] = key
-                        if info[reac2]["ref_species"] in duplicate_nodes:
-                            duplicate_nodes[info[reac2]["ref_species"]] = key
-                        del info[reac1]
-                        del info[reac2]
+                        continue
+                    if len(trans.products) != 1:
+                        continue
+                    print(sorted(value["contents"]), " =? ", sorted([info[reac].get("name") for reac in trans.reactants if reac in info]))
+                    if any(
+                        reac not in info
+                        or info[reac]["receptor"]
+                        or get_active(reac, info) != key
+                        for reac in trans.reactants
+                    ):
+                        continue
+                    logger.debug(
+                        "deleting {reacs} for complex {key}",
+                        reac=trans.reactants,
+                        key=key,
+                    )
+                    for reac in trans.reactants:
+                        add_rdf(info, key, info[reac]["annotations"])
+                        info[key]["transitions"].extend(info[reac]["transitions"])
+                        if info[reac]["ref_species"] in duplicate_nodes:
+                            duplicate_nodes[info[reac]["ref_species"]] = key
+                        del info[reac]
         else:
             duplicate_nodes[value["ref_species"]] = key
     replace_in_transitions(info, replacements)
