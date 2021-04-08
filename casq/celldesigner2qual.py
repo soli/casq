@@ -780,10 +780,12 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
             if modtype in ("INHIBITION", "UNKNOWN_INHIBITION") and modifier in known
         ]
         # this should only appear when species is of type PHENOTYPE otherwise
-        # non-SBGN compliant
+        # non-SBGN compliant, and there should be a single reactant and no inhibitors
         # just swap reactants and inhibitors, there should not be any activator
-        if reaction.type == "NEGATIVE_INFLUENCE":
+        if reaction.type in ("INHIBITION", "NEGATIVE_INFLUENCE"):
             reactants, inhibitors = inhibitors, reactants
+            if activators or reactants:
+                logger.debug("non-SBGN direct inhibition encountered")
         # create and node if necessary
         if len(reactants) + len(inhibitors) > 1 or (
             activators and (reactants or inhibitors)
