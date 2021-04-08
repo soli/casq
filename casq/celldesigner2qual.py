@@ -510,33 +510,32 @@ def delete_complexes_and_store_multispecies(info):
                 del info[key]
         elif value["type"] == "COMPLEX":
             for trans in value["transitions"]:
-                if trans.type == "HETERODIMER_ASSOCIATION":
-                    if len(trans.reactants) != 2:
-                        logger.debug(
-                            "complex {key} has a non binary HETERODIMER_ASSOCIATION"
-                        )
-                        continue
-                    if len(trans.products) != 1:
-                        continue
-                    print(sorted(value["contents"]), " =? ", sorted([info[reac].get("name") for reac in trans.reactants if reac in info]))
-                    if any(
-                        reac not in info
-                        or info[reac]["receptor"]
-                        or get_active(reac, info) != key
-                        for reac in trans.reactants
-                    ):
-                        continue
-                    logger.debug(
-                        "deleting {reacs} for complex {key}",
-                        reac=trans.reactants,
-                        key=key,
-                    )
-                    for reac in trans.reactants:
-                        add_rdf(info, key, info[reac]["annotations"])
-                        info[key]["transitions"].extend(info[reac]["transitions"])
-                        if info[reac]["ref_species"] in duplicate_nodes:
-                            duplicate_nodes[info[reac]["ref_species"]] = key
-                        del info[reac]
+                # if len(trans.reactants) != 2 or len(trans.products) != 1:
+                if len(trans.reactants) < 2 or len(trans.products) != 1:
+                    continue
+                # print(trans.type, sorted(value["contents"]), sorted([info[reac].get("name") for reac in trans.reactants if reac in info]))
+                if trans.type != "HETERODIMER_ASSOCIATION" and sorted(value["contents"]) != sorted([info[reac].get("name") for reac in trans.reactants if reac in info]):
+                    continue
+                # if trans.type != "HETERODIMER_ASSOCIATION":
+                #     print("hello")
+                if any(
+                    reac not in info
+                    or info[reac]["receptor"]
+                    or get_active(reac, info) != key
+                    for reac in trans.reactants
+                ):
+                    continue
+                logger.debug(
+                    "deleting {reacs} for complex {key}",
+                    reac=trans.reactants,
+                    key=key,
+                )
+                for reac in trans.reactants:
+                    add_rdf(info, key, info[reac]["annotations"])
+                    info[key]["transitions"].extend(info[reac]["transitions"])
+                    if info[reac]["ref_species"] in duplicate_nodes:
+                        duplicate_nodes[info[reac]["ref_species"]] = key
+                    del info[reac]
         else:
             duplicate_nodes[value["ref_species"]] = key
     replace_in_transitions(info, replacements)
