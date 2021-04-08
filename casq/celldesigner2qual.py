@@ -148,6 +148,7 @@ def species_info(model):
             "receptor": is_receptor,
             "annotations": annot.find(".//rdf:RDF", NS),
             "compartment": compartment,
+            "contents": []
         }
         # also store in nameconv the reverse mapping from SBML species to CD
         # species using the corresponding reference protein
@@ -209,11 +210,15 @@ def add_subcomponents_only(nameconv, model: etree.Element):
         + "rdf:RDF/../../../..",
         NS,
     ):
+        species_name = species.get("name")
+        cmplx = decomplexify(species.get("id"), model, field="species")
         add_rdf(
             nameconv,
-            reference=decomplexify(species.get("id"), model, field="species"),
+            reference=cmplx,
             new_rdf=species.find(".//rdf:RDF", NS),
         )
+        nameconv[cmplx]["contents"].append(species_name)
+        print(f"added {species_name} to {cmplx}: {nameconv[cmplx]['contents']}")
 
 
 def add_rdf(nameconv, reference: str, new_rdf: Optional[etree.Element]):
