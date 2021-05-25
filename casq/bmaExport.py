@@ -156,6 +156,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                     pass
             # now modifiers
             if len(transition[2]) == 0:
+                formula.finishTransition()
                 continue
             modifiers = transition[2]
             # catalysts are a special case
