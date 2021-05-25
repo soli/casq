@@ -55,6 +55,10 @@ Transition = collections.namedtuple(
 )
 
 
+INHIBITION = ("INHIBITION", "UNKNOWN_INHIBITION")
+NEGATIVE = ("INHIBITION", "NEGATIVE_INFLUENCE", "UNKNOWN_INHIBITION")
+
+
 def read_celldesigner(filename: IO):
     """Parse the given file."""
     root = etree.parse(filename).getroot()
@@ -221,7 +225,15 @@ def add_rdf(nameconv, reference: str, new_rdf: Optional[etree.Element]):
         rdfs = new_rdf.find("./rdf:Description", NS)
         if rdfs is None:
             return
-        nameconv[reference]["annotations"].find("./rdf:Description", NS).extend(rdfs[:])
+        logger.debug(
+            "adding annotations from {rdfs} to {reference}",
+            rdfs=rdfs[:],
+            reference=reference,
+        )
+        description = nameconv[reference]["annotations"].find("./rdf:Description", NS)
+        for element in rdfs[:]:
+            if element not in description:
+                description.append(element)
     else:
         nameconv[reference]["annotations"] = new_rdf
 
@@ -761,20 +773,23 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
         activators = [
             modifier
             for (modtype, modifier) in reaction.modifiers
-            if modtype not in ("INHIBITION", "BOOLEAN_LOGIC_GATE_AND")
+            if modtype
+            not in ("INHIBITION", "UNKNOWN_INHIBITION", "BOOLEAN_LOGIC_GATE_AND")
             and modifier in known
             and modifier not in reactants
         ]
         inhibitors = [
             modifier
             for (modtype, modifier) in reaction.modifiers
-            if modtype == "INHIBITION" and modifier in known
+            if modtype in INHIBITION and modifier in known
         ]
         # this should only appear when species is of type PHENOTYPE otherwise
-        # non-SBGN compliant
+        # non-SBGN compliant, and there should be a single reactant and no inhibitors
         # just swap reactants and inhibitors, there should not be any activator
-        if reaction.type == "NEGATIVE_INFLUENCE":
+        if reaction.type in NEGATIVE:
             reactants, inhibitors = inhibitors, reactants
+            if activators or reactants:
+                logger.debug("non-SBGN direct inhibition encountered")
         # create and node if necessary
         if len(reactants) + len(inhibitors) > 1 or (
             activators and (reactants or inhibitors)
@@ -830,13 +845,13 @@ def add_inputs(
         for modtype, modifier in chain(
             enumerate(reaction.reactants), reaction.modifiers
         ):
-            if modtype == "INHIBITION":
+            if modtype in INHIBITION:
                 sign = "negative"
             else:
                 sign = "positive"
             # this should only appear when species is of type PHENOTYPE
             # otherwise non-SBGN compliant
-            if reaction.type == "NEGATIVE_INFLUENCE":
+            if reaction.type in NEGATIVE:
                 sign = negate(sign)
             if (modifier, sign) not in modifiers and modifier in known:
                 modifiers.append((modifier, sign))
