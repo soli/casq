@@ -510,14 +510,10 @@ def delete_complexes_and_store_multispecies(info):
                 del info[key]
         elif value["type"] == "COMPLEX":
             for trans in value["transitions"]:
-                # if len(trans.reactants) != 2 or len(trans.products) != 1:
                 if len(trans.reactants) < 2 or len(trans.products) != 1:
                     continue
-                # print(trans.type, sorted(value["contents"]), sorted([info[reac].get("name") for reac in trans.reactants if reac in info]))
                 if trans.type != "HETERODIMER_ASSOCIATION" and sorted(value["contents"]) != sorted([info[reac].get("name") for reac in trans.reactants if reac in info]):
                     continue
-                # if trans.type != "HETERODIMER_ASSOCIATION":
-                #     print("hello")
                 if any(
                     reac not in info
                     or info[reac]["receptor"]
@@ -525,6 +521,7 @@ def delete_complexes_and_store_multispecies(info):
                     for reac in trans.reactants
                 ):
                     continue
+                # print(trans.type, value["contents"], "->", value["name"])
                 logger.debug(
                     "deleting {reacs} for complex {key}",
                     reac=trans.reactants,
