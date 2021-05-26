@@ -572,9 +572,35 @@ def get_active(val, info):
     for species, data in info.items():
         if species.startswith("csa") or species.startswith("sa"):
             for trans in data["transitions"]:
-                if val in trans.reactants or val in (
+                if trans.type == "DUMMY_AND":
+                    reacs = [
+                        r
+                        for t in trans.reactants
+                        if t.type != "DUMMY_AND"
+                        for r in t.reactants
+                    ] + [
+                        r
+                        for t in trans.modifiers
+                        if t.type != "DUMMY_AND"
+                        for r in t.reactants
+                    ]
+                    mods = [
+                        m
+                        for t in trans.reactants
+                        if t.type != "DUMMY_AND"
+                        for m in t.modifiers
+                    ] + [
+                        m
+                        for t in trans.modifiers
+                        if t.type != "DUMMY_AND"
+                        for m in t.modifiers
+                    ]
+                else:
+                    reacs = trans.reactants
+                    mods = trans.modifiers
+                if val in reacs or val in (
                     mod
-                    for (_modtype, modifier_list) in trans.modifiers
+                    for (_modtype, modifier_list) in mods
                     for mod in modifier_list.split(",")
                 ):
                     if active is None:
@@ -771,16 +797,27 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
     for reaction in transitions:
         if reaction.type == "DUMMY_AND":
             # special case resulting from a complex elimination
-            lapply = etree.SubElement(apply, "apply")
-            etree.SubElement(lapply, "and")
-            add_function(lapply, reaction.reactants, known)
-            # get rid of <math> wrapper
-            lapply.append(lapply[1][0])
-            lapply.remove(lapply[1])
-            add_function(lapply, reaction.modifiers, known)
-            # get rid of <math> wrapper
-            lapply.append(lapply[2][0])
-            lapply.remove(lapply[2])
+            if not reaction.reactants and not reaction.modifiers:
+                continue
+            if reaction.reactants and reaction.modifiers:
+                lapply = etree.SubElement(apply, "apply")
+                etree.SubElement(lapply, "and")
+                lapply_index = 1
+            else:
+                lapply = apply
+                lapply_index = len(apply)
+            if reaction.reactants:
+                add_function(lapply, reaction.reactants, known)
+                # get rid of <math> wrapper
+                lapply.append(lapply[lapply_index][0])
+                lapply.remove(lapply[lapply_index])
+                lapply_index += 1
+            if reaction.modifiers:
+                add_function(lapply, reaction.modifiers, known)
+                # get rid of <math> wrapper
+                lapply.append(lapply[lapply_index][0])
+                lapply.remove(lapply[lapply_index])
+                print()
             continue
         # we assume that only "BOOLEAN_LOGIC_GATE_AND" has multiple modifiers
         # it is also the only modification that has an AND and therefore ends
