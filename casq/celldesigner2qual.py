@@ -511,6 +511,10 @@ def delete_complexes_and_store_multispecies(info):
                         and active2 == key
                         and not info[reac1]["receptor"]
                         and not info[reac2]["receptor"]
+                        and (
+                            not info[reac1]["transitions"]
+                            or not info[reac2]["transitions"]
+                        )
                     ):
                         logger.debug(
                             "deleting {reac1} and {reac2} for complex {key}",
@@ -520,23 +524,16 @@ def delete_complexes_and_store_multispecies(info):
                         )
                         add_rdf(info, key, info[reac1]["annotations"])
                         add_rdf(info, key, info[reac2]["annotations"])
-                        info[key]["transitions"].append(
-                            Transition(
-                                "DUMMY_AND",
-                                info[reac1]["transitions"],
-                                info[reac2]["transitions"],
-                                None,
-                                None,
-                            )
-                        )
-                        # info[key]["transitions"].extend(info[reac1]["transitions"])
-                        # info[key]["transitions"].extend(info[reac2]["transitions"])
+
+                        info[key]["transitions"].extend(info[reac1]["transitions"])
+                        info[key]["transitions"].extend(info[reac2]["transitions"])
                         if info[reac1]["ref_species"] in duplicate_nodes:
                             duplicate_nodes[info[reac1]["ref_species"]] = key
                         if info[reac2]["ref_species"] in duplicate_nodes:
                             duplicate_nodes[info[reac2]["ref_species"]] = key
                         del info[reac1]
                         del info[reac2]
+                        # info[key]["transitions"].remove(trans)
         else:
             duplicate_nodes[value["ref_species"]] = key
     replace_in_transitions(info, replacements)
@@ -547,8 +544,6 @@ def replace_in_transitions(info, replacements):
     """Change transitions in info to reflect replacements."""
     for _species, data in info.items():
         for trans in data["transitions"]:
-            if trans.type == "DUMMY_AND":
-                continue
             for val in trans.reactants.copy():
                 if val in replacements:
                     trans.reactants.append(replacements[val])
@@ -572,35 +567,9 @@ def get_active(val, info):
     for species, data in info.items():
         if species.startswith("csa") or species.startswith("sa"):
             for trans in data["transitions"]:
-                if trans.type == "DUMMY_AND":
-                    reacs = [
-                        r
-                        for t in trans.reactants
-                        if t.type != "DUMMY_AND"
-                        for r in t.reactants
-                    ] + [
-                        r
-                        for t in trans.modifiers
-                        if t.type != "DUMMY_AND"
-                        for r in t.reactants
-                    ]
-                    mods = [
-                        m
-                        for t in trans.reactants
-                        if t.type != "DUMMY_AND"
-                        for m in t.modifiers
-                    ] + [
-                        m
-                        for t in trans.modifiers
-                        if t.type != "DUMMY_AND"
-                        for m in t.modifiers
-                    ]
-                else:
-                    reacs = trans.reactants
-                    mods = trans.modifiers
-                if val in reacs or val in (
+                if val in trans.reactants or val in (
                     mod
-                    for (_modtype, modifier_list) in mods
+                    for (_modtype, modifier_list) in trans.modifiers
                     for mod in modifier_list.split(",")
                 ):
                     if active is None:
@@ -710,7 +679,7 @@ def add_transitions(tlist: etree.Element, info, graph: nx.DiGraph):
                 tlist, "qual:transition", {"qual:id": "tr_" + species}
             )
             ilist = etree.SubElement(trans, "qual:listOfInputs")
-            _ = add_inputs(ilist, data["transitions"], species, known, graph)
+            add_inputs(ilist, data["transitions"], species, known, graph)
             # there might not be any input left after filtering known species
             if not ilist:
                 tlist.remove(trans)
@@ -795,30 +764,6 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
     else:
         apply = math
     for reaction in transitions:
-        if reaction.type == "DUMMY_AND":
-            # special case resulting from a complex elimination
-            if not reaction.reactants and not reaction.modifiers:
-                continue
-            if reaction.reactants and reaction.modifiers:
-                lapply = etree.SubElement(apply, "apply")
-                etree.SubElement(lapply, "and")
-                lapply_index = 1
-            else:
-                lapply = apply
-                lapply_index = len(apply)
-            if reaction.reactants:
-                add_function(lapply, reaction.reactants, known)
-                # get rid of <math> wrapper
-                lapply.append(lapply[lapply_index][0])
-                lapply.remove(lapply[lapply_index])
-                lapply_index += 1
-            if reaction.modifiers:
-                add_function(lapply, reaction.modifiers, known)
-                # get rid of <math> wrapper
-                lapply.append(lapply[lapply_index][0])
-                lapply.remove(lapply[lapply_index])
-                print()
-            continue
         # we assume that only "BOOLEAN_LOGIC_GATE_AND" has multiple modifiers
         # it is also the only modification that has an AND and therefore ends
         # with reactants
@@ -896,16 +841,12 @@ def add_inputs(
     species: str,
     known: List[str],
     graph: nx.DiGraph,
-    index: int = 0,
-) -> int:
+):
     """Add all known inputs."""
+    index = 0
     modifiers = []  # type: List[Tuple[str, str]]
     graph.add_node(species)
     for reaction in transitions:
-        if reaction.type == "DUMMY_AND":
-            index = add_inputs(ilist, reaction.reactants, species, known, graph, index)
-            index = add_inputs(ilist, reaction.modifiers, species, known, graph, index)
-            continue
         # we use enumerate to get a dummy modtype for reactants
         for modtype, modifier in chain(
             enumerate(reaction.reactants), reaction.modifiers
@@ -934,7 +875,6 @@ def add_inputs(
                     },
                 )
                 index += 1
-    return index
 
 
 def write_csv(sbml_filename: str, info):
