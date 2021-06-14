@@ -513,7 +513,6 @@ def delete_complexes_and_store_multispecies(info):
                         and not info[reac2]["receptor"]
                         and not info[reac1]["transitions"]
                         and not info[reac2]["transitions"]
-
                     ):
                         logger.debug(
                             "deleting {reac1} and {reac2} for complex {key}",
