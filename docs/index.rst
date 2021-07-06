@@ -39,7 +39,7 @@ The conversion happens in 4 steps.
       annotated as a *receptor*, then the receptor is deleted from the map
       (its annotations are added to the product of the reaction);
 
-   #. if two species of the map take part in a reaction annotated as
+   #. if two *input* species of the map take part in a reaction annotated as
       *heterodimer association*, if none of them is annotated as *receptor*,
       and if both do not take active part (i.e., reactant or modifier) in any
       other reaction, then both are merged into the complex, product of the
