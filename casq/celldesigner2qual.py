@@ -511,6 +511,8 @@ def delete_complexes_and_store_multispecies(info):
                         and active2 == key
                         and not info[reac1]["receptor"]
                         and not info[reac2]["receptor"]
+                        and not info[reac1]["transitions"]
+                        and not info[reac2]["transitions"]
                     ):
                         logger.debug(
                             "deleting {reac1} and {reac2} for complex {key}",
@@ -520,6 +522,7 @@ def delete_complexes_and_store_multispecies(info):
                         )
                         add_rdf(info, key, info[reac1]["annotations"])
                         add_rdf(info, key, info[reac2]["annotations"])
+
                         info[key]["transitions"].extend(info[reac1]["transitions"])
                         info[key]["transitions"].extend(info[reac2]["transitions"])
                         if info[reac1]["ref_species"] in duplicate_nodes:
@@ -528,6 +531,7 @@ def delete_complexes_and_store_multispecies(info):
                             duplicate_nodes[info[reac2]["ref_species"]] = key
                         del info[reac1]
                         del info[reac2]
+                        # info[key]["transitions"].remove(trans)
         else:
             duplicate_nodes[value["ref_species"]] = key
     replace_in_transitions(info, replacements)

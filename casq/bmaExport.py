@@ -106,13 +106,7 @@ class multiStateFormulaBuilder:
 
 # hardcoded colour codes so elements still follow BMA colourscheme
 # Default pink #ff66cc
-COLOURMAP = {
-    0: "#ff66cc",
-    1: "#33cc00",
-    2: "#ff9900",
-    3: "#9966ff",
-    4: "#00cccc"
-}
+COLOURMAP = {0: "#ff66cc", 1: "#33cc00", 2: "#ff9900", 3: "#9966ff", 4: "#00cccc"}
 
 
 def bma_relationship(source, target, idMap, count, which="Activator"):
