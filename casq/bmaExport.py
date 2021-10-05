@@ -187,8 +187,8 @@ def translateGreek(name):
 
 def depunctuate(name):
     """Replace punctuation by underscores."""
-    badChars = " ,-()+:/\\'"
-    alternatives = "__________"
+    badChars = " ,-()+:/\\'[]><"
+    alternatives = "______________"
     cleanup = str.maketrans(badChars, alternatives)
     return name.translate(cleanup)
 
