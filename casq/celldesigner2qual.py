@@ -1037,6 +1037,15 @@ def main():
             default=[],
             help="Only species upstream of this/these species will be kept",
         )
+        parser.add_argument(
+            "-d",
+            "--downstream",
+            action="extend",
+            nargs="*",
+            type=str,
+            default=[],
+            help="Only species downstream of this/these species will be kept",
+        )
     else:
         parser.add_argument(
             "-u",
@@ -1046,15 +1055,14 @@ def main():
             default=[],
             help="Only species upstream of this/these species will be kept",
         )
-    parser.add_argument(
-        "-d",
-        "--downstream",
-        action="extend",
-        nargs="*",
-        type=str,
-        default=[],
-        help="Only species downstream of this/these species will be kept",
-    )
+        parser.add_argument(
+            "-d",
+            "--downstream",
+            action="append",
+            type=str,
+            default=[],
+            help="Only species downstream of this/these species will be kept",
+        )
     parser.add_argument(
         "infile",
         type=argparse.FileType("r", encoding="utf-8"),
