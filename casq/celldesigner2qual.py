@@ -542,7 +542,6 @@ def delete_complexes_and_store_multispecies(info):
 def restrict_model(info, upstream, downstream):
     """Only keep species upstream/downstream of some list of species."""
     name_to_ids = {v["name"]: k for (k, v) in info.items()}
-    print(name_to_ids)
     for name in upstream + downstream:
         if name not in name_to_ids:
             logger.error(name + " was not found, maybe it is ambiguous…")
@@ -1028,15 +1027,25 @@ def main():
         size is smaller than S.
         A negative S leads to keep only the biggest(s) connected component(s)""",
     )
-    parser.add_argument(
-        "-u",
-        "--upstream",
-        action="extend",
-        nargs="*",
-        type=str,
-        default=[],
-        help="Only species upstream of this/these species will be kept",
-    )
+    if sys.version_info >= (3, 8, 0):
+        parser.add_argument(
+            "-u",
+            "--upstream",
+            action="extend",
+            nargs="*",
+            type=str,
+            default=[],
+            help="Only species upstream of this/these species will be kept",
+        )
+    else:
+        parser.add_argument(
+            "-u",
+            "--upstream",
+            action="append",
+            type=str,
+            default=[],
+            help="Only species upstream of this/these species will be kept",
+        )
     parser.add_argument(
         "-d",
         "--downstream",
