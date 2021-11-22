@@ -336,7 +336,6 @@ def write_qual(
     qlist = etree.SubElement(model, "qual:listOfQualitativeSpecies")
     tlist = etree.SubElement(model, "qual:listOfTransitions")
     graph = nx.DiGraph()
-    fix_all_names(info)
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove)
     if sif:
@@ -441,6 +440,7 @@ def simplify_model(info, upstream, downstream):
                             key=key,
                         )
                         del info[val]
+    fix_all_names(info)
     restrict_model(info, upstream, downstream)
 
 
@@ -541,6 +541,12 @@ def delete_complexes_and_store_multispecies(info):
 
 def restrict_model(info, upstream, downstream):
     """Only keep species upstream/downstream of some list of species."""
+    name_to_ids = {v["name"]: k for (k, v) in info.items()}
+    print(name_to_ids)
+    for name in upstream + downstream:
+        if name not in name_to_ids:
+            logger.error(name + " was not found, maybe it is ambiguous…")
+
     if upstream == [] and downstream == []:
         return
     graph = nx.DiGraph()
@@ -552,17 +558,18 @@ def restrict_model(info, upstream, downstream):
             for (_modtype, modlist) in trans.modifiers:
                 for val in modlist.split(","):
                     graph.add_edge(val, species)
-    # TODO use sets?
-    keep = []
-    for dn in downstream:
-        keep += [
+    keep = set()
+    for dnname in downstream:
+        dn = name_to_ids[dnname]
+        keep |= {
             elt for succl in nx.dfs_successors(graph, dn).values() for elt in succl
-        ] + [dn]
+        } | {dn}
     ggraph = graph.reverse()
-    for up in upstream:
-        keep += [
+    for upname in upstream:
+        up = name_to_ids[upname]
+        keep |= {
             elt for succl in nx.dfs_successors(ggraph, up).values() for elt in succl
-        ] + [up]
+        } | {up}
     for species in list(info.keys()):
         if species not in keep:
             del info[species]
