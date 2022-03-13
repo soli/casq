@@ -1012,6 +1012,11 @@ def main():
         help="When exporting to BMA, use this granularity",
     )
     parser.add_argument(
+        "--colourConstant",
+        action="store_false",
+        help="When exporting to BMA, colour all variables pink (defaults to colour by compartment)",
+    )
+    parser.add_argument(
         "-s",
         "--sif",
         action="store_true",
@@ -1083,7 +1088,7 @@ def main():
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     if args.bma:
-        bmaExport.write_bma(args.outfile, info, args.granularity)
+        bmaExport.write_bma(args.outfile, info, args.granularity, False, args.colourConstant)
     else:
         write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif)
     if args.csv and args.outfile != sys.stdout:

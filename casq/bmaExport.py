@@ -236,12 +236,11 @@ def bma_layout_variable(vid, infoVariable, fill=None, description=""):
     return result
 
 
-def write_bma(filename: str, info, granularity=1, ignoreSelfLoops=False):
+def write_bma(filename: str, info, granularity=1, ignoreSelfLoops=False, colourByCompartment=True):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the BMA json with layout file for our model."""
     # granularity must be a non-zero natural
     assert granularity > 0
-
     # calculate the compartments for colours;
     # four largest compartments are coloured BMA colours, all else default
     compartments = {}
@@ -255,7 +254,10 @@ def write_bma(filename: str, info, granularity=1, ignoreSelfLoops=False):
     compList.sort(key=lambda i: -i[1])
     compartmentColour = {}
     for i in range(len(compartments)):
-        compartmentColour[compList[i][0]] = COLOURMAP.get(i)
+        if colourByCompartment:
+            compartmentColour[compList[i][0]] = COLOURMAP.get(i)
+        else:
+            compartmentColour[compList[i][0]] = COLOURMAP.get(0)
 
     idGenerator = itertools.count(1)
     idMap = {k: next(idGenerator) for k in info.keys()}
