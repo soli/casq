@@ -106,7 +106,7 @@ The second file is mostly for automated treatment.
 __ http://celldesigner.org/
 __ https://pypi.org/project/casq/
 __ https://covid.pages.uni.lu/
-.. [#] https://www.biorxiv.org/content/10.1101/2020.10.26.356014v1
+.. [#] https://www.embopress.org/doi/full/10.15252/msb.202110387
 .. _`notebook`: https://github.com/colomoto/colomoto-docker/blob/for-next/tutorials/CaSQ/CaSQ_from_CellDesigner_to_GINsim.ipynb
 __ http://ginsim.org/
 __ https://cellcollective.org/

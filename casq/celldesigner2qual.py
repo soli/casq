@@ -336,7 +336,6 @@ def write_qual(
     qlist = etree.SubElement(model, "qual:listOfQualitativeSpecies")
     tlist = etree.SubElement(model, "qual:listOfTransitions")
     graph = nx.DiGraph()
-    fix_all_names(info)
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove)
     if sif:
@@ -401,7 +400,7 @@ def write_sif(sbml_filename: str, info, graph: nx.DiGraph):
                 )
 
 
-def simplify_model(info):
+def simplify_model(info, upstream, downstream):
     """Clean the model w.r.t. some active/inactive species."""
     multispecies = delete_complexes_and_store_multispecies(info)
     # pylint: disable=too-many-nested-blocks
@@ -441,6 +440,8 @@ def simplify_model(info):
                             key=key,
                         )
                         del info[val]
+    fix_all_names(info)
+    restrict_model(info, upstream, downstream)
 
 
 def delete_complexes_and_store_multispecies(info):
@@ -536,6 +537,41 @@ def delete_complexes_and_store_multispecies(info):
             duplicate_nodes[value["ref_species"]] = key
     replace_in_transitions(info, replacements)
     return multispecies
+
+
+def restrict_model(info, upstream, downstream):
+    """Only keep species upstream/downstream of some list of species."""
+    name_to_ids = {v["name"]: k for (k, v) in info.items()}
+    for name in upstream + downstream:
+        if name not in name_to_ids:
+            logger.error(name + " was not found, maybe it is ambiguous…")
+
+    if upstream == [] and downstream == []:
+        return
+    graph = nx.DiGraph()
+    for species, data in info.items():
+        graph.add_node(species)
+        for trans in data["transitions"]:
+            for val in trans.reactants:
+                graph.add_edge(val, species)
+            for (_modtype, modlist) in trans.modifiers:
+                for val in modlist.split(","):
+                    graph.add_edge(val, species)
+    keep = set()
+    for dnname in downstream:
+        dn = name_to_ids[dnname]
+        keep |= {
+            elt for succl in nx.dfs_successors(graph, dn).values() for elt in succl
+        } | {dn}
+    ggraph = graph.reverse()
+    for upname in upstream:
+        up = name_to_ids[upname]
+        keep |= {
+            elt for succl in nx.dfs_successors(ggraph, up).values() for elt in succl
+        } | {up}
+    for species in list(info.keys()):
+        if species not in keep:
+            del info[species]
 
 
 def replace_in_transitions(info, replacements):
@@ -954,7 +990,7 @@ def main():
         version="%(prog)s v{version}".format(version=version),
     )
     parser.add_argument(
-        "-d", "--debug", action="store_true", help="Display a lot of debug information"
+        "-D", "--debug", action="store_true", help="Display a lot of debug information"
     )
     parser.add_argument(
         "-c",
@@ -991,6 +1027,42 @@ def main():
         size is smaller than S.
         A negative S leads to keep only the biggest(s) connected component(s)""",
     )
+    if sys.version_info >= (3, 8, 0):
+        parser.add_argument(
+            "-u",
+            "--upstream",
+            action="extend",
+            nargs="*",
+            type=str,
+            default=[],
+            help="Only species upstream of this/these species will be kept",
+        )
+        parser.add_argument(
+            "-d",
+            "--downstream",
+            action="extend",
+            nargs="*",
+            type=str,
+            default=[],
+            help="Only species downstream of this/these species will be kept",
+        )
+    else:
+        parser.add_argument(
+            "-u",
+            "--upstream",
+            action="append",
+            type=str,
+            default=[],
+            help="Only species upstream of this/these species will be kept",
+        )
+        parser.add_argument(
+            "-d",
+            "--downstream",
+            action="append",
+            type=str,
+            default=[],
+            help="Only species downstream of this/these species will be kept",
+        )
     parser.add_argument(
         "infile",
         type=argparse.FileType("r", encoding="utf-8"),
@@ -1007,7 +1079,7 @@ def main():
         logger.disable("casq")
     logger.debug("parsing {fname}…", fname=args.infile.name)
     info, width, height = read_celldesigner(args.infile)
-    simplify_model(info)
+    simplify_model(info, args.upstream, args.downstream)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     if args.bma:
