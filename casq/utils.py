@@ -1,6 +1,6 @@
 """Various utilities.
 
-Copyright (C) 2019-2021 Sylvain.Soliman@inria.fr
+Copyright (C) 2019-2022 Sylvain.Soliman@inria.fr
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
