@@ -999,24 +999,6 @@ def main():
         help="Store the species information in a separate CSV file",
     )
     parser.add_argument(
-        "-b",
-        "--bma",
-        action="store_true",
-        help="Output to BMA json format",
-    )
-    parser.add_argument(
-        "-g",
-        "--granularity",
-        type=int,
-        default="1",
-        help="When exporting to BMA, use this granularity",
-    )
-    parser.add_argument(
-        "--colourConstant",
-        action="store_false",
-        help="When exporting to BMA, colour all variables pink (defaults to colour by compartment)",
-    )
-    parser.add_argument(
         "-s",
         "--sif",
         action="store_true",
@@ -1076,6 +1058,25 @@ def main():
         help="CellDesigner File",
     )
     parser.add_argument(
+        "-b",
+        "--bma",
+        action="store_true",
+        help="Output to BMA json format",
+    )
+    parser.add_argument(
+        "-g",
+        "--granularity",
+        type=int,
+        default="1",
+        help="When exporting to BMA, use this granularity",
+    )
+    parser.add_argument(
+        "-C",
+        "--colourConstant",
+        action="store_false",
+        help="When exporting to BMA, colour all variables pink (defaults to colour by compartment)",
+    )
+    parser.add_argument(
         "outfile", nargs="?", default=sys.stdout, help="SBML-Qual/BMA json File"
     )
     args = parser.parse_args()
@@ -1088,7 +1089,9 @@ def main():
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     if args.bma:
-        bmaExport.write_bma(args.outfile, info, args.granularity, False, args.colourConstant)
+        bmaExport.write_bma(
+            args.outfile, info, args.granularity, False, args.colourConstant
+        )
     else:
         write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif)
     if args.csv and args.outfile != sys.stdout:

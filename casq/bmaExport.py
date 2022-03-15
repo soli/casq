@@ -236,7 +236,9 @@ def bma_layout_variable(vid, infoVariable, fill=None, description=""):
     return result
 
 
-def write_bma(filename: str, info, granularity=1, ignoreSelfLoops=False, colourByCompartment=True):
+def write_bma(
+    filename: str, info, granularity=1, ignoreSelfLoops=False, colourByCompartment=True
+):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the BMA json with layout file for our model."""
     # granularity must be a non-zero natural
