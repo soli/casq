@@ -10,6 +10,7 @@ with open("casq/__init__.py", "r") as file:
         if line.startswith("version ="):
             version = line.split('"')[1]
 
+# stats: pypistats python_minor casq --last_month
 setup(
     name="casq",
     version=version,
