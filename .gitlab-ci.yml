@@ -15,7 +15,7 @@ stages:
 test:
   stage: test
   script:
-  - apt install curl
+  - apt-get update && apt-get install -y curl
   - python3 -m pip install tox
   - tox -e ALL
 
