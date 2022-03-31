@@ -1,4 +1,6 @@
-# Should be under default: but then "gitlab-runner exec docker test" fails at finding it :(
+# -*- compile-command: "gitlab-runner exec docker test" -*-
+
+# Should be under default: but then gitlab-runner fails at finding it :(
 image: paternal/pythons@sha256:ea02d2d20a085cc4fdced910c9d2c54736ab9f7e0152eddfe41e7cd6a1c10474
 
 default:
