@@ -1,3 +1,11 @@
+default:
+  image: paternal/pythons@ea02d2d20a08
+
+  # Gitlab-ci shared runner
+  tags:
+    - ci.inria.fr
+    - small
+
 stages:
   - build
   - test
@@ -30,6 +38,7 @@ pages:
   script:
   - pip3 install loguru networkx sphinx
   - sphinx-build -W -b html docs docs/_build/html
+  - mkdir -p public
   - mv docs/_build/html/ public/
   artifacts:
     paths:
