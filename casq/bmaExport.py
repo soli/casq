@@ -142,10 +142,16 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                 if ignoreSelfLoops and reactant == product:
                     continue
                 if reactant in idMap:
-                    relationships.append(
-                        bma_relationship(reactant, product, idMap, count)
-                    )
-                    formula.addActivator(idMap[reactant])
+                    if transition.type in ("INHIBITION", "NEGATIVE_INFLUENCE", "UNKNOWN_INHIBITION"):
+                        relationships.append(
+                            bma_relationship(reactant, product, idMap, count, "Inhibitor")
+                        )
+                        formula.addInhibitor(idMap[reactant])
+                    else:
+                        relationships.append(
+                            bma_relationship(reactant, product, idMap, count)
+                        )
+                        formula.addActivator(idMap[reactant])
                 else:
                     pass
             # now modifiers
