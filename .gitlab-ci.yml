@@ -25,7 +25,8 @@ test:
 run:
   stage: build
   script:
-  - python3 setup.py bdist_wheel
+  - python3 -m pip install build
+  - python3 -m build -w
 
 pypi:
   stage: release
@@ -33,8 +34,8 @@ pypi:
   - tags
   script:
   - python3 -m pip install --user --upgrade pip
-  - python3 -m pip install --user setuptools wheel twine
-  - python3 setup.py sdist bdist_wheel
+  - python3 -m pip install --user setuptools wheel build twine
+  - python3 -m build
   - python3 -m twine upload dist/*
 
 pages:
