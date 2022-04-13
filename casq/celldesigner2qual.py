@@ -59,9 +59,9 @@ INHIBITION = ("INHIBITION", "UNKNOWN_INHIBITION")
 NEGATIVE = ("INHIBITION", "NEGATIVE_INFLUENCE", "UNKNOWN_INHIBITION")
 
 
-def read_celldesigner(filename: IO):
+def read_celldesigner(fileobj: IO):
     """Parse the given file."""
-    root = etree.parse(filename).getroot()
+    root = etree.parse(fileobj).getroot()
     tag = root.tag
     if tag != "{" + NS["sbml"] + "}sbml":
         raise ValueError("Currently limited to SBML Level 2 Version 4")
@@ -976,6 +976,15 @@ def add_function_as_rdf(info, species: str, func: str):
         },
     )
     add_rdf(info, species, rdf)
+
+
+def map_to_model(map_filename: str, model_filename: str):
+    """Do the full run with defaults arguments."""
+    logger.disable("casq")
+    with open(map_filename, "r", encoding="utf-8") as f:
+        info, width, height = read_celldesigner(f)
+    simplify_model(info, [], [])
+    write_qual(model_filename, info, width, height)
 
 
 def main():
