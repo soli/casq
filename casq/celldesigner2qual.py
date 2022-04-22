@@ -23,14 +23,12 @@ import os.path
 import sys
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
-from typing import Dict, IO, List, Optional, Tuple, cast  # noqa: F401
-
-from loguru import logger  # type: ignore
+from typing import IO, Dict, List, Optional, Tuple, cast  # noqa: F401
 
 import networkx as nx  # type: ignore
+from loguru import logger  # type: ignore
 
-from . import bmaExport
-from . import version
+from . import bmaExport, version
 
 NS = {
     "sbml": "http://www.sbml.org/sbml/level2/version4",
@@ -454,13 +452,17 @@ def handle_phenotypes(info):
         modifiers = []
         for t in transitions:
             if len(t.reactants) != 1:
-                logger.warning("ignoring non-unary reaction to phenotype {pheno}", pheno=data.name)
+                logger.warning(
+                    "ignoring non-unary reaction to phenotype {pheno}", pheno=data.name
+                )
                 continue
             if t.type == "NEGATIVE_INFLUENCE":
                 modifiers.append(("INHIBITION", t.reactants[0]))
             else:
                 modifiers.append(("CATALYSIS", t.reactants[0]))
-        info[key]["transitions"] = [Transition("STATE_TRANSITION", [], modifiers, None, None)]
+        info[key]["transitions"] = [
+            Transition("STATE_TRANSITION", [], modifiers, None, None)
+        ]
 
 
 def delete_complexes_and_store_multispecies(info):
@@ -952,7 +954,9 @@ def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
     if children[0].tag == "and":
         return "&".join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
     if children[0].tag == "or":
-        return "(" + "|".join(map(lambda x: mathml_to_ginsim(x, info), children[1:])) + ")"
+        return (
+            "(" + "|".join(map(lambda x: mathml_to_ginsim(x, info), children[1:])) + ")"
+        )
     if children[0].tag == "eq":
         species = children[1].text
         species = info[species]["name"]
