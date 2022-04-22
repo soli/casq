@@ -23,10 +23,11 @@ import os.path
 import sys
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
-from typing import IO, Dict, List, Optional, Tuple, cast  # noqa: F401
+from typing import Dict, IO, List, Optional, Tuple, cast  # noqa: F401
+
+from loguru import logger  # type: ignore
 
 import networkx as nx  # type: ignore
-from loguru import logger  # type: ignore
 
 from . import bmaExport, version
 
