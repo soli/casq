@@ -952,7 +952,7 @@ def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
     if children[0].tag == "and":
         return "&".join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
     if children[0].tag == "or":
-        return "(" + "|".join(map(lambda x: mathml_to_ginsim(x, info), children[1:])) +  ")"
+        return "(" + "|".join(map(lambda x: mathml_to_ginsim(x, info), children[1:])) + ")"
     if children[0].tag == "eq":
         species = children[1].text
         species = info[species]["name"]
