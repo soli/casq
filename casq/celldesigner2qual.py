@@ -442,6 +442,25 @@ def simplify_model(info, upstream, downstream):
                         del info[val]
     fix_all_names(info)
     restrict_model(info, upstream, downstream)
+    handle_phenotypes(info)
+
+
+def handle_phenotypes(info):
+    """Restructure all reactions targetting a phenotype as a single one."""
+    for key, data in list(info.items()):
+        if data["type"] != "PHENOTYPE":
+            continue
+        transitions = data["transitions"]
+        modifiers = []
+        for t in transitions:
+            if len(t.reactants) != 1:
+                logger.warning("ignoring non-unary reaction to phenotype {pheno}", pheno=data.name)
+                continue
+            if t.type == "NEGATIVE_INFLUENCE":
+                modifiers.append(("INHIBITION", t.reactants[0]))
+            else:
+                modifiers.append(("CATALYSIS", t.reactants[0]))
+        info[key]["transitions"] = [Transition("STATE_TRANSITION", [], modifiers, None, None)]
 
 
 def delete_complexes_and_store_multispecies(info):
@@ -829,7 +848,7 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
         if reaction.type in NEGATIVE:
             reactants, inhibitors = inhibitors, reactants
             if activators or reactants:
-                logger.debug("non-SBGN direct inhibition encountered")
+                logger.error("non-SBGN direct inhibition encountered")
         # create and node if necessary
         if len(reactants) + len(inhibitors) > 1 or (
             activators and (reactants or inhibitors)
@@ -893,6 +912,7 @@ def add_inputs(
             # otherwise non-SBGN compliant
             if reaction.type in NEGATIVE:
                 sign = negate(sign)
+                logger.warning("non-SBGN direct negative reaction found")
             if (modifier, sign) not in modifiers and modifier in known:
                 modifiers.append((modifier, sign))
                 graph.add_edge(modifier, species, sign=sign)
@@ -932,7 +952,7 @@ def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
     if children[0].tag == "and":
         return "&".join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
     if children[0].tag == "or":
-        return "|".join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
+        return "(" + "|".join(map(lambda x: mathml_to_ginsim(x, info), children[1:])) +  ")"
     if children[0].tag == "eq":
         species = children[1].text
         species = info[species]["name"]
