@@ -463,9 +463,9 @@ def handle_phenotypes(info):
                 modifiers.append(("INHIBITION", t.reactants[0]))
             else:
                 modifiers.append(("CATALYSIS", t.reactants[0]))
-        new_transitions.append([
-            Transition("STATE_TRANSITION", [], modifiers, None, None)
-        ])
+        new_transitions.append(
+            [Transition("STATE_TRANSITION", [], modifiers, None, None)]
+        )
         info[key]["transitions"] = new_transitions
 
 
