@@ -451,19 +451,22 @@ def handle_phenotypes(info):
             continue
         transitions = data["transitions"]
         modifiers = []
+        new_transitions = []
         for t in transitions:
             if len(t.reactants) != 1:
-                logger.warning(
+                logger.debug(
                     "ignoring non-unary reaction to phenotype {pheno}", pheno=data.name
                 )
+                new_transitions.append(t)
                 continue
             if t.type == "NEGATIVE_INFLUENCE":
                 modifiers.append(("INHIBITION", t.reactants[0]))
             else:
                 modifiers.append(("CATALYSIS", t.reactants[0]))
-        info[key]["transitions"] = [
+        new_transitions.append([
             Transition("STATE_TRANSITION", [], modifiers, None, None)
-        ]
+        ])
+        info[key]["transitions"] = new_transitions
 
 
 def delete_complexes_and_store_multispecies(info):
