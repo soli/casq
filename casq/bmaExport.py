@@ -28,8 +28,11 @@ class booleanFormulaBuilder:
     """
 
     def __init__(self):
-        """Init."""
-        self.value = "0"
+        """Init.
+        transition reflects the activators and inhibitors that drive formation
+        value reflects the state of the modifiers
+        """
+        self.value = "1"
         self.transition = "1"
 
     def addActivator(self, vid):
@@ -64,10 +67,12 @@ class booleanFormulaBuilder:
 
     def finishTransition(self):
         """Add a single transition formula to the current state.
-
+        
+        The final formula is the min of the transition and the catalyst-modifiers
+        The catalyst-modifiers default to 1, the transition defaults to 1
         Resets the transition formula to 1.
         """
-        self.value = "(max({transition},{current}))".format(
+        self.value = "(min({transition},{current}))".format(
             transition=self.transition, current=self.value
         )
         self.transition = "1"
