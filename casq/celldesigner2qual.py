@@ -327,6 +327,11 @@ def write_qual(
         },
     )
     model = etree.SubElement(root, "model", id="model_id")
+    notes = etree.SubElement(model, "notes")
+    html = etree.SubElement(notes, "html", xmlns=NS["xhtml"])
+    body = etree.SubElement(html, "body")
+    p = etree.SubElement(body, "p")
+    p.text = "Created by CaSQ " + version
     clist = etree.SubElement(model, "listOfCompartments")
     etree.SubElement(clist, "compartment", constant="true", id="comp1")
     llist = etree.SubElement(model, "layout:listOfLayouts")
