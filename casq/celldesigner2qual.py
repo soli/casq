@@ -1108,6 +1108,13 @@ def main():
         help="When exporting to BMA, use this granularity",
     )
     parser.add_argument(
+        "-i",
+        "--input",
+        type=int,
+        default=None,
+        help="When exporting to BMA, nodes with no input should be set to this value",
+            )
+    parser.add_argument(
         "-C",
         "--colourConstant",
         action="store_false",
@@ -1127,7 +1134,7 @@ def main():
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     if args.bma:
         bmaExport.write_bma(
-            args.outfile, info, args.granularity, False, args.colourConstant
+            args.outfile, info, args.granularity, args.input, False, args.colourConstant
         )
     else:
         write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif)

@@ -217,13 +217,16 @@ def cleanName(name):
     return result
 
 
-def bma_model_variable(vid, infoVariable, formulaDict, v, granularity):
+def bma_model_variable(vid, infoVariable, formulaDict, v, granularity, inputLevel):
     """Return BMA model variable as a dict."""
     if v in formulaDict:
         formula = formulaDict[v]
     else:
         # Assume that nodes with no incoming edges are active
-        formula = str(granularity)
+        if inputLevel == None:
+            formula = str(granularity)
+        else:
+            formula = str(inputLevel)
     result = {
         "Name": cleanName(infoVariable["name"]),
         "Id": vid,
@@ -254,7 +257,7 @@ def bma_layout_variable(vid, infoVariable, fill=None, description=""):
 
 
 def write_bma(
-    filename: str, info, granularity=1, ignoreSelfLoops=False, colourByCompartment=True
+    filename: str, info, granularity=1, inputLevel=None, ignoreSelfLoops=False, colourByCompartment=True
 ):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the BMA json with layout file for our model."""
@@ -286,7 +289,7 @@ def write_bma(
     )
 
     vm = [
-        bma_model_variable(idMap[v], info[v], formula, v, granularity)
+        bma_model_variable(idMap[v], info[v], formula, v, granularity, inputLevel)
         for v in info.keys()
     ]
     vl = [
