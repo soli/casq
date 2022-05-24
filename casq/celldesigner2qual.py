@@ -184,9 +184,9 @@ def make_name_precise(name, ctype, mods):
     to_map = {"&": "", "|": "", "!": "", "underscore": ""}
     to_remove = {"sub", "endsub"}
     newname = "_".join(
-        map(
-            lambda s: to_map[s] if s in to_map else s,
-            filter(lambda t: t not in to_remove, name.split("_")),
+        (
+            to_map[s] if s in to_map else s
+            for s in filter(lambda t: t not in to_remove, name.split("_"))
         )
     ).replace("__", "_")
     if ctype == "PROTEIN":
@@ -961,11 +961,9 @@ def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
         raise ValueError(etree.tostring(math))
     children = list(math)
     if children[0].tag == "and":
-        return "&".join(map(lambda x: mathml_to_ginsim(x, info), children[1:]))
+        return "&".join(mathml_to_ginsim(x, info) for x in children[1:])
     if children[0].tag == "or":
-        return (
-            "(" + "|".join(map(lambda x: mathml_to_ginsim(x, info), children[1:])) + ")"
-        )
+        return "(" + "|".join(mathml_to_ginsim(x, info) for x in children[1:]) + ")"
     if children[0].tag == "eq":
         species = children[1].text
         species = info[species]["name"]
