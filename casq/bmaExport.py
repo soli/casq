@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import itertools
 import json
 
+logging = False 
 
 class booleanFormulaBuilder:
     """Builds a formula for a boolean network encoded in BMA.
@@ -130,8 +131,10 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
     relationships = []
     allFormulae = {}
     for item in info.keys():
+        if logging: print(idMap[item])
         # skip if there are no transitions
         if len(info[item]["transitions"]) == 0:
+            if logging: print("No transitions")
             continue
         product = item
         if granularity == 1:
@@ -142,6 +145,8 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
         # Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
             formula.addTransition()
+            if logging:
+                print("\tReactants:\t",transition[1])
             # reactant
             for reactant in transition[1]:
                 if ignoreSelfLoops and reactant == product:
@@ -172,6 +177,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
             modifiers = transition[2]
             # catalysts are a special case
             catalysts = []
+            inhibitors = []
             # everything else
             for (impact, m) in modifiers:
                 if ignoreSelfLoops and m == product:
@@ -181,14 +187,19 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         relationships.append(
                             bma_relationship(m, product, idMap, count, "Inhibitor")
                         )
+                        
                         formula.addInhibitor(idMap[m])
+                        inhibitors.append(idMap[m])
                     else:
                         # treat all other modifiers as catalysts (casq approach)
                         catalysts.append(idMap[m])
                         relationships.append(bma_relationship(m, product, idMap, count))
                 else:
                     pass
-                formula.addCatalysis(catalysts)
+            if logging: 
+                    print ("\tCatalysts\t",catalysts)
+                    print("\tInhibitors\t",inhibitors)
+            formula.addCatalysis(catalysts)
             formula.finishTransition()
         allFormulae[item] = formula.value
     return (relationships, allFormulae)
