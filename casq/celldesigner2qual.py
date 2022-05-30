@@ -1116,7 +1116,7 @@ def main():
         type=int,
         default=None,
         help="When exporting to BMA, nodes with no input should be set to this value",
-            )
+    )
     parser.add_argument(
         "-C",
         "--colourConstant",

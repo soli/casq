@@ -19,7 +19,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import itertools
 import json
 
-logging = False 
+logging = False
+
 
 class booleanFormulaBuilder:
     """Builds a formula for a boolean network encoded in BMA.
@@ -30,6 +31,7 @@ class booleanFormulaBuilder:
 
     def __init__(self):
         """Init.
+
         transition reflects the activators and inhibitors that drive formation
         value reflects the state of the modifiers
         """
@@ -68,7 +70,7 @@ class booleanFormulaBuilder:
 
     def finishTransition(self):
         """Add a single transition formula to the current state.
-        
+
         The final formula is the min of the transition and the catalyst-modifiers
         The catalyst-modifiers default to 1, the transition defaults to 1
         Resets the transition formula to 1.
@@ -131,10 +133,12 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
     relationships = []
     allFormulae = {}
     for item in info.keys():
-        if logging: print(idMap[item])
+        if logging:
+            print(idMap[item])
         # skip if there are no transitions
         if len(info[item]["transitions"]) == 0:
-            if logging: print("No transitions")
+            if logging:
+                print("No transitions")
             continue
         product = item
         if granularity == 1:
@@ -146,7 +150,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
         for transition in info[item]["transitions"]:
             formula.addTransition()
             if logging:
-                print("\tReactants:\t",transition[1])
+                print("\tReactants:\t", transition[1])
             # reactant
             for reactant in transition[1]:
                 if ignoreSelfLoops and reactant == product:
@@ -187,7 +191,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         relationships.append(
                             bma_relationship(m, product, idMap, count, "Inhibitor")
                         )
-                        
+
                         formula.addInhibitor(idMap[m])
                         inhibitors.append(idMap[m])
                     else:
@@ -196,9 +200,9 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         relationships.append(bma_relationship(m, product, idMap, count))
                 else:
                     pass
-            if logging: 
-                    print ("\tCatalysts\t",catalysts)
-                    print("\tInhibitors\t",inhibitors)
+            if logging:
+                    print("\tCatalysts\t", catalysts)
+                    print("\tInhibitors\t", inhibitors)
             formula.addCatalysis(catalysts)
             formula.finishTransition()
         allFormulae[item] = formula.value
@@ -234,7 +238,7 @@ def bma_model_variable(vid, infoVariable, formulaDict, v, granularity, inputLeve
         formula = formulaDict[v]
     else:
         # Assume that nodes with no incoming edges are active
-        if inputLevel == None:
+        if inputLevel is None:
             formula = str(granularity)
         else:
             formula = str(inputLevel)
