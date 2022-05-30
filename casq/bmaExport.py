@@ -201,8 +201,8 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                 else:
                     pass
             if logging:
-                    print("\tCatalysts\t", catalysts)
-                    print("\tInhibitors\t", inhibitors)
+                print("\tCatalysts\t", catalysts)
+                print("\tInhibitors\t", inhibitors)
             formula.addCatalysis(catalysts)
             formula.finishTransition()
         allFormulae[item] = formula.value
