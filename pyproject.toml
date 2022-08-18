@@ -110,10 +110,10 @@ dependencies = [
   "pytest",
   "pytest-cov",
 ]
-python = "311"
+python = "39"
 [tool.hatch.envs.cov.scripts]
 # run = "pytest --cov-config=pyproject.toml --cov=casq"
-run = "pytest --cov=casq"
+run = "pytest --cov-report xml --cov-report term --cov=casq"
 
 
 [tool.hatch.envs.docs]
