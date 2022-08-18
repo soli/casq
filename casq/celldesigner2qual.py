@@ -65,7 +65,7 @@ def read_celldesigner(fileobj: IO):
     if tag != "{" + NS["sbml"] + "}sbml":
         raise ValueError("Currently limited to SBML Level 2 Version 4")
     model = root.find("sbml:model", NS)
-    if model:
+    if model is not None:
         display = model.find("./sbml:annotation/cd:extension/cd:modelDisplay", NS)
     else:
         raise ValueError("Could not find SBML model element")
@@ -302,7 +302,7 @@ def get_text(cd_class: Optional[etree.Element], default=None):
 
 def get_mods(cd_modifications: etree.Element) -> List[str]:
     """Celldesigner:listOfModifications to list of mods."""
-    if not cd_modifications:
+    if cd_modifications is None:
         return []
     return [mod.get("state") for mod in cd_modifications.findall("cd:modification", NS)]
 
@@ -745,7 +745,7 @@ def add_transitions(tlist: etree.Element, info, graph: nx.DiGraph):
             ilist = etree.SubElement(trans, "qual:listOfInputs")
             add_inputs(ilist, data["transitions"], species, known, graph)
             # there might not be any input left after filtering known species
-            if not ilist:
+            if len(ilist) == 0:
                 tlist.remove(trans)
                 logger.debug(
                     "transition for {species} exists {trans} but has no inputs",
@@ -809,7 +809,7 @@ def add_annotations(trans: etree.Element, transitions: List[Transition]):
     for reaction in transitions:
         if reaction.annotations is not None:
             rdf.append(reaction.annotations[0])
-    if not rdf:
+    if len(rdf) == 0:
         trans.remove(annotation)
 
 
