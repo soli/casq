@@ -85,6 +85,8 @@ dependencies = [
   "flake8-polyfill",
   "black",
 ]
+python = "311"
+
 [tool.hatch.envs.lint.scripts]
 check = [
   "flake8 --select=C,E,F,W,D,A,I,B --ignore=B950,E501,W503 casq test",
