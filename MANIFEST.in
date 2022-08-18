@@ -1,8 +1,0 @@
-include LICENSE
-include tox.ini
-include docs/conf.py
-recursive-include docs *.rst
-recursive-include test *.xml
-recursive-include docs *.jpg
-recursive-include docs *.svg
-recursive-include conda *.yaml

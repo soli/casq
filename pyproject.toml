@@ -1,3 +1,125 @@
 [build-system]
-requires = ["setuptools>=42"]
-build-backend = "setuptools.build_meta"
+requires = [
+    "hatchling>=1.5.0",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "casq"
+description = "CaSQ: Celldesigner as Sbml-Qual"
+readme = "README.rst"
+license = "GPL-3.0"
+license-files = { paths = ["LICENSE"] }
+requires-python = ">=3.5"
+authors = [
+    { name = "Sylvain Soliman", email = "Sylvain.Soliman@inria.fr" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "loguru>=0.2.5",
+    "networkx>=2.2",
+]
+dynamic = [
+    "version",
+]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx",
+]
+dev = [
+    "black",
+    "flake8-mypy",
+]
+
+[project.scripts]
+casq = "casq.celldesigner2qual:main"
+
+[project.urls]
+Code = "https://gitlab.inria.fr/soliman/casq/"
+Documentation = "https://casq.readthedocs.io/en/latest/"
+Homepage = "https://soliman.gitlabpages.inria.fr/casq/"
+Mirror = "https://github.com/soli/casq"
+
+[tool.hatch.version]
+path = "casq/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/casq",
+    "/docs",
+    "/test/*.xml",
+    "/test/*.py",
+    "/conda",
+]
+exclude = [
+    "/casq/.mypy_cache/**",
+    "/docs/_build",
+]
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+  "pydocstyle<4.0.0",
+  "flake8",
+  # "flake8-bandit",
+  "flake8-blind-except",
+  "flake8-bugbear",
+  "flake8-builtins",
+  "flake8-comprehensions",
+  "flake8-docstrings",
+  "flake8-import-order",
+  "flake8-mypy",
+  "flake8-polyfill",
+  "black",
+]
+[tool.hatch.envs.lint.scripts]
+check = [
+  "flake8 --select=C,E,F,W,D,A,I,B --ignore=B950,E501,W503 casq test",
+  "black --check --diff casq test",
+]
+fmt = [
+  "black casq test",
+  "check",
+]
+
+[tool.hatch.envs.test]
+dependencies = [
+  "pytest"
+]
+[[tool.hatch.envs.test.matrix]]
+python = ["36", "pypy37", "38", "pypy39", "311"]
+
+[tool.hatch.envs.cov]
+dependencies = [
+  "pytest",
+  "pytest-cov",
+]
+python = "311"
+[tool.hatch.envs.cov.scripts]
+# run = "pytest --cov-config=pyproject.toml --cov=casq"
+run = "pytest --cov=casq"
+
+
+[tool.hatch.envs.docs]
+dependencies = [
+  "sphinx",
+]
+[tool.hatch.envs.docs.scripts]
+build = "sphinx-build -W -b html docs docs/_build/html"
+view = [
+  "build",
+  "open docs/_build/html/index.html",
+]

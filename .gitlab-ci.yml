@@ -1,7 +1,7 @@
 # -*- compile-command: "gitlab-runner exec docker test" -*-
 
 # Should be under default: but then gitlab-runner fails at finding it :(
-image: paternal/pythons@sha256:ea02d2d20a085cc4fdced910c9d2c54736ab9f7e0152eddfe41e7cd6a1c10474
+image: paternal/pythons@sha256:50a7f31a5f155bd39e1892f242ac828e343ec9f45e5ca966002aeaf809b274e3
 
 default:
   # Gitlab-ci shared runner
@@ -19,30 +19,28 @@ test:
   stage: test
   script:
   - apt-get update && apt-get install -y curl git
-  - python3 -m pip install tox
-  - tox -p auto -e ALL
+  - python3 -m pip install hatch
+  - hatch run lint:check && hatch run test:pytest && hatch run cov:run
 
 run:
   stage: build
   script:
-  - python3 -m pip install build
-  - python3 -m build -w
+  - python3 -m pip install hatch
+  - hatch build -t wheel
 
 pypi:
   stage: release
   only:
   - tags
   script:
-  - python3 -m pip install --user --upgrade pip
-  - python3 -m pip install --user setuptools wheel build twine
-  - python3 -m build
-  - python3 -m twine upload dist/*
+  - python3 -m pip install hatch
+  - hatch publish
 
 pages:
   stage: deploy
   script:
-  - pip3 install loguru networkx sphinx
-  - sphinx-build -W -b html docs docs/_build/html
+  - python3 -m pip install hatch
+  - hatch run docs:build
   - mkdir -p public
   - mv docs/_build/html/ public/
   artifacts:
