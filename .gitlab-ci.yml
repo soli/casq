@@ -18,7 +18,7 @@ stages:
 test:
   stage: test
   script:
-  - apt-get update && apt-get install -y curl git
+  - apt-get update && apt-get install -y curl
   - python3 -m pip install hatch
   - hatch run lint:check && hatch run test:pytest && hatch run cov:run
 
