@@ -67,6 +67,9 @@ exclude = [
     "/docs/_build",
 ]
 
+[tool.hatch.envs.default]
+python = "37"
+
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
@@ -83,7 +86,6 @@ dependencies = [
   "flake8-polyfill",
   "black",
 ]
-python = "311"
 
 [tool.hatch.envs.lint.scripts]
 check = [
