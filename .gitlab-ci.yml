@@ -20,7 +20,7 @@ test:
   script:
   - apt-get update && apt-get install -y curl
   - python3 -m pip install hatch
-  - hatch run lint:check && hatch run test:pytest && hatch run cov:run
+  - unset LD_PRELOAD && hatch run lint:check && hatch run test:pytest && hatch run cov:run
 
 build-wheel:
   stage: build
