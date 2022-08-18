@@ -34,13 +34,13 @@ pypi-publish:
   - tags
   script:
   - python3 -m pip install hatch
-  - hatch publish
+  - unset LD_PRELOAD && hatch publish
 
 pages:
   stage: deploy
   script:
   - python3 -m pip install hatch
-  - hatch run docs:build
+  - unset LD_PRELOAD && hatch run docs:build
   - mkdir -p public
   - mv docs/_build/html/ public/
   artifacts:
