@@ -86,6 +86,7 @@ dependencies = [
   "flake8-polyfill",
   "black",
 ]
+python = "37"
 
 [tool.hatch.envs.lint.scripts]
 check = [
