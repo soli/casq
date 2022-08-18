@@ -22,13 +22,13 @@ test:
   - python3 -m pip install hatch
   - hatch run lint:check && hatch run test:pytest && hatch run cov:run
 
-run:
+build-wheel:
   stage: build
   script:
   - python3 -m pip install hatch
   - hatch build -t wheel
 
-pypi:
+pypi-publish:
   stage: release
   only:
   - tags
