@@ -20,7 +20,7 @@ import casq
 # -- Project information -----------------------------------------------------
 
 project = "CaSQ"
-copyright = "2019, Sylvain.Soliman@inria.fr"
+copyright = "2019-2022, Sylvain.Soliman@inria.fr"
 author = "Sylvain Soliman"
 
 # The full version, including alpha/beta/rc tags

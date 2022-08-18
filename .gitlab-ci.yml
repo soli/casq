@@ -45,9 +45,9 @@ pages:
   - python3 -m pip install hatch
   - unset LD_PRELOAD && hatch run docs:build
   - mkdir -p public
-  - mv docs/_build/html/ public/
+  - mv docs/_build/html/* public/
   artifacts:
     paths:
-    - public
+    - public/
   only:
   - master
