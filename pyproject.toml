@@ -36,6 +36,7 @@ dynamic = [
 [project.optional-dependencies]
 docs = [
     "sphinx",
+    "sphinxcontrib.programoutput",
 ]
 dev = [
     "black",
@@ -73,42 +74,42 @@ python = "39"
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
-  "pydocstyle<4.0.0",
-  "flake8",
-  # "flake8-bandit",
-  "flake8-blind-except",
-  "flake8-bugbear",
-  "flake8-builtins",
-  "flake8-comprehensions",
-  "flake8-docstrings",
-  "flake8-import-order",
-  "flake8-mypy",
-  "flake8-polyfill",
-  "black",
+    "pydocstyle<4.0.0",
+    "flake8",
+    # "flake8-bandit",
+    "flake8-blind-except",
+    "flake8-bugbear",
+    "flake8-builtins",
+    "flake8-comprehensions",
+    "flake8-docstrings",
+    "flake8-import-order",
+    "flake8-mypy",
+    "flake8-polyfill",
+    "black",
 ]
 python = "39"
 
 [tool.hatch.envs.lint.scripts]
 check = [
-  "flake8 --select=C,E,F,W,D,A,I,B --ignore=B950,E501,W503 casq test",
-  "black --check --diff casq test",
+    "flake8 --select=C,E,F,W,D,A,I,B --ignore=B950,E501,W503 casq test",
+    "black --check --diff casq test",
 ]
 fmt = [
-  "black casq test",
-  "check",
+    "black casq test",
+    "check",
 ]
 
 [tool.hatch.envs.test]
 dependencies = [
-  "pytest"
+    "pytest"
 ]
 [[tool.hatch.envs.test.matrix]]
 python = ["pypy37", "38", "pypy39", "311"]
 
 [tool.hatch.envs.cov]
 dependencies = [
-  "pytest",
-  "pytest-cov",
+    "pytest",
+    "pytest-cov",
 ]
 python = "39"
 [tool.hatch.envs.cov.scripts]
@@ -118,7 +119,8 @@ run = "pytest --cov-report xml --cov-report term --cov=casq"
 
 [tool.hatch.envs.docs]
 dependencies = [
-  "sphinx",
+    "sphinx",
+    "sphinxcontrib.programoutput",
 ]
 [tool.hatch.envs.docs.scripts]
 build = "sphinx-build -W -b html docs docs/_build/html"

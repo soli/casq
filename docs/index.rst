@@ -18,6 +18,8 @@ automatically obtain logical models from maps [#]_.
 CaSQ has recently been added to the CoLoMoTo Docker image and can be used
 in such a `notebook`_.
 
+.. include:: cli_usage.rst
+
 What CaSQ does
 ==============
 
