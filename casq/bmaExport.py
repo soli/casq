@@ -19,8 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import itertools
 import json
 
-logging = False
-
+from loguru import logger
 
 class booleanFormulaBuilder:
     """Builds a formula for a boolean network encoded in BMA.
@@ -133,12 +132,10 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
     relationships = []
     allFormulae = {}
     for item in info.keys():
-        if logging:
-            print(idMap[item])
+        logger.debug(idMap[item])
         # skip if there are no transitions
         if len(info[item]["transitions"]) == 0:
-            if logging:
-                print("No transitions")
+            logger.debug("No transitions")
             continue
         product = item
         if granularity == 1:
@@ -149,8 +146,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
         # Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
             formula.addTransition()
-            if logging:
-                print("\tReactants:\t", transition[1])
+            logger.debug("\tReactants:\t" + str(transition[1]))
             # reactant
             for reactant in transition[1]:
                 if ignoreSelfLoops and reactant == product:
@@ -200,9 +196,8 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         relationships.append(bma_relationship(m, product, idMap, count))
                 else:
                     pass
-            if logging:
-                print("\tCatalysts\t", catalysts)
-                print("\tInhibitors\t", inhibitors)
+            logger.debug("\tCatalysts\t" + str(catalysts))
+            logger.debug("\tInhibitors\t" + str(inhibitors))
             if len(catalysts)>0:
                 formula.addCatalysis(catalysts)
             formula.finishTransition()
