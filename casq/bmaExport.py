@@ -200,7 +200,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         logger.debug("Found an AND gate")
                         # indicates that the listed vars will be anded
                         # BAH: should I remove them from the cat code? In this instance its harmless...
-                        vidList = [idMap[jtem] for jtem in m.split(',')]
+                        vidList = [idMap[jtem] for jtem in m.split(',') if jtem in idMap]
                         formula.addAnd(vidList)
                         for jtem in vidList:
                             ignoreList.append(jtem)
