@@ -224,7 +224,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
             logger.debug("\tIgnoreList\t" + str(ignoreList))
             # filter catalysts for items to be ignored
             finalCat = [item for item in catalysts if item not in ignoreList]
-            if len(catalysts)>0:
+            if len(finalCat)>0:
                 formula.addCatalysis(finalCat)
             formula.finishTransition()
         allFormulae[item] = formula.value
