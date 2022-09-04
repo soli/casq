@@ -67,6 +67,13 @@ class booleanFormulaBuilder:
             base = "(max(var({vid}),{base}))".format(vid=vid, base=base)
         self.value = "(min({base},{current}))".format(base=base, current=self.value)
 
+    def addAnd(self, vidList):
+        """All listed elements are required for firing"""
+        base = "1"
+        for vid in vidList:
+            base = "(min(var({vid}),{base}))".format(vid=vid, base=base)
+        self.value = "(min({base},{current}))".format(base=base, current=self.value)
+
     def finishTransition(self):
         """Add a single transition formula to the current state.
 
@@ -95,6 +102,10 @@ class multiStateFormulaBuilder:
         pass
 
     def addInhibitor(self, vid):
+        """Do nothing."""
+        pass
+
+    def addAnd(self, vid):
         """Do nothing."""
         pass
 
@@ -178,10 +189,21 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
             # catalysts are a special case
             catalysts = []
             inhibitors = []
+            # List of variables that should be omitted from formulae due to other function
+            ignoreList = []
             # everything else
+            logger.debug(str(modifiers))
             for (impact, m) in modifiers:
                 if ignoreSelfLoops and m == product:
                     continue
+                if impact == "BOOLEAN_LOGIC_GATE_AND":
+                        logger.debug("Found an AND gate")
+                        # indicates that the listed vars will be anded
+                        # BAH: should I remove them from the cat code? In this instance its harmless...
+                        vidList = [idMap[jtem] for jtem in m.split(',')]
+                        formula.addAnd(vidList)
+                        for jtem in vidList:
+                            ignoreList.append(jtem)
                 if m in idMap:
                     if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION":
                         relationships.append(
@@ -192,14 +214,18 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         inhibitors.append(idMap[m])
                     else:
                         # treat all other modifiers as catalysts (casq approach)
+                        logger.debug("Found impact:" + impact)
                         catalysts.append(idMap[m])
                         relationships.append(bma_relationship(m, product, idMap, count))
                 else:
                     pass
             logger.debug("\tCatalysts\t" + str(catalysts))
             logger.debug("\tInhibitors\t" + str(inhibitors))
+            logger.debug("\tIgnoreList\t" + str(ignoreList))
+            # filter catalysts for items to be ignored
+            finalCat = [item for item in catalysts if item not in ignoreList]
             if len(catalysts)>0:
-                formula.addCatalysis(catalysts)
+                formula.addCatalysis(finalCat)
             formula.finishTransition()
         allFormulae[item] = formula.value
     return (relationships, allFormulae)
@@ -303,6 +329,8 @@ def write_bma(
     rm, formula = get_relationships(
         info, idMap, idGenerator, granularity, ignoreSelfLoops
     )
+    
+    logger.debug(formula)
 
     vm = [
         bma_model_variable(idMap[v], info[v], formula, v, granularity, inputLevel)
