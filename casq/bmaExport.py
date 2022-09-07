@@ -33,9 +33,14 @@ class booleanFormulaBuilder:
 
         transition reflects the activators and inhibitors that drive formation
         value reflects the state of the modifiers
+        previous is a function for other transitions
         """
         self.value = "1"
         self.transition = "1"
+        self.previous = "0"
+
+    def function(self):
+        return self.previous
 
     def addActivator(self, vid):
         """Update transition to add an activator.
@@ -81,10 +86,14 @@ class booleanFormulaBuilder:
         The catalyst-modifiers default to 1, the transition defaults to 1
         Resets the transition formula to 1.
         """
-        self.value = "(min({transition},{current}))".format(
+        function = "(min({transition},{current}))".format(
             transition=self.transition, current=self.value
         )
+        self.previous = "(max({f},{old}))".format(
+                f=function, old=self.previous
+                )
         self.transition = "1"
+        self.value = "1"
 
 
 class multiStateFormulaBuilder:
@@ -143,10 +152,10 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
     relationships = []
     allFormulae = {}
     for item in info.keys():
-        logger.debug(idMap[item])
+        logger.debug(item + ", varid = " + str(idMap[item]) + ', name = ' + info[item]['name'])
         # skip if there are no transitions
         if len(info[item]["transitions"]) == 0:
-            logger.debug("No transitions")
+            logger.debug(item+"-No transitions")
             continue
         product = item
         if granularity == 1:
@@ -157,7 +166,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
         # Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
             formula.addTransition()
-            logger.debug("\tReactants:\t" + str(transition[1]))
+            logger.debug(item+"\tReactants:\t" + str(transition[1]))
             # reactant
             for reactant in transition[1]:
                 if ignoreSelfLoops and reactant == product:
@@ -214,20 +223,20 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         inhibitors.append(idMap[m])
                     else:
                         # treat all other modifiers as catalysts (casq approach)
-                        logger.debug("Found impact:" + impact)
+                        logger.debug(item + "\tFound impact:" + impact)
                         catalysts.append(idMap[m])
                         relationships.append(bma_relationship(m, product, idMap, count))
                 else:
                     pass
-            logger.debug("\tCatalysts\t" + str(catalysts))
-            logger.debug("\tInhibitors\t" + str(inhibitors))
-            logger.debug("\tIgnoreList\t" + str(ignoreList))
+            logger.debug(item+"\tCatalysts\t" + str(catalysts))
+            logger.debug(item+"\tInhibitors\t" + str(inhibitors))
+            logger.debug(item+"\tIgnoreList\t" + str(ignoreList))
             # filter catalysts for items to be ignored
             finalCat = [item for item in catalysts if item not in ignoreList]
             if len(finalCat)>0:
                 formula.addCatalysis(finalCat)
             formula.finishTransition()
-        allFormulae[item] = formula.value
+        allFormulae[item] = formula.function()
     return (relationships, allFormulae)
 
 
