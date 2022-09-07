@@ -31,12 +31,12 @@ class booleanFormulaBuilder:
     def __init__(self):
         """Init.
 
-        transition reflects the activators and inhibitors that drive formation
-        value reflects the state of the modifiers
+        reactant reflects the species that are required for formation
+        modifier reflects the state of the modifiers
         previous is a function for other transitions
         """
-        self.value = "1"
-        self.transition = "1"
+        self.modifier = "1"
+        self.reactant = "1"
         self.previous = "0"
 
     def function(self):
@@ -47,19 +47,19 @@ class booleanFormulaBuilder:
 
         A reaction may only take place if all reactants/activators are present.
         """
-        self.transition = "(min(var({vid}),{current}))".format(
-            vid=vid, current=self.transition
+        self.reactant = "(min(var({vid}),{current}))".format(
+            vid=vid, current=self.reactant
         )
 
     def addInhibitor(self, vid):
         """If any inhibitor is active, the reaction is stopped."""
-        self.transition = "(min(1-var({vid}),{current}))".format(
-            vid=vid, current=self.transition
+        self.reactant = "(min(1-var({vid}),{current}))".format(
+            vid=vid, current=self.reactant
         )
 
     def addTransition(self):
         """AddTransition."""
-        self.transition = "1"
+        self.reactant = "1"
 
     def addCatalysis(self, vidList):
         """All non-reactants, non-inhibitors in casq are treated as catalysts.
@@ -70,14 +70,14 @@ class booleanFormulaBuilder:
         base = "0"
         for vid in vidList:
             base = "(max(var({vid}),{base}))".format(vid=vid, base=base)
-        self.value = "(min({base},{current}))".format(base=base, current=self.value)
+        self.modifier = "(min({base},{current}))".format(base=base, current=self.modifier)
 
     def addAnd(self, vidList):
         """All listed elements are required for firing"""
         base = "1"
         for vid in vidList:
             base = "(min(var({vid}),{base}))".format(vid=vid, base=base)
-        self.value = "(min({base},{current}))".format(base=base, current=self.value)
+        self.modifier = "(min({base},{current}))".format(base=base, current=self.modifier)
 
     def finishTransition(self):
         """Add a single transition formula to the current state.
@@ -87,13 +87,13 @@ class booleanFormulaBuilder:
         Resets the transition formula to 1.
         """
         function = "(min({transition},{current}))".format(
-            transition=self.transition, current=self.value
+            transition=self.reactant, current=self.modifier
         )
         self.previous = "(max({f},{old}))".format(
                 f=function, old=self.previous
                 )
-        self.transition = "1"
-        self.value = "1"
+        self.reactant = "1"
+        self.modifier = "1"
 
 
 class multiStateFormulaBuilder:
@@ -105,6 +105,9 @@ class multiStateFormulaBuilder:
     def __init__(self):
         """Init."""
         self.value = ""
+    
+    def function(self):
+        return self.value
 
     def addActivator(self, vid):
         """Do nothing."""
