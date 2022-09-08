@@ -71,14 +71,18 @@ class booleanFormulaBuilder:
         base = "0"
         for vid in vidList:
             base = "(max(var({vid}),{base}))".format(vid=vid, base=base)
-        self.modifier = "(min({base},{current}))".format(base=base, current=self.modifier)
+        self.modifier = "(min({base},{current}))".format(
+            base=base, current=self.modifier
+        )
 
     def addAnd(self, vidList):
         """All listed elements are required for firing"""
         base = "1"
         for vid in vidList:
             base = "(min(var({vid}),{base}))".format(vid=vid, base=base)
-        self.modifier = "(min({base},{current}))".format(base=base, current=self.modifier)
+        self.modifier = "(min({base},{current}))".format(
+            base=base, current=self.modifier
+        )
 
     def finishTransition(self):
         """Add a single transition formula to the current state.
@@ -90,9 +94,7 @@ class booleanFormulaBuilder:
         function = "(min({transition},{current}))".format(
             transition=self.reactant, current=self.modifier
         )
-        self.previous = "(max({f},{old}))".format(
-            f=function, old=self.previous
-        )
+        self.previous = "(max({f},{old}))".format(f=function, old=self.previous)
         self.reactant = "1"
         self.modifier = "1"
 
@@ -156,7 +158,9 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
     relationships = []
     allFormulae = {}
     for item in info.keys():
-        logger.debug(item + ", varid = " + str(idMap[item]) + ', name = ' + info[item]['name'])
+        logger.debug(
+            item + ", varid = " + str(idMap[item]) + ", name = " + info[item]["name"]
+        )
         # skip if there are no transitions
         if len(info[item]["transitions"]) == 0:
             logger.debug(item + "-No transitions")
@@ -213,7 +217,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                     logger.debug("Found an AND gate")
                     # indicates that the listed vars will be anded
                     # BAH: should I remove them from the cat code? In this instance its harmless...
-                    vidList = [idMap[jtem] for jtem in m.split(',') if jtem in idMap]
+                    vidList = [idMap[jtem] for jtem in m.split(",") if jtem in idMap]
                     formula.addAnd(vidList)
                     for jtem in vidList:
                         ignoreList.append(jtem)
