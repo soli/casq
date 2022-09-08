@@ -21,6 +21,7 @@ import json
 
 from loguru import logger
 
+
 class booleanFormulaBuilder:
     """Builds a formula for a boolean network encoded in BMA.
 
@@ -90,8 +91,8 @@ class booleanFormulaBuilder:
             transition=self.reactant, current=self.modifier
         )
         self.previous = "(max({f},{old}))".format(
-                f=function, old=self.previous
-                )
+            f=function, old=self.previous
+        )
         self.reactant = "1"
         self.modifier = "1"
 
@@ -105,7 +106,7 @@ class multiStateFormulaBuilder:
     def __init__(self):
         """Init."""
         self.value = ""
-    
+
     def function(self):
         return self.value
 
@@ -158,7 +159,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
         logger.debug(item + ", varid = " + str(idMap[item]) + ', name = ' + info[item]['name'])
         # skip if there are no transitions
         if len(info[item]["transitions"]) == 0:
-            logger.debug(item+"-No transitions")
+            logger.debug(item + "-No transitions")
             continue
         product = item
         if granularity == 1:
@@ -169,7 +170,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
         # Test for variable in the ID map before appending
         for transition in info[item]["transitions"]:
             formula.addTransition()
-            logger.debug(item+"\tReactants:\t" + str(transition[1]))
+            logger.debug(item + "\tReactants:\t" + str(transition[1]))
             # reactant
             for reactant in transition[1]:
                 if ignoreSelfLoops and reactant == product:
@@ -209,13 +210,13 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                 if ignoreSelfLoops and m == product:
                     continue
                 if impact == "BOOLEAN_LOGIC_GATE_AND":
-                        logger.debug("Found an AND gate")
-                        # indicates that the listed vars will be anded
-                        # BAH: should I remove them from the cat code? In this instance its harmless...
-                        vidList = [idMap[jtem] for jtem in m.split(',') if jtem in idMap]
-                        formula.addAnd(vidList)
-                        for jtem in vidList:
-                            ignoreList.append(jtem)
+                    logger.debug("Found an AND gate")
+                    # indicates that the listed vars will be anded
+                    # BAH: should I remove them from the cat code? In this instance its harmless...
+                    vidList = [idMap[jtem] for jtem in m.split(',') if jtem in idMap]
+                    formula.addAnd(vidList)
+                    for jtem in vidList:
+                        ignoreList.append(jtem)
                 if m in idMap:
                     if impact == "UNKNOWN_INHIBITION" or impact == "INHIBITION":
                         relationships.append(
@@ -231,12 +232,12 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
                         relationships.append(bma_relationship(m, product, idMap, count))
                 else:
                     pass
-            logger.debug(item+"\tCatalysts\t" + str(catalysts))
-            logger.debug(item+"\tInhibitors\t" + str(inhibitors))
-            logger.debug(item+"\tIgnoreList\t" + str(ignoreList))
+            logger.debug(item + "\tCatalysts\t" + str(catalysts))
+            logger.debug(item + "\tInhibitors\t" + str(inhibitors))
+            logger.debug(item + "\tIgnoreList\t" + str(ignoreList))
             # filter catalysts for items to be ignored
             finalCat = [item for item in catalysts if item not in ignoreList]
-            if len(finalCat)>0:
+            if len(finalCat) > 0:
                 formula.addCatalysis(finalCat)
             formula.finishTransition()
         allFormulae[item] = formula.function()
@@ -341,7 +342,7 @@ def write_bma(
     rm, formula = get_relationships(
         info, idMap, idGenerator, granularity, ignoreSelfLoops
     )
-    
+
     logger.debug(formula)
 
     vm = [
