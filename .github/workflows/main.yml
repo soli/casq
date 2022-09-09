@@ -24,11 +24,8 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install black and flake8
-        run: python3 -m pip install black flake8
+      - name: Install hatch
+        run: python3 -m pip install hatch
 
-      - name: Run flake8
-        run: flake8 --select=C,E,F,W,D,A,I,B --ignore=B950,E501,W503 casq test
-
-      - name: Run black
-        run: black --check --diff casq test
+      - name: Hatch run lint:check
+        run: hatch run lint:check
