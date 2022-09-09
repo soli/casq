@@ -1018,7 +1018,10 @@ def main():
         description=" ".join(__doc__.splitlines()[:3]) + " GPLv3"
     )
     parser.add_argument(
-        "-v", "--version", action="version", version=f"%(prog)s v{version}",
+        "-v",
+        "--version",
+        action="version",
+        version=f"%(prog)s v{version}",
     )
     parser.add_argument(
         "-D", "--debug", action="store_true", help="Display a lot of debug information"
@@ -1089,7 +1092,10 @@ def main():
         help="CellDesigner File",
     )
     parser.add_argument(
-        "-b", "--bma", action="store_true", help="Output to BMA json format",
+        "-b",
+        "--bma",
+        action="store_true",
+        help="Output to BMA json format",
     )
     parser.add_argument(
         "-g",
