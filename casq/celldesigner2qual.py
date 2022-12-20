@@ -1003,14 +1003,18 @@ def add_function_as_rdf(info, species: str, func: str):
     add_rdf(info, species, rdf)
 
 
-def map_to_model(map_filename: str, model_filename: str):
+def map_to_model(map_filename: str, model_filename: str, bma=False):
     """Do the full run with defaults arguments."""
     logger.disable("casq")
     with open(map_filename, "r", encoding="utf-8") as f:
         info, width, height = read_celldesigner(f)
     simplify_model(info, [], [])
-    write_qual(model_filename, info, width, height)
-
+    if not bma:
+        write_qual(model_filename, info, width, height)
+    else:
+        bmaExport.write_bma(
+            model_filename, info, 1, None, False, True
+        )
 
 def main():
     """Run conversion using the CLI given first argument."""
