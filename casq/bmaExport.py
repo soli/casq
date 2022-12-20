@@ -41,6 +41,7 @@ class booleanFormulaBuilder:
         self.previous = "0"
 
     def function(self):
+        """Return self.previous."""
         return self.previous
 
     def addActivator(self, vid):
@@ -76,7 +77,7 @@ class booleanFormulaBuilder:
         )
 
     def addAnd(self, vidList):
-        """All listed elements are required for firing"""
+        """All listed elements are required for firing."""
         base = "1"
         for vid in vidList:
             base = "(min(var({vid}),{base}))".format(vid=vid, base=base)
@@ -110,6 +111,7 @@ class multiStateFormulaBuilder:
         self.value = ""
 
     def function(self):
+        """Return self.value."""
         return self.value
 
     def addActivator(self, vid):
