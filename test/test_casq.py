@@ -12,7 +12,8 @@ import pytest  # type: ignore
 
 
 @pytest.mark.parametrize(
-    "infile", glob(path.join(str(path.dirname(path.realpath(__file__))), "*.xml")),
+    "infile",
+    glob(path.join(str(path.dirname(path.realpath(__file__))), "*.xml")),
 )
 def test_casq_produces_valid_files(tmp_path, infile):
     """Check if the files we produce are valid."""
