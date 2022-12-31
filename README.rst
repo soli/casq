@@ -80,7 +80,7 @@ Just follow the instructions::
                [infile] [outfile]
 
    Convert CellDesigner models to SBML-qual with a rather strict semantics.
-   Copyright (C) 2019-2022 Sylvain.Soliman@inria.fr GPLv3
+   Copyright (C) 2019, Sylvain.Soliman@inria.fr GPLv3
 
    positional arguments:
      infile                CellDesigner File
