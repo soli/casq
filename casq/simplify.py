@@ -237,7 +237,7 @@ def replace_in_transitions(info, replacements):
                 if val in replacements:
                     trans.reactants.append(replacements[val])
                     trans.reactants.remove(val)
-            for (modtype, mod_list) in trans.modifiers.copy():
+            for modtype, mod_list in trans.modifiers.copy():
                 mlist = mod_list.split(",")
                 changed = False
                 for val in mlist:
