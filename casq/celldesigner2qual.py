@@ -81,7 +81,7 @@ def main():
         "--fixed",
         type=argparse.FileType(),
         help="""A CSV file containing input values or knock-ins/knock-outs,
-        one per line, with name in the first column and the value in the second."""
+        one per line, with name in the first column and the value in the second.""",
     )
     parser.add_argument(
         "-n",
@@ -175,7 +175,15 @@ def main():
             args.outfile, info, args.granularity, args.input, False, args.colourConstant
         )
     else:
-        write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif, fixed=args.fixed)
+        write_qual(
+            args.outfile,
+            info,
+            width,
+            height,
+            remove=args.remove,
+            sif=args.sif,
+            fixed=args.fixed,
+        )
     if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
 
