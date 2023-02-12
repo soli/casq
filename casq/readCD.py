@@ -39,7 +39,6 @@ NS = {
     "xhtml": "http://www.w3.org/1999/xhtml",
 }
 
-# TODO use attrs, see https://www.attrs.org/en/latest/why.html#namedtuples
 Transition = collections.namedtuple(
     "Transition", ["type", "reactants", "modifiers", "notes", "annotations"]
 )

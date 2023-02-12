@@ -285,10 +285,9 @@ def fix_all_names(info):
         if ambiguous_name[species]:
             if name in namedict:
                 other_id, other_activity = namedict[name]
-                if activity == "active":
-                    # FIXME what if name_active in namedict?
+                if activity == "active" and (name + "_active") not in namedict:
                     name = name + "_active"
-                elif other_activity == "active":
+                elif other_activity == "active" and (name + "_active") not in namedict:
                     info[other_id]["name"] = name + "_active"
                     info[other_id]["function"] = name + "_active"
                 else:
