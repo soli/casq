@@ -83,6 +83,12 @@ def main():
         help="""A CSV file containing input values or knock-ins/knock-outs,
         one per line, with name in the first column and the value in the second."""
     )
+    parser.add_argument(
+        "-n",
+        "--names",
+        action="store_true",
+        help="Use the names as IDs in the SBML file",
+    )
     if sys.version_info >= (3, 8, 0):
         parser.add_argument(
             "-u",
@@ -161,7 +167,7 @@ def main():
         logger.disable("casq")
     logger.debug("parsing {fname}…", fname=args.infile.name)
     info, width, height = read_celldesigner(args.infile)
-    simplify_model(info, args.upstream, args.downstream)
+    simplify_model(info, args.upstream, args.downstream, args.names)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
     if args.bma:

@@ -26,7 +26,7 @@ import networkx as nx  # type: ignore
 from .readCD import Transition, add_rdf
 
 
-def simplify_model(info, upstream, downstream):
+def simplify_model(info, upstream, downstream, names_as_ids: bool = False):
     """Clean the model w.r.t. some active/inactive species."""
     multispecies = delete_complexes_and_store_multispecies(info)
     # pylint: disable=too-many-nested-blocks
@@ -67,6 +67,8 @@ def simplify_model(info, upstream, downstream):
                         )
                         del info[val]
     fix_all_names(info)
+    if names_as_ids:
+        use_names_as_ids(info)
     restrict_model(info, upstream, downstream)
     handle_phenotypes(info)
 
@@ -290,9 +292,12 @@ def fix_all_names(info):
                     info[other_id]["name"] = name + "_active"
                     info[other_id]["function"] = name + "_active"
                 else:
-                    # FIXME don't know what to do
-                    # print(f"active is {activity}, other was {other_activity}")
-                    pass
+                    newname = name
+                    tag = 0
+                    while newname in namedict:
+                        tag += 1
+                        newname = name + "_" + str(tag)
+                    name = newname
             namedict[name] = (species, activity)
         data["name"] = name
         data["function"] = name
@@ -313,3 +318,14 @@ def fix_name(name: str, ambiguous: bool, compartment: str):
         .replace("_super", "^")
         .replace("_slash_", "/")
     )
+
+
+def use_names_as_ids(info):
+    """Replace all ids with names."""
+    newinfo = {}
+    for data in info.values():
+        name = data["name"].replace(" ", "_")
+        name = ''.join(c for c in name if c.isalnum() or c == "_")
+        newinfo[name] = data
+    info.clear()
+    info.update(newinfo)
