@@ -76,6 +76,13 @@ def main():
         size is smaller than S.
         A negative S leads to keep only the biggest(s) connected component(s)""",
     )
+    parser.add_argument(
+        "-f",
+        "--fixed",
+        type=argparse.FileType(),
+        help="""A CSV file containing input values or knock-ins/knock-outs,
+        one per line, with name in the first column and the value in the second."""
+    )
     if sys.version_info >= (3, 8, 0):
         parser.add_argument(
             "-u",
@@ -162,7 +169,7 @@ def main():
             args.outfile, info, args.granularity, args.input, False, args.colourConstant
         )
     else:
-        write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif)
+        write_qual(args.outfile, info, width, height, remove=args.remove, sif=args.sif, fixed=args.fixed)
     if args.csv and args.outfile != sys.stdout:
         write_csv(args.outfile, info)
 

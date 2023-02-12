@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import csv
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
-from typing import List, Optional, Tuple  # noqa: F401
+from typing import IO, List, Optional, Tuple  # noqa: F401
 
 from loguru import logger  # type: ignore
 
@@ -34,7 +34,13 @@ NEGATIVE = ("INHIBITION", "NEGATIVE_INFLUENCE", "UNKNOWN_INHIBITION")
 
 
 def write_qual(
-    filename: str, info, width: str, height: str, remove: int = 0, sif: bool = False
+    filename: str,
+    info,
+    width: str,
+    height: str,
+    remove: int = 0,
+    sif: bool = False,
+    fixed: IO = None,
 ):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the SBML qual with layout file for our model."""
@@ -66,11 +72,20 @@ def write_qual(
     qlist = etree.SubElement(model, "qual:listOfQualitativeSpecies")
     tlist = etree.SubElement(model, "qual:listOfTransitions")
     graph = nx.DiGraph()
+    initial = {}
+    if fixed:
+        # dialect = csv.Sniffer().sniff(fixed.read(1024))
+        # fixed.seek(0)
+        for row in csv.reader(fixed):
+            if row[0] in info:
+                info[row[0]]["transitions"] = []
+                initial[row[0]] = row[1]
+
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove)
     if sif:
         write_sif(filename, info, graph)
-    add_qual_species(layout, qlist, info)
+    add_qual_species(layout, qlist, info, initial)
     etree.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
 
 
@@ -130,7 +145,7 @@ def write_sif(sbml_filename: str, info, graph: nx.DiGraph):
                 )
 
 
-def add_qual_species(layout: etree.Element, qlist: etree.Element, info):
+def add_qual_species(layout: etree.Element, qlist: etree.Element, info, initial):
     """Create layout sub-elements and species."""
     llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
     for species, data in info.items():
@@ -152,16 +167,19 @@ def add_qual_species(layout: etree.Element, qlist: etree.Element, info):
             constant = "false"
         else:
             constant = "true"
+        attribs = {
+            "qual:maxLevel": "1",
+            "qual:compartment": "comp1",
+            "qual:name": data["name"],
+            "qual:constant": constant,
+            "qual:id": species,
+        }
+        if species in initial:
+            attribs["qual:initialLevel"] = initial[species]
         qspecies = etree.SubElement(
             qlist,
             "qual:qualitativeSpecies",
-            {
-                "qual:maxLevel": "1",
-                "qual:compartment": "comp1",
-                "qual:name": data["name"],
-                "qual:constant": constant,
-                "qual:id": species,
-            },
+            attribs,
         )
         add_annotation(qspecies, data["annotations"])
 
