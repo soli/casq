@@ -209,7 +209,7 @@ def restrict_model(info, upstream, downstream):
         for trans in data["transitions"]:
             for val in trans.reactants:
                 graph.add_edge(val, species)
-            for (_modtype, modlist) in trans.modifiers:
+            for _modtype, modlist in trans.modifiers:
                 for val in modlist.split(","):
                     graph.add_edge(val, species)
     keep = set()
@@ -258,7 +258,7 @@ def get_active(val, info):
             for trans in data["transitions"]:
                 if val in trans.reactants or val in (
                     mod
-                    for (_modtype, modifier_list) in trans.modifiers
+                    for _modtype, modifier_list in trans.modifiers
                     for mod in modifier_list.split(",")
                 ):
                     if active is None:

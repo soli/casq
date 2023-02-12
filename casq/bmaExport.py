@@ -212,7 +212,7 @@ def get_relationships(info, idMap, count, granularity, ignoreSelfLoops):
             ignoreList = []
             # everything else
             logger.debug(str(modifiers))
-            for (impact, m) in modifiers:
+            for impact, m in modifiers:
                 if ignoreSelfLoops and m == product:
                     continue
                 if impact == "BOOLEAN_LOGIC_GATE_AND":
