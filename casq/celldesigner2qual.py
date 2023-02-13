@@ -31,7 +31,6 @@ from .write import write_csv, write_qual
 
 def map_to_model(map_filename: str, model_filename: str, bma=False):
     """Do the full run with defaults arguments."""
-    main()
     logger.disable("casq")
     with open(map_filename, "r", encoding="utf-8") as f:
         info, width, height = read_celldesigner(f)
