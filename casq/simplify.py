@@ -248,6 +248,8 @@ def replace_in_transitions(info, replacements):
                 if changed:
                     trans.modifiers.append((modtype, ",".join(mlist)))
                     trans.modifiers.remove((modtype, mod_list))
+        for old, new in replacements.items():
+            data["function"] = data["function"].replace(old, new)
 
 
 def get_active(val, info):
@@ -322,10 +324,14 @@ def fix_name(name: str, ambiguous: bool, compartment: str):
 def use_names_as_ids(info):
     """Replace all ids with names."""
     newinfo = {}
+    replacements = {}
     for data in info.values():
-        name = data["name"].replace(" ", "_")
+        oname = data["name"]
+        name = oname.replace(" ", "_")
         name = "".join(c for c in name if c.isalnum() or c == "_")
         newinfo[name] = data
         newinfo[name]["name"] = name
+        replacements[oname] = name
     info.clear()
     info.update(newinfo)
+    replace_in_transitions(info, replacements)
