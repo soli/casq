@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import csv
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
-from typing import IO, List, Optional, Tuple  # noqa: F401
+from typing import Dict, IO, List, Optional, Tuple  # noqa: F401
 
 from loguru import logger  # type: ignore
 
@@ -79,8 +79,8 @@ def write_qual(
         for row in csv.reader(fixed):
             if row[0] in info:
                 info[row[0]]["transitions"] = []
+                info[row[0]]["function"] = row[1]
                 initial[row[0]] = row[1]
-
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove)
     if sif:
@@ -145,7 +145,7 @@ def write_sif(sbml_filename: str, info, graph: nx.DiGraph):
                 )
 
 
-def add_qual_species(layout: etree.Element, qlist: etree.Element, info, initial):
+def add_qual_species(layout: etree.Element, qlist: etree.Element, info, initial: Dict[str, str]):
     """Create layout sub-elements and species."""
     llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
     for species, data in info.items():
@@ -399,12 +399,17 @@ def add_inputs(
 def write_csv(sbml_filename: str, info):
     """Write a csv file with SBML IDs, CD IDs, Names, Formulae, etc."""
     # pylint: disable=invalid-name
+    sorted_items = sorted(info.items())
     with open(sbml_filename[:-4] + "csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        for species, data in sorted(info.items()):
+        for species, data in sorted_items:
             writer.writerow(
                 [species, data["name"], data["ref_species"], data["function"]]
             )
+    with open(sbml_filename[:-4] + "bnet", "w", encoding="utf-8") as f:
+        print("# Created with CaSQ\n\ntargets, factors", file=f)
+        for _, data in sorted_items:
+            print(data["name"] + ", " + data["function"], file=f)
 
 
 def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:

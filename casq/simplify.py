@@ -326,5 +326,6 @@ def use_names_as_ids(info):
         name = data["name"].replace(" ", "_")
         name = "".join(c for c in name if c.isalnum() or c == "_")
         newinfo[name] = data
+        newinfo[name]["name"] = name
     info.clear()
     info.update(newinfo)

@@ -58,7 +58,7 @@ def main():
         "-c",
         "--csv",
         action="store_true",
-        help="Store the species information in a separate CSV file",
+        help="Store the species information in a separate CSV (and .bnet) file",
     )
     parser.add_argument(
         "-s",
