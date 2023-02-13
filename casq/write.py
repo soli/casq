@@ -145,7 +145,9 @@ def write_sif(sbml_filename: str, info, graph: nx.DiGraph):
                 )
 
 
-def add_qual_species(layout: etree.Element, qlist: etree.Element, info, initial: Dict[str, str]):
+def add_qual_species(
+    layout: etree.Element, qlist: etree.Element, info, initial: Dict[str, str]
+):
     """Create layout sub-elements and species."""
     llist = etree.SubElement(layout, "layout:listOfAdditionalGraphicalObjects")
     for species, data in info.items():
