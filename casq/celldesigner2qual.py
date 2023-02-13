@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import argparse
 import os.path
 import sys
+from typing import List
 
 from loguru import logger  # type: ignore
 
@@ -30,6 +31,7 @@ from .write import write_csv, write_qual
 
 def map_to_model(map_filename: str, model_filename: str, bma=False):
     """Do the full run with defaults arguments."""
+    main()
     logger.disable("casq")
     with open(map_filename, "r", encoding="utf-8") as f:
         info, width, height = read_celldesigner(f)
@@ -40,7 +42,7 @@ def map_to_model(map_filename: str, model_filename: str, bma=False):
         bmaExport.write_bma(model_filename, info, 1, None, False, True)
 
 
-def main():
+def main(argv: List[str] = sys.argv):
     """Run conversion using the CLI given first argument."""
     parser = argparse.ArgumentParser(
         description=" ".join(__doc__.splitlines()[:3]) + " GPLv3"
@@ -161,7 +163,7 @@ def main():
     parser.add_argument(
         "outfile", nargs="?", default=sys.stdout, help="SBML-Qual/BMA json File"
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if not args.debug:
         logger.disable("casq")
