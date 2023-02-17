@@ -325,13 +325,14 @@ def use_names_as_ids(info):
     """Replace all ids with names."""
     newinfo = {}
     replacements = {}
-    for data in info.values():
+    for key, data in info.items():
         oname = data["name"]
         name = oname.replace(" ", "_")
         name = "".join(c for c in name if c.isalnum() or c == "_")
         newinfo[name] = data
         newinfo[name]["name"] = name
         replacements[oname] = name
+        replacements[key] = name
     info.clear()
     info.update(newinfo)
     replace_in_transitions(info, replacements)
