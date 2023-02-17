@@ -40,7 +40,7 @@ def write_qual(
     height: str,
     remove: int = 0,
     sif: bool = False,
-    fixed: IO = None,
+    fixed: Optional[IO] = None,
 ):
     # pylint: disable=too-many-arguments, too-many-locals
     """Write the SBML qual with layout file for our model."""
@@ -81,6 +81,8 @@ def write_qual(
                 info[row[0]]["transitions"] = []
                 info[row[0]]["function"] = row[1]
                 initial[row[0]] = row[1]
+            else:
+                logger.warning(f"Unknown '{row[0]}' could not be fixed.")
     add_transitions(tlist, info, graph)
     remove_connected_components(tlist, info, graph, remove)
     if sif:
