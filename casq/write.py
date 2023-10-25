@@ -19,15 +19,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import csv
 import xml.etree.ElementTree as etree
 from itertools import chain, repeat
-from typing import Dict, IO, List, Optional, Tuple  # noqa: F401
-
-from loguru import logger  # type: ignore
+from typing import IO, Dict, List, Optional, Tuple  # noqa: F401
 
 import networkx as nx  # type: ignore
+from loguru import logger  # type: ignore
 
 from . import version
 from .readCD import NS, Transition, add_rdf
-
 
 INHIBITION = ("INHIBITION", "UNKNOWN_INHIBITION")
 NEGATIVE = ("INHIBITION", "NEGATIVE_INFLUENCE", "UNKNOWN_INHIBITION")

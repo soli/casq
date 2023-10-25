@@ -5,10 +5,10 @@ from glob import glob
 from os import path
 from unittest.mock import patch
 
+import pytest  # type: ignore
+
 from casq.celldesigner2qual import main, map_to_model
 from casq.utils import validate
-
-import pytest  # type: ignore
 
 
 @pytest.mark.parametrize(

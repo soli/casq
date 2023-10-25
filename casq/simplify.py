@@ -19,9 +19,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import collections
 from typing import cast  # noqa: F401
 
-from loguru import logger  # type: ignore
-
 import networkx as nx  # type: ignore
+from loguru import logger  # type: ignore
 
 from .readCD import Transition, add_rdf
 
