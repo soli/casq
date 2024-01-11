@@ -1,0 +1,57 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: CaSQ
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Sylvain
+    family-names: Soliman
+    email: Sylvain.Soliman@inria.fr
+    affiliation: Inria
+    orcid: 'https://orcid.org/0000-0001-5525-7418'
+  - given-names: Anna
+    family-names: Niarakis
+    email: Anna.Niaraki@univ-evry.fr
+    affiliation: 'GenHotel, Université d''Évry'
+    orcid: 'https://orcid.org/0000-0002-9687-7426'
+repository-code: 'https://gitlab.inria.fr/soliman/casq/'
+url: 'https://casq.readthedocs.io/en/stable/'
+license: GPL-3.0
+preferred-citation:
+  type: article
+  authors:
+  - given-names: Sara
+    family-names: Sadat Aghamiri
+    affiliation: 'GenHotel, Université d''Évry'
+  - given-names: Vidisha
+    family-names: Singh
+    affiliation: 'GenHotel, Université d''Évry'
+  - given-names: Aurélien
+    family-names: Naldi
+    affiliation: 'Institut de Biologie de l''École Normale Supérieure'
+  - given-names: Tomáš
+    family-names: Helikar
+    affiliation: 'Department of Biochemistry, University of Nebraska-Lincoln'
+  - given-names: Sylvain
+    family-names: Soliman
+    email: Sylvain.Soliman@inria.fr
+    affiliation: Inria
+    orcid: 'https://orcid.org/0000-0001-5525-7418'
+  - given-names: Anna
+    family-names: Niarakis
+    email: Anna.Niaraki@univ-evry.fr
+    affiliation: 'GenHotel, Université d''Évry'
+    orcid: 'https://orcid.org/0000-0002-9687-7426'
+  doi: "10.1093/bioinformatics/btaa484"
+  journal: "Bioinformatics"
+  month: 5
+  start: 4473
+  end: 4482
+  title: "Automated inference of Boolean models from molecular interaction maps using CaSQ"
+  issue: 16
+  volume: 36
+  year: 2020
