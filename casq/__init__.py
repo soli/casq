@@ -17,5 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+
 # Don't forget to git tag v<version> && git push --tags
 version = "1.3.1"  # pylint: disable=invalid-name

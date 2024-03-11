@@ -117,7 +117,7 @@ view = [
   "open docs/_build/html/index.html",
 ]
 
-[tool.ruff]
+[tool.ruff.lint]
 select = ["C", "E", "F", "W", "D", "A", "I", "B"]
 ignore = ["D203", "D212", "D213", "E501", "D206", "W191", "C901"]
 
