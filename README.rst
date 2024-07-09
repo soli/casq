@@ -6,7 +6,7 @@
     / /___/ /_/ /___/ / /_/ / 
     \____/\__,_//____/\___\_\ 
 
-|pipeline status| |coverage report| |black| |rtd| |gpl|
+|pipeline status| |coverage report| |black| |rtd| |gpl| |conda|
 
 |pypi-version| |pypi-python| |pypi-wheel| |pypi-downloads| |deps|
 
