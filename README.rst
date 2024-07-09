@@ -50,7 +50,7 @@
    :target: https://pypi.org/project/casq/
    :alt: Libraries.io dependency status for latest release
 
-.. |conda| image:: https://img.shields.io/conda/pn/conda-forge/casq
+.. |conda| image:: https://img.shields.io/conda/vn/conda-forge/casq
    :target: https://anaconda.org/conda-forge/casq
    :alt: Conda-Forge CaSQ
 
