@@ -6,9 +6,11 @@
     / /___/ /_/ /___/ / /_/ / 
     \____/\__,_//____/\___\_\ 
 
-|pipeline status| |coverage report| |black| |rtd| |gpl| |conda|
+|pipeline status| |coverage report| |black| |rtd| |gpl|
 
 |pypi-version| |pypi-python| |pypi-wheel| |pypi-downloads| |deps|
+
+|conda| |conda-down|
 
 .. |pipeline status| image:: https://gitlab.inria.fr/soliman/casq/badges/master/pipeline.svg
    :target: https://gitlab.inria.fr/soliman/casq/commits/master
@@ -52,7 +54,11 @@
 
 .. |conda| image:: https://img.shields.io/conda/vn/conda-forge/casq
    :target: https://anaconda.org/conda-forge/casq
-   :alt: Conda-Forge CaSQ
+   :alt: Conda-Forge CaSQ version
+
+.. |conda-down| image:: https://img.shields.io/conda/d/conda-forge/casq
+   :target: https://anaconda.org/conda-forge/casq
+   :alt: Conda-Forge CaSQ total downloads badge
 
 **CaSQ** converts `CellDesigner`_ models to Boolean models encoded in
 `SBML-Qual`_ with a rather strict semantics defined in a
