@@ -50,6 +50,10 @@
    :target: https://pypi.org/project/casq/
    :alt: Libraries.io dependency status for latest release
 
+.. |conda| image:: https://img.shields.io/conda/pn/conda-forge/casq
+   :target: https://anaconda.org/conda-forge/casq
+   :alt: Conda-Forge CaSQ
+
 **CaSQ** converts `CellDesigner`_ models to Boolean models encoded in
 `SBML-Qual`_ with a rather strict semantics defined in a
 `published article`_.
