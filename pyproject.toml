@@ -70,6 +70,7 @@ exclude = [
 
 [tool.hatch.envs.default]
 python = "39"
+installer = "uv"
 
 [tool.hatch.envs.lint]
 detached = true
