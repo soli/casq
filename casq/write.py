@@ -290,6 +290,7 @@ def add_function(func: etree.Element, transitions: List[Transition], known: List
         # it is also the only modification that has an AND and therefore ends
         # with reactants
         reactants = [reac for reac in reaction.reactants if reac in known]
+        # FIXME fails if more than one Boolean AND… we AND them instead of ORing
         reactants.extend(
             [
                 mod
