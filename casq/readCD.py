@@ -37,6 +37,7 @@ NS = {
     "bqbiol": "http://biomodels.net/biology-qualifiers/",
     "bqmodel": "http://biomodels.net/model-qualifiers/",
     "xhtml": "http://www.w3.org/1999/xhtml",
+    "sbgn": "http://sbgn.org/libsbgn/0.3",
     "libsbgn": "http://sbgn.org/libsbgn/0.3",
 }
 
@@ -170,6 +171,7 @@ def make_name_precise(name, ctype, mods):
     """Append molecule type and modifications to its cleaned-up name."""
     to_map = {"&": "", "|": "", "!": "", "underscore": ""}
     to_remove = {"sub", "endsub"}
+    name = name.replace(" ", "_space_").replace("/", "_slash_")
     newname = "_".join(
         (
             to_map[s] if s in to_map else s

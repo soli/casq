@@ -379,13 +379,14 @@ def class_to_type(cls: str) -> str:
     """Translate SBGN glyph classes to CS types."""
     cls = cls.lower().replace(" ", "_")
     if cls in (
-        "macromolecule",
-        "simple_chemical",
+        # "macromolecule",
+        # "simple_chemical",
         "complex",
+        "phenotype",
         "unspecified_entity",
         "nucleic_acid_feature",
-        "macromolecule multimer",
+        # "macromolecule multimer",
     ):
         return cls.upper()
     else:
-        return "GENERIC"
+        return "PROTEIN"

@@ -174,6 +174,7 @@ def main(argv: List[str] = None):
     try:
         info, width, height = read_celldesigner(args.infile)
     except ValueError:
+        args.infile.seek(0, 0)
         info, width, height = read_sbgnml(args.infile)
     simplify_model(info, args.upstream, args.downstream, args.names)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
