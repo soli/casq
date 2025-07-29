@@ -39,11 +39,7 @@ def test_CD_and_SBGNML_similar():
         main()
 
     with open("Tgfb_CD.bnet") as f:
-        cdsbml_out = (
-            f.read()
-            .replace("_empty", "")
-            .splitlines(keepends=True)
-        )
+        cdsbml_out = f.read().replace("_empty", "").splitlines(keepends=True)
     with open("Tgfb_sbgnml.bnet") as f:
         sbgnml_out = f.readlines()
 
