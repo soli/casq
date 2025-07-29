@@ -37,6 +37,7 @@ NS = {
     "bqbiol": "http://biomodels.net/biology-qualifiers/",
     "bqmodel": "http://biomodels.net/model-qualifiers/",
     "xhtml": "http://www.w3.org/1999/xhtml",
+    "libsbgn": "http://sbgn.org/libsbgn/0.3",
 }
 
 Transition = collections.namedtuple(

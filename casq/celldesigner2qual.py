@@ -1,4 +1,4 @@
-"""Convert CellDesigner models to SBML-qual with a rather strict semantics.
+"""Convert CellDesigner/SBGNML models to SBML-qual with a rather strict semantics.
 
 Copyright (C) 2019, Sylvain.Soliman@inria.fr
 
@@ -25,6 +25,7 @@ from loguru import logger  # type: ignore
 
 from . import bmaExport, version
 from .readCD import read_celldesigner
+from .readSBGN import read_sbgnml
 from .simplify import simplify_model
 from .write import write_csv, write_qual
 
@@ -131,7 +132,7 @@ def main(argv: List[str] = None):
         type=argparse.FileType("r", encoding="utf-8"),
         nargs="?",
         default=sys.stdin,
-        help="CellDesigner File",
+        help="CellDesigner or SBGN-ML File",
     )
     parser.add_argument(
         "-b",
@@ -170,7 +171,10 @@ def main(argv: List[str] = None):
     if not args.debug:
         logger.disable("casq")
     logger.debug("parsing {fname}…", fname=args.infile.name)
-    info, width, height = read_celldesigner(args.infile)
+    try:
+        info, width, height = read_celldesigner(args.infile)
+    except ValueError:
+        info, width, height = read_sbgnml(args.infile)
     simplify_model(info, args.upstream, args.downstream, args.names)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
