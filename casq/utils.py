@@ -26,7 +26,7 @@ def validate(filename: str) -> str:
 
     Unit consistency verification is off
     """
-    url = "https://sbml.org/validator_servlet/ValidatorServlet"
+    url = "https://sbml.bioquant.uni-heidelberg.de/validator_servlet/ValidatorServlet"
     command = "curl -s -F file=@{filename} -F output=json -F offcheck=u {url}".format(
         filename=filename, url=url
     )
