@@ -20,7 +20,8 @@ import xml.etree.ElementTree as etree
 from typing import IO
 
 from loguru import logger
-from readCD import NS, Transition, add_rdf, make_name_precise
+
+from .readCD import NS, Transition, add_rdf, make_name_precise
 
 
 def read_sbgnml(fileobj: IO):
