@@ -87,7 +87,7 @@ def species_info_sbgn(map_element):
         w = float(bbox.get("w"))
         h = float(bbox.get("h"))
 
-        compartment_name = "default"
+        compartment_name = "default_compartment"
         cx, cy = x + w / 2, y + h / 2
         for _cid, comp in compartments.items():
             cbbox = comp["bbox"]

@@ -42,7 +42,6 @@ def test_CD_and_SBGNML_similar():
         cdsbml_out = (
             f.read()
             .replace("_empty", "")
-            .replace("default_compartment", "default")
             .splitlines(keepends=True)
         )
     with open("Tgfb_sbgnml.bnet") as f:
@@ -55,6 +54,8 @@ def test_CD_and_SBGNML_similar():
     unlink("Tgfb_sbgnml.csv")
     unlink("Tgfb_sbgnml.sbml")
 
-    # assert "".join(ndiff(cdsbml_out, sbgnml_out)) == ""
+    # import sys
+    # sys.stderr.writelines(ndiff(cdsbml_out, sbgnml_out))
+
     # differences are order of SMAD double-complex (4 lines), missing ubiquitin inhibition from CD file (3 lines)
     assert len([s for s in ndiff(cdsbml_out, sbgnml_out) if not s.startswith(" ")]) == 7
