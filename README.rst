@@ -60,12 +60,13 @@
    :target: https://anaconda.org/conda-forge/casq
    :alt: Conda-Forge CaSQ total downloads badge
 
-**CaSQ** converts `CellDesigner`_ models to Boolean models encoded in
-`SBML-Qual`_ with a rather strict semantics defined in a
-`published article`_.
+**CaSQ** converts `CellDesigner`_ and `SBGN-ML`_ models to Boolean models
+encoded in `SBML-Qual`_ with a rather strict semantics defined in a `published
+article`_.
 
 .. _`CellDesigner`: http://celldesigner.org
 .. _`SBML-Qual`: http://sbml.org
+.. _`SBGN-ML`: https://github.com/sbgn/sbgn/wiki/SBGN_ML
 .. _`published article`: https://academic.oup.com/bioinformatics/article/36/16/4473/5836892
 
 Install
@@ -85,26 +86,33 @@ Command-line usage
 Just follow the instructions::
 
    $ casq --help
-   usage: casq [-h] [-v] [-D] [-c] [-s] [-r S] [-u [UPSTREAM ...]]
-               [-d [DOWNSTREAM ...]] [-b] [-g GRANULARITY] [-i INPUT] [-C]
+   usage: casq [-h] [-v] [-D] [-c] [-s] [-r S] [-f FIXED] [-n]
+               [-u [UPSTREAM ...]] [-d [DOWNSTREAM ...]] [-b] [-g GRANULARITY]
+               [-i INPUT] [-C]
                [infile] [outfile]
 
-   Convert CellDesigner models to SBML-qual with a rather strict semantics.
-   Copyright (C) 2019, Sylvain.Soliman@inria.fr GPLv3
+   Convert CellDesigner/SBGNML models to SBML-qual with a rather strict
+   semantics. Copyright (C) 2019, Sylvain.Soliman@inria.fr GPLv3
 
    positional arguments:
-     infile                CellDesigner File
+     infile                CellDesigner or SBGN-ML File
      outfile               SBML-Qual/BMA json File
 
    optional arguments:
      -h, --help            show this help message and exit
      -v, --version         show program's version number and exit
      -D, --debug           Display a lot of debug information
-     -c, --csv             Store the species information in a separate CSV file
+     -c, --csv             Store the species information in a separate CSV (and
+                           .bnet) file
      -s, --sif             Store the influence information in a separate SIF file
      -r S, --remove S      Delete connected components in the resulting model if
                            their size is smaller than S. A negative S leads to
                            keep only the biggest(s) connected component(s)
+     -f FIXED, --fixed FIXED
+                           A CSV file containing input values or knock-ins/knock-
+                           outs, one per line, with name in the first column and
+                           the value in the second.
+     -n, --names           Use the names as IDs in the SBML file
      -u [UPSTREAM ...], --upstream [UPSTREAM ...]
                            Only species upstream of this/these species will be
                            kept
