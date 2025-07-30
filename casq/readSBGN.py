@@ -115,11 +115,6 @@ def species_info_sbgn(map_element):
         mods = []
 
         name_clean = make_name_precise(name, classtype, mods)
-        # ref_species = make_name_precise(name, classtype, [])  # sans mods
-        # if classtype == "COMPLEX" and ref_species.endswith("_complex"):
-        #    ref_species = ref_species[:-8]
-        # annotation = glyph.find("sbgn:annotation", namespaces=NS)
-        # rdf = annotation.find(".//rdf:RDF", namespaces=NS) if annotation is not None else None
         rdf = glyph.find(".//rdf:RDF", namespaces=NS)
         logger.debug(
             "Adding entity: id={}, type={}, name={}", species_id, classtype, name_clean
@@ -133,7 +128,7 @@ def species_info_sbgn(map_element):
             "transitions": [],
             "name": name_clean,
             "function": name_clean,
-            "ref_species": species_id,
+            "ref_species": f"{name_clean}__{compartment_name}",
             "type": classtype,
             "modifications": mods,
             "receptor": False,
