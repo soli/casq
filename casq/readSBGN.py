@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import unicodedata
 import xml.etree.ElementTree as etree
 from typing import IO
 
@@ -89,6 +90,7 @@ def species_info_sbgn(map_element):
 
         compartment_name = "default_compartment"
         cx, cy = x + w / 2, y + h / 2
+        min_area = float("inf")
         for _cid, comp in compartments.items():
             cbbox = comp["bbox"]
             cx0 = float(cbbox.get("x"))
@@ -96,8 +98,10 @@ def species_info_sbgn(map_element):
             cw = float(cbbox.get("w"))
             ch = float(cbbox.get("h"))
             if cx0 <= cx <= cx0 + cw and cy0 <= cy <= cy0 + ch:
-                compartment_name = comp["name"]
-                break
+                area = cw * ch
+                if area < min_area:
+                    min_area = area
+                    compartment_name = comp["name"].replace(" ", "_")
 
         classtype = class_to_type(cls)
 
@@ -114,7 +118,12 @@ def species_info_sbgn(map_element):
                     break
         mods = []
 
-        name_clean = make_name_precise(name, classtype, mods)
+        name_clean = make_name_precise(greeks_to_name(name), classtype, mods)
+        # ref_species = make_name_precise(name, classtype, [])  # sans mods
+        # if classtype == "COMPLEX" and ref_species.endswith("_complex"):
+        #    ref_species = ref_species[:-8]
+        # annotation = glyph.find("sbgn:annotation", namespaces=NS)
+        # rdf = annotation.find(".//rdf:RDF", namespaces=NS) if annotation is not None else None
         rdf = glyph.find(".//rdf:RDF", namespaces=NS)
         logger.debug(
             "Adding entity: id={}, type={}, name={}", species_id, classtype, name_clean
@@ -128,7 +137,8 @@ def species_info_sbgn(map_element):
             "transitions": [],
             "name": name_clean,
             "function": name_clean,
-            "ref_species": f"{name_clean}__{compartment_name}",
+            # "ref_species": species_id,
+            "ref_species": f"{name_clean}__{compartment_name}__{activity}",
             "type": classtype,
             "modifications": mods,
             "receptor": False,
@@ -380,8 +390,23 @@ def class_to_type(cls: str) -> str:
         "phenotype",
         "unspecified_entity",
         "nucleic_acid_feature",
-        # "macromolecule multimer",
+        # "macromolecule_multimer",
     ):
         return cls.upper()
-    else:
-        return "PROTEIN"
+    return "PROTEIN"
+
+
+def greeks_to_name(s: str) -> str:
+    """Change all greek letters to ascii in s."""
+    return "".join(greek_to_name(c) for c in s)
+
+
+def greek_to_name(c: chr) -> str:
+    """Change one greek letter to ascii."""
+    try:
+        greek, size, letter, what, *with_tonos = unicodedata.name(c).split()
+    except ValueError: # not enough values to unpack
+        return c
+    if (greek, letter) != ("GREEK", "LETTER"):
+        return c
+    return what.lower() if size == "SMALL" else what.title()
