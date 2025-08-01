@@ -37,18 +37,24 @@ def test_casq_produces_valid_files(tmp_path, infile):
 
 
 @pytest.mark.parametrize(
-    "cdsbml_in",
-    glob(path.join(str(path.dirname(path.realpath(__file__))), "*_CD.xml")),
+    "infile,diffs",
+    [
+        ("Tgfb", 7),    # order of SMAD cmplx, missing ubiquitin inhibition from CD
+        ("E_Prot", 4),  # order for Activity_space_pheno
+        ("JNK", 0),
+        ("Orf3a", 2),   # order for P65 cmplx
+    ]
 )
-def test_CD_and_SBGNML_similar(cdsbml_in, change_test_dir):
+def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
     """Check if the files generated from SBGN and CD are similar."""
-    sbgnml_in = cdsbml_in[:-6] + "SBGNML.xml"
+    cdsbml_in = infile + "_CD.xml"
+    sbgnml_in = infile + "_SBGNML.xml"
     with patch("sys.argv", ["casq", "-c", cdsbml_in]):
         main()
     with patch("sys.argv", ["casq", "-c", sbgnml_in]):
         main()
 
-    with open(cdsbml_in[:-3] + "bnet") as f:
+    with open(infile + "_CD.bnet") as f:
         cdsbml_out = (
             f.read()
             .replace("_empty", "")
@@ -59,7 +65,7 @@ def test_CD_and_SBGNML_similar(cdsbml_in, change_test_dir):
             .replace("_rna", "_nucleic_acid_feature")
             .splitlines(keepends=True)
         )
-    with open(sbgnml_in[:-3] + "bnet") as f:
+    with open(infile + "_SBGNML.bnet") as f:
         sbgnml_out = f.readlines()
 
     import sys
@@ -67,4 +73,4 @@ def test_CD_and_SBGNML_similar(cdsbml_in, change_test_dir):
     sys.stderr.writelines(ndiff(cdsbml_out, sbgnml_out))
 
     # differences are order of SMAD double-complex (4 lines), missing ubiquitin inhibition from CD file (3 lines)
-    assert len([s for s in ndiff(cdsbml_out, sbgnml_out) if not s.startswith(" ")]) == 7
+    assert len([s for s in ndiff(cdsbml_out, sbgnml_out) if not s.startswith(" ")]) == diffs
