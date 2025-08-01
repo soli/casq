@@ -1,0 +1,3379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns2:sbgn xmlns:ns2="http://sbgn.org/libsbgn/0.3"
+          xmlns:ns1="http://www.sbml.org/sbml/level3/version1/render/version1">
+   <ns2:map id="JNK_signaling_pathway" language="process description">
+      <ns2:notes>
+         <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+               <title/>
+            </head>
+            <body>Author:
+<br xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner"/>
+
+Dr. Daniela Boernigen, University Hospital Hamburg Eppendorf (UKE),
+Hamburg, Germany
+<br xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner"/>
+               <br xmlns:celldesigner="http://www.sbml.org/2001/ns/celldesigner"/>
+
+Description: JNK pathway activation during SARS-CoV infection</body>
+         </html>
+      </ns2:notes>
+      <ns2:extension>
+         <annotation>
+            <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                     xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                     xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                     xmlns:dc="http://purl.org/dc/elements/1.1/"
+                     xmlns:dcterms="http://purl.org/dc/terms/"
+                     xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+               <rdf:Description rdf:about="#JNK_signaling_pathway">
+                  <dcterms:modified rdf:parseType="Resource"/>
+               </rdf:Description>
+            </rdf:RDF>
+         </annotation>
+         <ns1:renderInformation>
+            <ns1:listOfStyles>
+               <ns1:style ns1:idList="ca1">
+                  <ns1:g ns1:fill="#cccc00" ns1:stroke="#cccc00" ns1:stroke-width="12.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="ca2">
+                  <ns1:g ns1:fill="#cccc00" ns1:stroke="#cccc00" ns1:stroke-width="12.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="ca3">
+                  <ns1:g ns1:fill="#cccc00" ns1:stroke="#cccc00" ns1:stroke-width="12.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="ca5">
+                  <ns1:g ns1:fill="#cccc00" ns1:stroke="#cccc00" ns1:stroke-width="12.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa3-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa3">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa2-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa2">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa1-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa1">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa1">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa68-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa68">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa67-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa67">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa11">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa73-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa73">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa72-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa72">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa74-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa74">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa12">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa6-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa6">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa8-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa8">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa7-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa7">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa2">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa9-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa9">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa10-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa10">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa3">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa27-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa27">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa26-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa26">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa4">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa50">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa37">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa38">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa52">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa48">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa49">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa5">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa41-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa41">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa43-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa43">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa42-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa42">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa6">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa64-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa64">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa63-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa63">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="csa9">
+                  <ns1:g ns1:fill="#f7f7f7" ns1:stroke="#000000" ns1:stroke-width="2.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa12-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa12">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa16">
+                  <ns1:g ns1:fill="#cc99ff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa17">
+                  <ns1:g ns1:fill="#cc99ff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa18">
+                  <ns1:g ns1:fill="#cc99ff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa33-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa33">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa34-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa34">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa36">
+                  <ns1:g ns1:fill="#cc99ff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa4-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa4">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa44-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa44">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa5-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa5">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa53-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa53">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa69-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa69">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa70-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa70">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa71-rs1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa71">
+                  <ns1:g ns1:fill="#ccffcc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa75">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa76">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa77">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="sa78">
+                  <ns1:g ns1:fill="#ffcccc" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re26">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc0">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc1">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc2">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re23">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc3">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc4">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc5">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re39">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc6">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc7">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc8">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc9">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re4">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc10">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc11">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc12">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc13">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc14">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc15">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re37">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc16">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc17">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc18">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re25">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc19">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc20">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc21">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re36">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc22">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc23">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc24">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc25">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re2">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc26">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc27">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc28">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc29">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re35">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc30">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc31">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc32">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="re42">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc33">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc34">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+               <ns1:style ns1:idList="arc35">
+                  <ns1:g ns1:fill="#ffffff" ns1:stroke="#000000" ns1:stroke-width="1.0"/>
+               </ns1:style>
+            </ns1:listOfStyles>
+         </ns1:renderInformation>
+      </ns2:extension>
+      <ns2:bbox h="1129.0" w="1806.0" x="0.0" y="0.0"/>
+      <ns2:glyph class="compartment" compartmentOrder="4.0" id="ca1">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>A semiautonomous, self replicating organelle that occurs in varying numbers, shapes, and sizes in the cytoplasm of virtually all eukaryotic cells. It is notably the site of tissue respiration.</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#ca1">
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/GO:0005739"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="mitochondrion">
+            <ns2:bbox h="37.5" w="170.5" x="1099.5" y="792.5"/>
+         </ns2:label>
+         <ns2:bbox h="155.0" w="317.0" x="953.0" y="675.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="compartment" compartmentOrder="1.0" id="ca2">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#ca2">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="human host">
+            <ns2:bbox h="122.0" w="539.0" x="1237.0" y="977.0"/>
+         </ns2:label>
+         <ns2:bbox h="1069.0" w="1746.0" x="30.0" y="30.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="compartment" compartmentOrder="3.0" id="ca3">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>A membrane-bounded organelle of eukaryotic cells in which chromosomes are housed and replicated. In most cells, the nucleus contains all of the cell's chromosomes except the organellar chromosomes, and is the site of RNA synthesis and processing. In some species, or in specialized cell types, RNA metabolism or DNA replication may be absent.</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#ca3">
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/GO:0005634"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="nucleus">
+            <ns2:bbox h="36.5" w="134.5" x="1184.5" y="548.5"/>
+         </ns2:label>
+         <ns2:bbox h="203.0" w="402.0" x="917.0" y="382.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="compartment" compartmentOrder="2.0" id="ca5">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>The contents of a cell excluding the plasma membrane and nucleus, but including other subcellular structures.</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#ca5">
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/GO:0005737"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="cell">
+            <ns2:bbox h="161.5" w="1348.5" x="368.5" y="860.5"/>
+         </ns2:label>
+         <ns2:bbox h="814.0" w="1661.0" x="56.0" y="208.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca5" id="csa1">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa1">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="JNK">
+            <ns2:bbox h="168.0" w="142.0" x="716.0" y="652.0"/>
+         </ns2:label>
+         <ns2:bbox h="168.0" w="142.0" x="716.0" y="652.0"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa3">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:JNK3 alias:p54bSAPK HGNC:6872 RefSeq:NM_001318067 Ensembl:ENSG00000109339 Uniprot:P53779 Entrez:5602</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa3">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000109339"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6872"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P53779"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001318067"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAPK10"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:5602"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAPK10">
+               <ns2:bbox h="40.0" w="80.0" x="730.0" y="744.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="730.0" y="744.0"/>
+            <ns2:glyph class="state variable" id="sa3-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="782.5" y="736.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa2">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:JNK2 alias:SAPK HGNC:6886 RefSeq:NM_001135044 Ensembl:ENSG00000050748 Uniprot:P45984 Entrez:5601</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa2">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAPK9"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000050748"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P45984"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6886"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:5601"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001135044"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAPK9">
+               <ns2:bbox h="40.0" w="80.0" x="754.0" y="709.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="754.0" y="709.0"/>
+            <ns2:glyph class="state variable" id="sa2-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="806.5" y="701.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa1">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:JNK1 alias:SAPK1 HGNC:6881 RefSeq:NM_001278547 Ensembl:ENSG00000107643 Uniprot:P45983 Entrez:5599</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa1">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001278547"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000107643"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAPK8"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P45983"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6881"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:5599"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAPK8">
+               <ns2:bbox h="40.0" w="80.0" x="730.0" y="681.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="730.0" y="681.0"/>
+            <ns2:glyph class="state variable" id="sa1-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="782.5" y="673.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca5" id="csa11">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa11">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="MEKK1/4">
+            <ns2:bbox h="106.0" w="118.0" x="84.55556" y="474.44446"/>
+         </ns2:label>
+         <ns2:bbox h="106.0" w="118.0" x="84.55556" y="474.44446"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa68">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body/>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa68">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001291958"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6856"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K4"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9Y6R4"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4216"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000085511"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K4">
+               <ns2:bbox h="40.0" w="80.0" x="107.55556" y="515.44446"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="107.55556" y="515.44446"/>
+            <ns2:glyph class="state variable" id="sa68-rs1">
+               <ns2:state value="" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="160.05556" y="507.94446"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa67">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body/>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa67">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_005921"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000095015"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13233"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6848"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K1"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4214"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K1">
+               <ns2:bbox h="40.0" w="80.0" x="95.55556" y="480.44446"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="95.55556" y="480.44446"/>
+            <ns2:glyph class="state variable" id="sa67-rs1">
+               <ns2:state value="" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="148.05556" y="472.94446"/>
+            </ns2:glyph>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca5" id="csa12">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa12">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="JNK">
+            <ns2:bbox h="168.0" w="142.0" x="470.0" y="651.0"/>
+         </ns2:label>
+         <ns2:bbox h="168.0" w="142.0" x="470.0" y="651.0"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa73">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:JNK2 alias:SAPK HGNC:6886 RefSeq:NM_001135044 Ensembl:ENSG00000050748 Uniprot:P45984 Entrez:5601</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa73">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAPK9"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000050748"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P45984"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6886"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:5601"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001135044"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAPK9">
+               <ns2:bbox h="40.0" w="80.0" x="508.0" y="708.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="508.0" y="708.0"/>
+            <ns2:glyph class="state variable" id="sa73-rs1">
+               <ns2:state variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="560.5" y="700.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa72">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body/>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa72">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001278547"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000107643"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAPK8"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P45983"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6881"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:5599"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAPK8">
+               <ns2:bbox h="40.0" w="80.0" x="484.0" y="680.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="484.0" y="680.0"/>
+            <ns2:glyph class="state variable" id="sa72-rs1">
+               <ns2:state variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="536.5" y="672.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa74">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:JNK3 alias:p54bSAPK HGNC:6872 RefSeq:NM_001318067 Ensembl:ENSG00000109339 Uniprot:P53779 Entrez:5602</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa74">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000109339"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6872"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P53779"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001318067"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAPK10"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:5602"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAPK10">
+               <ns2:bbox h="40.0" w="80.0" x="484.0" y="743.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="484.0" y="743.0"/>
+            <ns2:glyph class="state variable" id="sa74-rs1">
+               <ns2:state variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="536.5" y="735.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca5" id="csa2">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa2">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="MLK1/2/3">
+            <ns2:bbox h="142.0" w="116.0" x="262.0" y="245.0"/>
+         </ns2:label>
+         <ns2:bbox h="142.0" w="116.0" x="262.0" y="245.0"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa6">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:MLK1 alias:MEKK9 HGNC:6861 RefSeq:NM_001284230 Ensembl:ENSG00000006432 Uniprot:P80192</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa6">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001284230"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6861"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K9"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000006432"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4293"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P80192"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K9">
+               <ns2:bbox h="40.0" w="80.0" x="274.0" y="259.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="274.0" y="259.0"/>
+            <ns2:glyph class="state variable" id="sa6-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="326.5" y="251.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa8">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:MLK3 alias:MEKK11 HGNC:6850 RefSeq:NM_002419 Ensembl:ENSG00000173327 Uniprot:Q16584</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa8">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6850"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4296"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000173327"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:Q16584"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K11"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_002419"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K11">
+               <ns2:bbox h="40.0" w="80.0" x="270.0" y="325.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="270.0" y="325.0"/>
+            <ns2:glyph class="state variable" id="sa8-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="322.5" y="317.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa7">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:MLK2 alias:MEKK10 HGNC:6849 RefSeq:NM_002446 Ensembl:ENSG00000130758 Uniprot:Q02779</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa7">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4294"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K10"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6849"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:Q02779"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_002446"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000130758"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K10">
+               <ns2:bbox h="40.0" w="80.0" x="285.0" y="293.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="285.0" y="293.0"/>
+            <ns2:glyph class="state variable" id="sa7-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="337.5" y="285.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca5" id="csa3">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa3">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="MEKK1/4">
+            <ns2:bbox h="106.0" w="118.0" x="256.0" y="475.0"/>
+         </ns2:label>
+         <ns2:bbox h="106.0" w="118.0" x="256.0" y="475.0"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa9">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:MEKK1 HGNC:6848 RefSeq:NM_005921 Ensembl:ENSG00000095015 Uniprot:Q13233 Entrez:4214</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa9">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_005921"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000095015"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:Q13233"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6848"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K1"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4214"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K1">
+               <ns2:bbox h="40.0" w="80.0" x="267.0" y="481.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="267.0" y="481.0"/>
+            <ns2:glyph class="state variable" id="sa9-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="319.5" y="473.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa10">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:MEKK4 HGNC:6856 RefSeq:NM_001291958 Ensembl:ENSG00000085511 Uniprot:Q9Y6R4 Entrez:4216</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa10">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001291958"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6856"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K4"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:Q9Y6R4"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4216"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000085511"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K4">
+               <ns2:bbox h="40.0" w="80.0" x="279.0" y="516.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="279.0" y="516.0"/>
+            <ns2:glyph class="state variable" id="sa10-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="331.5" y="508.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca3" id="csa4">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa4">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="AP-1">
+            <ns2:bbox h="120.0" w="100.0" x="1175.0" y="414.0"/>
+         </ns2:label>
+         <ns2:bbox h="120.0" w="100.0" x="1175.0" y="414.0"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca3" id="sa27">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:AP-1 HGNC:6206 RefSeq:NM_005354 Ensembl:ENSG00000130522 Uniprot:P17535 Entrez:3727</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa27">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000130522"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6206"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:3727"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:JUND"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_005354"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P17535"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="JUND">
+               <ns2:bbox h="40.0" w="80.0" x="1184.0" y="468.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="1184.0" y="468.0"/>
+            <ns2:glyph class="state variable" id="sa27-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="1236.5" y="460.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca3" id="sa26">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:c-Jun alias:AP-1 HGNC:6204 RefSeq:NM_002228 Ensembl:ENSG00000177606 Uniprot:P05412 Entrez:3725</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa26">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:3725"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6204"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P05412"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:JUN"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000177606"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_002228"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="JUN">
+               <ns2:bbox h="40.0" w="80.0" x="1183.0" y="421.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="1183.0" y="421.0"/>
+            <ns2:glyph class="state variable" id="sa26-rs1">
+               <ns2:state value="P" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="1235.5" y="413.5"/>
+            </ns2:glyph>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca2" id="csa5">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa5">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="SARS-CoV-1 proteins">
+            <ns2:bbox h="140.0" w="307.0" x="125.0" y="51.0"/>
+         </ns2:label>
+         <ns2:bbox h="140.0" w="307.0" x="125.0" y="51.0"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa50">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body/>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa50">
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="6">
+               <ns2:bbox h="40.0" w="80.0" x="331.0" y="70.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="331.0" y="70.0"/>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa37">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>Uniprot:P0QGFD</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa37">
+                        <bqmodel:is>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P59594"/>
+                           </rdf:Bag>
+                        </bqmodel:is>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="S">
+               <ns2:bbox h="40.0" w="80.0" x="137.17647" y="69.17647"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="137.17647" y="69.17647"/>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa38">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body/>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa38">
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="N">
+               <ns2:bbox h="40.0" w="80.0" x="138.17647" y="115.17647"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="138.17647" y="115.17647"/>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa52">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body/>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa52">
+                        <bqmodel:is>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P59635"/>
+                           </rdf:Bag>
+                        </bqmodel:is>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="7a">
+               <ns2:bbox h="40.0" w="80.0" x="331.0" y="118.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="331.0" y="118.0"/>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa48">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body/>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa48">
+                        <bqmodel:is>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P59632"/>
+                           </rdf:Bag>
+                        </bqmodel:is>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="3a">
+               <ns2:bbox h="40.0" w="80.0" x="241.0" y="70.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="241.0" y="70.0"/>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa49">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body/>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa49">
+                        <bqmodel:is>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P59633"/>
+                           </rdf:Bag>
+                        </bqmodel:is>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="3b">
+               <ns2:bbox h="40.0" w="80.0" x="242.0" y="116.0"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="242.0" y="116.0"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca5" id="csa6">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa6">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="MLK1/2/3">
+            <ns2:bbox h="142.0" w="116.0" x="95.625" y="245.33089"/>
+         </ns2:label>
+         <ns2:bbox h="142.0" w="116.0" x="95.625" y="245.33089"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa41">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:MLK1 alias:MEKK9 HGNC:6861 RefSeq:NM_001284230 Ensembl:ENSG00000006432 Uniprot:P80192</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa41">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001284230"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6861"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K9"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000006432"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4293"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P80192"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K9">
+               <ns2:bbox h="40.0" w="80.0" x="107.625" y="259.33087"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="107.625" y="259.33087"/>
+            <ns2:glyph class="state variable" id="sa41-rs1">
+               <ns2:state variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="160.125" y="251.83089"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa43">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:MLK3 alias:MEKK11 HGNC:6850 RefSeq:NM_002419 Ensembl:ENSG00000173327 Uniprot:Q16584</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa43">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6850"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4296"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000173327"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:Q16584"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K11"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_002419"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K11">
+               <ns2:bbox h="40.0" w="80.0" x="103.625" y="325.33087"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="103.625" y="325.33087"/>
+            <ns2:glyph class="state variable" id="sa43-rs1">
+               <ns2:state variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="156.125" y="317.83087"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa42">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:MLK2 alias:MEKK10 HGNC:6849 RefSeq:NM_002446 Ensembl:ENSG00000130758 Uniprot:Q02779</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa42">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:4294"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP3K10"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6849"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:Q02779"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_002446"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000130758"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="MAP3K10">
+               <ns2:bbox h="40.0" w="80.0" x="118.625" y="293.33087"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="118.625" y="293.33087"/>
+            <ns2:glyph class="state variable" id="sa42-rs1">
+               <ns2:state variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="171.125" y="285.83087"/>
+            </ns2:glyph>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="complex" compartmentRef="ca3" id="csa9">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#csa9">
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="AP-1">
+            <ns2:bbox h="120.0" w="100.0" x="970.55554" y="414.05554"/>
+         </ns2:label>
+         <ns2:bbox h="120.0" w="100.0" x="970.55554" y="414.05554"/>
+         <ns2:glyph class="macromolecule" compartmentRef="ca3" id="sa64">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:AP-1 HGNC:6206 RefSeq:NM_005354 Ensembl:ENSG00000130522 Uniprot:P17535 Entrez:3727</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa64">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000130522"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6206"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:3727"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:JUND"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_005354"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P17535"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="JUND">
+               <ns2:bbox h="40.0" w="80.0" x="979.55554" y="468.05554"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="979.55554" y="468.05554"/>
+            <ns2:glyph class="state variable" id="sa64-rs1">
+               <ns2:state value="" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="1032.0555" y="460.55554"/>
+            </ns2:glyph>
+         </ns2:glyph>
+         <ns2:glyph class="macromolecule" compartmentRef="ca3" id="sa63">
+            <ns2:notes>
+               <html xmlns="http://www.w3.org/1999/xhtml">
+                  <head>
+                     <title/>
+                  </head>
+                  <body>alias:c-Jun alias:AP-1 HGNC:6204 RefSeq:NM_002228 Ensembl:ENSG00000177606 Uniprot:P05412 Entrez:3725</body>
+               </html>
+            </ns2:notes>
+            <ns2:extension>
+               <annotation>
+                  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                           xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                           xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                           xmlns:dc="http://purl.org/dc/elements/1.1/"
+                           xmlns:dcterms="http://purl.org/dc/terms/"
+                           xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                     <rdf:Description rdf:about="#sa63">
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ncbigene:3725"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc:6204"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/uniprot:P05412"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:JUN"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000177606"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <bqbiol:isDescribedBy>
+                           <rdf:Bag>
+                              <rdf:li rdf:resource="https://identifiers.org/refseq:NM_002228"/>
+                           </rdf:Bag>
+                        </bqbiol:isDescribedBy>
+                        <dcterms:modified rdf:parseType="Resource"/>
+                     </rdf:Description>
+                  </rdf:RDF>
+               </annotation>
+            </ns2:extension>
+            <ns2:label text="JUN">
+               <ns2:bbox h="40.0" w="80.0" x="978.55554" y="421.05554"/>
+            </ns2:label>
+            <ns2:bbox h="40.0" w="80.0" x="978.55554" y="421.05554"/>
+            <ns2:glyph class="state variable" id="sa63-rs1">
+               <ns2:state value="" variable=""/>
+               <ns2:bbox h="15.0" w="15.0" x="1031.0555" y="413.55554"/>
+            </ns2:glyph>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca1" id="sa12">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>HGNC:990 RefSeq:NM_000633 Ensembl:ENSG00000171791 Uniprot:P10415</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa12">
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:BCL2"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_000657"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:596"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P10415"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000171791"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_000633"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:990"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="BCL2">
+            <ns2:bbox h="40.0" w="80.0" x="1146.0" y="731.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="1146.0" y="731.0"/>
+         <ns2:glyph class="state variable" id="sa12-rs1">
+            <ns2:state value="P" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="1198.5" y="723.5"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="phenotype" compartmentRef="ca5" id="sa16">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>GO:0045087 innate immune response
+Innate immune responses are defense responses mediated by germline encoded components that directly recognize components of potential pathogens.</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa16">
+                     <bqbiol:isEncodedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/GO:0045087"/>
+                        </rdf:Bag>
+                     </bqbiol:isEncodedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="Innate Immunity">
+            <ns2:bbox h="32.0" w="119.0" x="1393.0" y="458.0"/>
+         </ns2:label>
+         <ns2:bbox h="32.0" w="119.0" x="1393.0" y="458.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="phenotype" compartmentRef="ca5" id="sa17">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>GO:0006915 apoptotic process
+A programmed cell death process which begins when a cell receives an internal (e.g. DNA damage) or external signal (e.g. an extracellular death ligand), and proceeds through a series of biochemical events (signaling pathway phase) which trigger an execution phase. The execution phase is the last step of an apoptotic process, and is typically characterized by rounding-up of the cell, retraction of pseudopodes, reduction of cellular volume (pyknosis), chromatin condensation, nuclear fragmentation (karyorrhexis), plasma membrane blebbing and fragmentation of the cell into apoptotic bodies. When the execution phase is completed, the cell has died.</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa17">
+                     <bqbiol:isEncodedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/GO:0006915"/>
+                        </rdf:Bag>
+                     </bqbiol:isEncodedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="Apoptosis">
+            <ns2:bbox h="30.0" w="80.0" x="1412.5" y="763.0"/>
+         </ns2:label>
+         <ns2:bbox h="30.0" w="80.0" x="1412.5" y="763.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="phenotype" compartmentRef="ca5" id="sa18">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>GO:0006914 Autophagy
+The cellular catabolic process in which cells digest cellular materials, such as organelles and other macromolecular constituents, or non-self materials such as intracellular pathogens. Autophagy serves to provide essential nutrients under conditions of cellular stress; or can remodel intracellular structures during cell differentiation.</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa18">
+                     <bqbiol:isEncodedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/GO:0006914"/>
+                        </rdf:Bag>
+                     </bqbiol:isEncodedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="Autophagy">
+            <ns2:bbox h="30.0" w="80.0" x="1412.5" y="717.0"/>
+         </ns2:label>
+         <ns2:bbox h="30.0" w="80.0" x="1412.5" y="717.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa33">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>HGNC:784 RefSeq:NM_001880 Ensembl:ENSG00000115966 Uniprot:P15336 Entrez:1386</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa33">
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001880"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P15336"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:1386"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:784"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:ATF2"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000115966"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="ATF2">
+            <ns2:bbox h="40.0" w="80.0" x="1050.0" y="888.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="1050.0" y="888.0"/>
+         <ns2:glyph class="state variable" id="sa33-rs1">
+            <ns2:state value="P" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="1102.5" y="880.5"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa34">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>alias:p53 HGNC:11998 RefSeq:NM_000546 Ensembl:ENSG00000141510 Uniprot:P04637 Entrez:7157</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa34">
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000141510"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:11998"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:7157"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:TP53"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P04637"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_000546"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="TP53">
+            <ns2:bbox h="40.0" w="80.0" x="1045.0" y="950.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="1045.0" y="950.0"/>
+         <ns2:glyph class="state variable" id="sa34-rs1">
+            <ns2:state value="P" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="1097.5" y="942.5"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="phenotype" compartmentRef="ca5" id="sa36">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>GO:0072331 signal transduction by p53 class mediator
+An intracellular signaling process that is induced by the cell cycle regulator phosphoprotein p53 or an equivalent protein.</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa36">
+                     <bqbiol:isEncodedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/GO:0072331"/>
+                        </rdf:Bag>
+                     </bqbiol:isEncodedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="TP53 signalling">
+            <ns2:bbox h="36.0" w="175.0" x="1365.0" y="951.5"/>
+         </ns2:label>
+         <ns2:bbox h="36.0" w="175.0" x="1365.0" y="951.5"/>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa4">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>alias:MEK4 alias:MKK4 HGNC:6844 RefSeq:NM_001281435 Ensembl:ENSG00000065559 Uniprot:P45985 Entrez:6416</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa4">
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:6844"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000065559"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001281435"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P45985"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP2K4"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:6416"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="MAP2K4">
+            <ns2:bbox h="40.0" w="80.0" x="537.0" y="598.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="537.0" y="598.0"/>
+         <ns2:glyph class="state variable" id="sa4-rs1">
+            <ns2:state value="P" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="589.5" y="590.5"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa44">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa44">
+                     <bqmodel:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:5609"/>
+                        </rdf:Bag>
+                     </bqmodel:is>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:O14733"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000076984"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:6847"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001297555"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP2K7"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="MAP2K7">
+            <ns2:bbox h="40.0" w="80.0" x="333.625" y="401.33087"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="333.625" y="401.33087"/>
+         <ns2:glyph class="state variable" id="sa44-rs1">
+            <ns2:state variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="386.125" y="393.83087"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa5">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>alias:MKK7 HGNC:6847 RefSeq:NM_001297555 Ensembl:ENSG00000076984 Uniprot:O14733 Entrez:5609</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa5">
+                     <bqmodel:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:5609"/>
+                        </rdf:Bag>
+                     </bqmodel:is>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:O14733"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000076984"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:6847"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001297555"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP2K7"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="MAP2K7">
+            <ns2:bbox h="40.0" w="80.0" x="522.0" y="402.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="522.0" y="402.0"/>
+         <ns2:glyph class="state variable" id="sa5-rs1">
+            <ns2:state value="P" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="574.5" y="394.5"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca1" id="sa53">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa53">
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:BCL2"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_000657"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:596"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P10415"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000171791"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_000633"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:990"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="BCL2">
+            <ns2:bbox h="40.0" w="80.0" x="978.5" y="731.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="978.5" y="731.0"/>
+         <ns2:glyph class="state variable" id="sa53-rs1">
+            <ns2:state value="" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="1031.0" y="723.5"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa69">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa69">
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:6844"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000065559"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001281435"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P45985"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:MAP2K4"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:6416"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="MAP2K4">
+            <ns2:bbox h="40.0" w="80.0" x="337.55554" y="598.44446"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="337.55554" y="598.44446"/>
+         <ns2:glyph class="state variable" id="sa69-rs1">
+            <ns2:state value="" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="390.05554" y="590.94446"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa70">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa70">
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000141510"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:11998"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:7157"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:TP53"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P04637"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_000546"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="TP53">
+            <ns2:bbox h="40.0" w="80.0" x="768.55554" y="949.7778"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="768.55554" y="949.7778"/>
+         <ns2:glyph class="state variable" id="sa70-rs1">
+            <ns2:state value="" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="821.05554" y="942.2778"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca5" id="sa71">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa71">
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/refseq:NM_001880"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P15336"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ncbigene:1386"/>
+                        </rdf:Bag>
+                     </bqbiol:is>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc:784"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/hgnc.symbol:ATF2"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <bqbiol:isDescribedBy>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/ensembl:ENSG00000115966"/>
+                        </rdf:Bag>
+                     </bqbiol:isDescribedBy>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="ATF2">
+            <ns2:bbox h="40.0" w="80.0" x="773.55554" y="887.7778"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="773.55554" y="887.7778"/>
+         <ns2:glyph class="state variable" id="sa71-rs1">
+            <ns2:state value="" variable=""/>
+            <ns2:bbox h="15.0" w="15.0" x="826.05554" y="880.2778"/>
+         </ns2:glyph>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa75">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa75">
+                     <bqmodel:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P59633"/>
+                        </rdf:Bag>
+                     </bqmodel:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="3b">
+            <ns2:bbox h="40.0" w="80.0" x="1083.0" y="130.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="1083.0" y="130.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa76">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa76">
+                     <bqmodel:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P59635"/>
+                        </rdf:Bag>
+                     </bqmodel:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="7a">
+            <ns2:bbox h="40.0" w="80.0" x="544.0" y="130.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="544.0" y="130.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa77">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body/>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa77">
+                     <bqmodel:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P59632"/>
+                        </rdf:Bag>
+                     </bqmodel:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="3a">
+            <ns2:bbox h="40.0" w="80.0" x="444.0" y="130.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="444.0" y="130.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="macromolecule" compartmentRef="ca2" id="sa78">
+         <ns2:notes>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+               <head>
+                  <title/>
+               </head>
+               <body>Uniprot:P0QGFD</body>
+            </html>
+         </ns2:notes>
+         <ns2:extension>
+            <annotation>
+               <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:bqbiol="http://biomodels.net/biology-qualifiers/"
+                        xmlns:bqmodel="http://biomodels.net/model-qualifiers/"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:dcterms="http://purl.org/dc/terms/"
+                        xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">
+                  <rdf:Description rdf:about="#sa78">
+                     <bqmodel:is>
+                        <rdf:Bag>
+                           <rdf:li rdf:resource="https://identifiers.org/uniprot:P59594"/>
+                        </rdf:Bag>
+                     </bqmodel:is>
+                     <dcterms:modified rdf:parseType="Resource"/>
+                  </rdf:Description>
+               </rdf:RDF>
+            </annotation>
+         </ns2:extension>
+         <ns2:label text="S">
+            <ns2:bbox h="40.0" w="80.0" x="650.0" y="130.0"/>
+         </ns2:label>
+         <ns2:bbox h="40.0" w="80.0" x="650.0" y="130.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re26" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="941.7778" y="964.8889"/>
+         <ns2:port id="re26.1" x="936.7778" y="969.8889"/>
+         <ns2:port id="re26.2" x="956.7778" y="969.8889"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re23" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="231.8125" y="311.16544"/>
+         <ns2:port id="re23.1" x="226.8125" y="316.16544"/>
+         <ns2:port id="re23.2" x="246.8125" y="316.16544"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re39" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="472.27777" y="613.2222"/>
+         <ns2:port id="re39.1" x="467.27777" y="618.2222"/>
+         <ns2:port id="re39.2" x="487.27777" y="618.2222"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re4" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="659.0" y="688.5"/>
+         <ns2:port id="re4.1" x="654.0" y="693.5"/>
+         <ns2:port id="re4.2" x="674.0" y="693.5"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re37" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="224.27777" y="522.7222"/>
+         <ns2:port id="re37.1" x="219.27777" y="527.7222"/>
+         <ns2:port id="re37.2" x="239.27777" y="527.7222"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re25" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="946.7778" y="902.8889"/>
+         <ns2:port id="re25.1" x="941.7778" y="907.8889"/>
+         <ns2:port id="re25.2" x="961.7778" y="907.8889"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re36" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="1117.7778" y="469.02777"/>
+         <ns2:port id="re36.1" x="1112.7778" y="474.02777"/>
+         <ns2:port id="re36.2" x="1132.7778" y="474.02777"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re2" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="462.8125" y="416.75565"/>
+         <ns2:port id="re2.1" x="457.8125" y="421.75565"/>
+         <ns2:port id="re2.2" x="477.8125" y="421.75565"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re35" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="1097.25" y="746.0"/>
+         <ns2:port id="re35.1" x="1092.25" y="751.0"/>
+         <ns2:port id="re35.2" x="1112.25" y="751.0"/>
+      </ns2:glyph>
+      <ns2:glyph class="process" id="re42" orientation="horizontal">
+         <ns2:bbox h="10.0" w="10.0" x="684.0169" y="730.74054"/>
+         <ns2:port id="re42.1" x="679.0169" y="735.74054"/>
+         <ns2:port id="re42.2" x="699.0169" y="735.74054"/>
+      </ns2:glyph>
+      <ns2:arc class="necessary stimulation"
+               id="re30"
+               source="sa34"
+               target="sa36">
+         <ns2:start x="1125.0" y="969.94556"/>
+         <ns2:end x="1365.1925" y="969.6188"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc0" source="sa70" target="re26.1">
+         <ns2:start x="848.55554" y="969.7778"/>
+         <ns2:end x="936.7778" y="969.8889"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc1" source="re26.2" target="sa34">
+         <ns2:start x="956.7778" y="969.8889"/>
+         <ns2:end x="1045.0" y="970.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc2" source="csa1" target="re26">
+         <ns2:start x="858.0" y="778.0"/>
+         <ns2:next x="941.1607" y="836.37933"/>
+         <ns2:end x="941.78345" y="964.88324"/>
+      </ns2:arc>
+      <ns2:arc class="necessary stimulation"
+               id="re14"
+               source="sa12"
+               target="sa18">
+         <ns2:start x="1226.0" y="751.0"/>
+         <ns2:end x="1412.5" y="732.0"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc3" source="csa6" target="re23.1">
+         <ns2:start x="211.625" y="316.33087"/>
+         <ns2:end x="226.8125" y="316.16544"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc4" source="re23.2" target="csa2">
+         <ns2:start x="246.8125" y="316.16544"/>
+         <ns2:end x="262.0" y="316.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc5" source="csa5" target="re23">
+         <ns2:start x="201.75" y="191.0"/>
+         <ns2:next x="235.28023" y="267.05634"/>
+         <ns2:end x="236.77966" y="311.16556"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc6" source="sa69" target="re39.1">
+         <ns2:start x="417.55554" y="618.44446"/>
+         <ns2:end x="467.27777" y="618.2222"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc7" source="re39.2" target="sa4">
+         <ns2:start x="487.27777" y="618.2222"/>
+         <ns2:end x="537.0" y="618.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc8" source="csa3" target="re39">
+         <ns2:start x="374.0" y="528.0"/>
+         <ns2:next x="471.31104" y="554.6392"/>
+         <ns2:end x="472.25922" y="613.24084"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc9" source="csa5" target="re39">
+         <ns2:start x="355.25" y="191.0"/>
+         <ns2:next x="482.02277" y="338.69955"/>
+         <ns2:end x="482.25912" y="613.2037"/>
+      </ns2:arc>
+      <ns2:arc class="necessary stimulation"
+               id="re22"
+               source="csa4"
+               target="sa16">
+         <ns2:start x="1275.0" y="474.0"/>
+         <ns2:end x="1393.0" y="474.0"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc10" source="csa12" target="re4.1">
+         <ns2:start x="612.0" y="693.0"/>
+         <ns2:end x="654.0" y="693.5"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc11" source="re4.2" target="csa1">
+         <ns2:start x="674.0" y="693.5"/>
+         <ns2:end x="716.0" y="694.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc12" source="sa4" target="re4">
+         <ns2:start x="617.0" y="618.0"/>
+         <ns2:next x="659.3024" y="636.03516"/>
+         <ns2:end x="659.0483" y="688.45215"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc13" source="sa5" target="re4">
+         <ns2:start x="602.0" y="422.0"/>
+         <ns2:next x="659.26886" y="494.73093"/>
+         <ns2:end x="659.0483" y="688.45215"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc14" source="sa76" target="re4">
+         <ns2:start x="592.90765" y="170.0"/>
+         <ns2:next x="670.99005" y="345.31506"/>
+         <ns2:end x="669.04785" y="688.5483"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc15" source="sa77" target="re4">
+         <ns2:start x="500.53122" y="170.0"/>
+         <ns2:next x="672.801" y="378.41748"/>
+         <ns2:end x="669.04785" y="688.5483"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc16" source="csa11" target="re37.1">
+         <ns2:start x="202.55556" y="527.44446"/>
+         <ns2:end x="219.27777" y="527.7222"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc17" source="re37.2" target="csa3">
+         <ns2:start x="239.27777" y="527.7222"/>
+         <ns2:end x="256.0" y="528.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc18" source="csa5" target="re37">
+         <ns2:start x="201.75" y="191.0"/>
+         <ns2:next x="225.64087" y="241.6271"/>
+         <ns2:end x="224.33002" y="522.67053"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc19" source="sa71" target="re25.1">
+         <ns2:start x="853.55554" y="907.7778"/>
+         <ns2:end x="941.7778" y="907.8889"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc20" source="re25.2" target="sa33">
+         <ns2:start x="961.7778" y="907.8889"/>
+         <ns2:end x="1050.0" y="908.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc21" source="csa1" target="re25">
+         <ns2:start x="858.0" y="778.0"/>
+         <ns2:next x="956.9509" y="848.0408"/>
+         <ns2:end x="956.78345" y="902.89453"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc22" source="csa9" target="re36.1">
+         <ns2:start x="1070.5555" y="474.05554"/>
+         <ns2:end x="1112.7778" y="474.02777"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc23" source="re36.2" target="csa4">
+         <ns2:start x="1132.7778" y="474.02777"/>
+         <ns2:end x="1175.0" y="474.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc24" source="csa1" target="re36">
+         <ns2:start x="858.0" y="694.0"/>
+         <ns2:next x="1122.9478" y="603.3584"/>
+         <ns2:end x="1122.7804" y="479.02777"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc25" source="sa75" target="re36">
+         <ns2:start x="1122.986" y="170.0"/>
+         <ns2:end x="1122.7751" y="469.02777"/>
+      </ns2:arc>
+      <ns2:arc class="inhibition" id="re43" source="sa12" target="sa17">
+         <ns2:start x="1226.0" y="761.0"/>
+         <ns2:end x="1409.5123" y="777.72766"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc26" source="sa44" target="re2.1">
+         <ns2:start x="413.625" y="421.51126"/>
+         <ns2:end x="457.8125" y="421.75565"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc27" source="re2.2" target="sa5">
+         <ns2:start x="477.8125" y="421.75565"/>
+         <ns2:end x="522.0" y="422.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc28" source="csa2" target="re2">
+         <ns2:start x="378.0" y="316.0"/>
+         <ns2:next x="463.22726" y="355.96866"/>
+         <ns2:end x="462.8351" y="416.73312"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc29" source="csa5" target="re2">
+         <ns2:start x="355.25" y="191.0"/>
+         <ns2:next x="472.6472" y="326.66415"/>
+         <ns2:end x="472.835" y="416.77823"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc30" source="sa53" target="re35.1">
+         <ns2:start x="1058.5" y="751.0"/>
+         <ns2:end x="1092.25" y="751.0"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc31" source="re35.2" target="sa12">
+         <ns2:start x="1112.25" y="751.0"/>
+         <ns2:end x="1146.0" y="751.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc32" source="csa1" target="re35">
+         <ns2:start x="858.0" y="694.0"/>
+         <ns2:next x="1103.0011" y="712.9089"/>
+         <ns2:end x="1102.25" y="746.0"/>
+      </ns2:arc>
+      <ns2:arc class="consumption" id="arc33" source="csa12" target="re42.1">
+         <ns2:start x="612.0" y="735.0"/>
+         <ns2:next x="662.0338" y="735.4811"/>
+         <ns2:end x="679.0169" y="735.74054"/>
+      </ns2:arc>
+      <ns2:arc class="production" id="arc34" source="re42.2" target="csa1">
+         <ns2:start x="699.0169" y="735.74054"/>
+         <ns2:end x="716.0" y="736.0"/>
+      </ns2:arc>
+      <ns2:arc class="stimulation" id="arc35" source="sa78" target="re42">
+         <ns2:start x="689.9678" y="170.0"/>
+         <ns2:end x="689.065" y="730.7408"/>
+      </ns2:arc>
+   </ns2:map>
+</ns2:sbgn>
