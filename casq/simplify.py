@@ -89,7 +89,11 @@ def handle_phenotypes(info):
                 new_transitions.append(t)
                 continue
             # the INHIBITION case should only happen in SBGN files
-            if t.type in ("NEGATIVE_INFLUENCE", "INHIBITION"):
+            if t.type in (
+                "NEGATIVE_INFLUENCE",
+                "INHIBITION",
+                "UNKNOWN_NEGATIVE_INFLUENCE",
+            ):
                 modifiers.append(("INHIBITION", t.reactants[0]))
             else:
                 modifiers.append(("CATALYSIS", t.reactants[0]))

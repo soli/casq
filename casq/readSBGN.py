@@ -405,7 +405,7 @@ def greek_to_name(c: chr) -> str:
     """Change one greek letter to ascii."""
     try:
         greek, size, letter, what, *with_tonos = unicodedata.name(c).split()
-    except ValueError: # not enough values to unpack
+    except ValueError:  # not enough values to unpack
         return c
     if (greek, letter) != ("GREEK", "LETTER"):
         return c
