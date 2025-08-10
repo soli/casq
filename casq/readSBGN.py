@@ -146,7 +146,8 @@ def species_info_sbgn(map_element):
             "compartment": compartment_name,
         }
         # --- Reverse mapping : key "__Nom" → list of IDs corresponding to this name ---
-        prot_ref = "__" + name_clean
+        prot_ref = "__" + name_clean.rsplit("_", 1)[0]
+
         if prot_ref in nameconv:
             nameconv[prot_ref].append(species_id)
         else:
