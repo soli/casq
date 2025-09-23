@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import itertools
 import json
 
-from loguru import logger
+from loguru import logger  # type: ignore
 
 
 class booleanFormulaBuilder:

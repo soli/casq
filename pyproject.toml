@@ -76,13 +76,15 @@ installer = "uv"
 detached = true
 dependencies = [
     "ruff>=0.0.289",
+    "ty",
 ]
-python = "39"
+python = "313"
 
 [tool.hatch.envs.lint.scripts]
 check = [
     "ruff format --diff casq test",
     "ruff check casq test",
+    "ty check casq test",
 ]
 fmt = [
     "ruff format casq test",

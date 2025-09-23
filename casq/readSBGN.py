@@ -20,7 +20,7 @@ import unicodedata
 import xml.etree.ElementTree as etree
 from typing import IO
 
-from loguru import logger
+from loguru import logger  # type: ignore
 
 from .readCD import NS, Transition, add_rdf, make_name_precise
 
@@ -402,7 +402,7 @@ def greeks_to_name(s: str) -> str:
     return "".join(greek_to_name(c) for c in s)
 
 
-def greek_to_name(c: chr) -> str:
+def greek_to_name(c: str) -> str:
     """Change one greek letter to ascii."""
     try:
         greek, size, letter, what, *with_tonos = unicodedata.name(c).split()

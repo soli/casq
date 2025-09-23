@@ -42,10 +42,10 @@ def map_to_model(map_filename: str, model_filename: str, bma=False):
         bmaExport.write_bma(model_filename, info, 1, None, False, True)
 
 
-def main(argv: List[str] = None):
+def main(argv: List[str] | None = None):
     """Run conversion using the CLI given first argument."""
     parser = argparse.ArgumentParser(
-        description=" ".join(__doc__.splitlines()[:3]) + " GPLv3"
+        description=" ".join(__doc__.splitlines()[:3]) + " GPLv3"  # ty: ignore[possibly-unbound-attribute]
     )
     parser.add_argument(
         "-v",
