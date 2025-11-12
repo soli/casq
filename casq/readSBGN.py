@@ -119,11 +119,6 @@ def species_info_sbgn(map_element):
         mods = []
 
         name_clean = make_name_precise(greeks_to_name(name), classtype, mods)
-        # ref_species = make_name_precise(name, classtype, [])  # sans mods
-        # if classtype == "COMPLEX" and ref_species.endswith("_complex"):
-        #    ref_species = ref_species[:-8]
-        # annotation = glyph.find("sbgn:annotation", namespaces=NS)
-        # rdf = annotation.find(".//rdf:RDF", namespaces=NS) if annotation is not None else None
         rdf = glyph.find(".//rdf:RDF", namespaces=NS)
         logger.debug(
             "Adding entity: id={}, type={}, name={}", species_id, classtype, name_clean
@@ -137,7 +132,6 @@ def species_info_sbgn(map_element):
             "transitions": [],
             "name": name_clean,
             "function": name_clean,
-            # "ref_species": species_id,
             "ref_species": f"{name_clean}__{compartment_name}__{activity}",
             "type": classtype,
             "modifications": mods,
@@ -310,39 +304,6 @@ def find_reaction_for_arc(arc, map_element):
         if glyph.get("id") == source or glyph.get("id") == target:
             return glyph
     return None
-
-
-# def make_name_precise(name, ctype, mods):
-#     if name is None:
-#         return ""
-#     name=name.replace(" ", "_espace_").replace("/", "_slash_")
-#     to_map = {"&": "", "|": "", "!": "", "underscore": ""}
-#     to_remove = {"sub", "endsub"}
-#     parts = [s for s in name.split("_") if s not in to_remove]
-#     newname = "_".join(to_map.get(s, s) for s in parts).replace("__", "_")
-#     if ctype == "PROTEIN":
-#         basis = [newname]
-#     else:
-#         basis = [newname, ctype.lower()]
-#     return "_".join(basis + mods)
-
-# def add_rdf(nameconv, reference: str, new_rdf: Optional[etree.Element]):
-#     if new_rdf is None or reference not in nameconv:
-#         return
-#     if nameconv[reference]["annotations"] is not None:
-#         rdfs = new_rdf.find("./rdf:Description", namespaces=NS)
-#         if rdfs is None:
-#             return
-#         description = nameconv[reference]["annotations"].find("./rdf:Description", namespaces=NS)
-#         if description is None:
-#             return
-#         for element in rdfs:
-#             if element not in description:
-#                 description.append(element)
-#         logger.debug("Merging RDF annotations for {}", reference)
-#     else:
-#         nameconv[reference]["annotations"] = new_rdf
-#         logger.debug("Assigning RDF annotations to {}", reference)
 
 
 def add_subcomponents_only_sbgn(nameconv, map_element):
