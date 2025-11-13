@@ -66,7 +66,9 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
             .splitlines(keepends=True)
         )
     with open(infile + "_SBGNML.bnet") as f:
-        sbgnml_out = f.readlines()
+        sbgnml_out = (
+            f.read().replace("_macromolecule_multimer", "").splitlines(keepends=True)
+        )
 
     import sys
 

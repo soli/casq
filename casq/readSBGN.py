@@ -140,7 +140,7 @@ def species_info_sbgn(map_element):
             "compartment": compartment_name,
         }
         # --- Reverse mapping : key "__Nom" → list of IDs corresponding to this name ---
-        prot_ref = "__" + name_clean.rsplit("_", 1)[0]
+        prot_ref = "__" + make_name_precise(greeks_to_name(name), "PROTEIN", [])
 
         if prot_ref in nameconv:
             nameconv[prot_ref].append(species_id)
@@ -352,7 +352,7 @@ def class_to_type(cls: str) -> str:
         "phenotype",
         "unspecified_entity",
         "nucleic_acid_feature",
-        # "macromolecule_multimer",
+        "macromolecule_multimer",
     ):
         return cls.upper()
     return "PROTEIN"
