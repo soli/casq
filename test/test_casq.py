@@ -42,7 +42,7 @@ def test_casq_produces_valid_files(tmp_path, infile):
         ("Tgfb", 7),  # order of SMAD cmplx, missing ubiquitin inhibition from CD
         ("E_Prot", 4),  # order for Activity_space_pheno
         ("JNK", 0),
-        ("Orf3a", 6),  # order for P65 cmplx and CASP1, two distinct MYD88 in CD
+        ("Orf3a", 4),  # order for P65 cmplx and CASP1, two distinct MYD88 in CD
     ],
 )
 def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
