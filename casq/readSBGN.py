@@ -116,9 +116,9 @@ def species_info_sbgn(map_element):
                 if value:
                     activity = value  # "active", "inactive" there is also "P", probably phosphorylation
                     break
-        mods = []
+        # for now we don't handle mods
 
-        name_clean = make_name_precise(greeks_to_name(name), classtype, mods)
+        name_clean = make_name_precise(greeks_to_name(name), classtype, [])
         rdf = glyph.find(".//rdf:RDF", namespaces=NS)
         logger.debug(
             "Adding entity: id={}, type={}, name={}", species_id, classtype, name_clean
@@ -134,7 +134,7 @@ def species_info_sbgn(map_element):
             "function": name_clean,
             "ref_species": f"{name_clean}__{compartment_name}__{activity}",
             "type": classtype,
-            "modifications": mods,
+            "modifications": [],
             "receptor": False,
             "annotations": rdf,
             "compartment": compartment_name,
