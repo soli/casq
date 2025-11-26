@@ -22,7 +22,7 @@ def change_test_dir(request, monkeypatch):
     "infile",
     glob(path.join(str(path.dirname(path.realpath(__file__))), "map_*.xml")),
 )
-def test_casq_produces_valid_files(tmp_path, infile):
+def test_casq_produces_valid_files_on_maps(tmp_path, infile):
     """Check if the files we produce are valid."""
     outfile = path.join(
         str(tmp_path), path.splitext(path.basename(infile))[0] + ".sbml"
@@ -34,6 +34,20 @@ def test_casq_produces_valid_files(tmp_path, infile):
     map_to_model(infile, outfile + "_api")
 
     assert cmp(outfile, outfile + "_api")
+
+
+@pytest.mark.parametrize(
+    "infile",
+    glob(path.join(str(path.dirname(path.realpath(__file__))), "R-HSA*.sbgn")),
+)
+def test_casq_produces_valid_files_on_reactome(tmp_path, infile):
+    """Check if the files we produce are valid."""
+    outfile = path.join(
+        str(tmp_path), path.splitext(path.basename(infile))[0] + ".sbml"
+    )
+    with patch("sys.argv", ["casq", infile, outfile]):
+        main()
+    assert validate(outfile) == "OK"
 
 
 @pytest.mark.parametrize(
