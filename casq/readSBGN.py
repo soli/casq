@@ -28,6 +28,8 @@ from .readCD import NS, Transition, add_rdf, make_name_precise
 def read_sbgnml(fileobj: IO):
     """Parse the given SBGN-ML file, return info and canvas size."""
     root = etree.parse(fileobj).getroot()
+    if root.tag == "{" + NS["sbgn2"] + "}sbgn":
+        root = convert_sbgn_2to3(root)
     if root.tag != "{" + NS["sbgn"] + "}sbgn":
         raise ValueError("Expected sbgn root element")
 
@@ -43,6 +45,16 @@ def read_sbgnml(fileobj: IO):
     info = get_transitions_sbgn(map_info, nameconv)
 
     return info, sizeX, sizeY
+
+
+def convert_sbgn_2to3(node: etree.Element) -> etree.Element:
+    """Convert a model from SBGN-ML v2 to v3."""
+    new_node = etree.Element(node.tag.replace(NS["sbgn2"], NS["sbgn"]))
+    for attrib, value in node.items():
+        new_node.set(attrib, value)
+    for child in node:
+        new_node.append(convert_sbgn_2to3(child))
+    return new_node
 
 
 def species_info_sbgn(map_element):

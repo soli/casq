@@ -39,6 +39,7 @@ NS = {
     "xhtml": "http://www.w3.org/1999/xhtml",
     "sbgn": "http://sbgn.org/libsbgn/0.3",
     "libsbgn": "http://sbgn.org/libsbgn/0.3",
+    "sbgn2": "http://sbgn.org/libsbgn/0.2",
 }
 
 Transition = collections.namedtuple(
