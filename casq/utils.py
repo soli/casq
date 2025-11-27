@@ -16,10 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from http.client import HTTPSConnection
 import json
 import subprocess
 import time
+from http.client import HTTPSConnection
 
 
 def validate(filename: str) -> str:
@@ -51,6 +51,6 @@ def validator_unavailable() -> bool:
     try:
         conn = HTTPSConnection("sbml.bioquant.uni-heidelberg.de", timeout=2)
         req = conn.request("HEAD", "/")
-        return req.getresponse().status != 200
+        return req is None or req.getresponse().status != 200
     except TimeoutError:
         return True
