@@ -1,9 +1,7 @@
 # -*- compile-command: "gitlab-runner exec docker test" -*-
 
 # Should be under default: but then gitlab-runner fails at finding it :(
-image:
-  name: paternal/pythons@sha256:12f82c6329797f90fde8f18811c1c08e6cd73c69570b04a4b7098a83403b82ca
-  pull_policy: if-not-present
+image: paternal/pythons@sha256:12f82c6329797f90fde8f18811c1c08e6cd73c69570b04a4b7098a83403b82ca
 
 default:
   # Gitlab-ci shared runner
