@@ -9,7 +9,7 @@ from unittest.mock import patch
 import pytest  # type: ignore
 
 from casq.celldesigner2qual import main, map_to_model
-from casq.utils import validate
+from casq.utils import validate, validator_unavailable
 
 
 @pytest.fixture
@@ -18,6 +18,9 @@ def change_test_dir(request, monkeypatch):
     monkeypatch.chdir(request.fspath.dirname)
 
 
+@pytest.mark.skipif(
+    validator_unavailable(), reason="validator unavailable"
+)
 @pytest.mark.parametrize(
     "infile",
     glob(path.join(str(path.dirname(path.realpath(__file__))), "map_*.xml")),
@@ -36,6 +39,9 @@ def test_casq_produces_valid_files_on_maps(tmp_path, infile):
     assert cmp(outfile, outfile + "_api")
 
 
+@pytest.mark.skipif(
+    validator_unavailable(), reason="validator unavailable"
+)
 @pytest.mark.parametrize(
     "infile",
     glob(path.join(str(path.dirname(path.realpath(__file__))), "R-HSA*.sbgn")),
