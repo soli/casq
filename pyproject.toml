@@ -19,7 +19,6 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -96,7 +95,7 @@ dependencies = [
     "pytest"
 ]
 [[tool.hatch.envs.test.matrix]]
-python = ["pypy39", "pypy310", "311", "312", "313", "314"]
+python = ["pypy310", "311", "312", "313", "314"]
 
 [tool.hatch.envs.cov]
 dependencies = [
