@@ -413,6 +413,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
     with open(basename + "_Model.csv", "w", encoding="utf-8", newline="") as f:
         print("Model_ID, model_id", file=f)
         print(f"Created, {datetime.today().isoformat(timespec='seconds')}", file=f)
+        print(f"Modified, {datetime.today().isoformat(timespec='seconds')}", file=f)
         print(f"Version, {sbml_filename}", file=f)
         print(f"Notes1, Created with CaSQ {version}", file=f)
 
@@ -421,7 +422,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
         initial = get_initial(info, fixed)
     else:
         initial = {}
-    # TODO handle other bqbiol annotations
+    # TODO handle other bqbiol annotations and notes
     with open(basename + "_Species.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(
@@ -431,6 +432,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                 "Identifier1",
                 "Constant",
                 "InitialLevel",
+                "MaxLevel",
                 "Comments",
             ]
         )
@@ -455,11 +457,12 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                     described,
                     constant,
                     init,
+                    "1",
                     species + " " + data["ref_species"],
                 ]
             )
 
-    # TODO handle other bqbiol annotations
+    # TODO handle other bqbiol annotations and notes
     with open(basename + "_Transitions.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["Target", "Level", "Rule", "Relation1", "Identifier1"])
