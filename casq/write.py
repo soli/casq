@@ -412,7 +412,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
     basename = sbml_filename[:-5]
     with open(basename + "_Model.csv", "w", encoding="utf-8", newline="") as f:
         print("Model_ID, model_id", file=f)
-        print(f"Created, {datetime.today().isoformat()}", file=f)
+        print(f"Created, {datetime.today().isoformat(timespec='seconds')}", file=f)
         print(f"Version, {sbml_filename}", file=f)
         print(f"Notes1, Created with CaSQ {version}", file=f)
 
