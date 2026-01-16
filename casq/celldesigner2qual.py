@@ -60,7 +60,8 @@ def main(argv: Union[List[str], None] = None):
         "-c",
         "--csv",
         action="store_true",
-        help="Store the species information in a separate CSV (and .bnet) file",
+        help="""Additionally store the information in a .bnet and separate CSV files
+        compatible with the Spreadsheet-SBML-qual format""",
     )
     parser.add_argument(
         "-s",
