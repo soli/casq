@@ -49,10 +49,11 @@ Transition = collections.namedtuple(
 
 def read_celldesigner(fileobj: IO):
     """Parse the given file."""
+    # TODO keep model.id and model.notes
     root = etree.parse(fileobj).getroot()
     tag = root.tag
     if tag != "{" + NS["sbml"] + "}sbml":
-        raise ValueError("Currently limited to SBML Level 2 Version 4")
+        raise ValueError("Currently limited to CellDesigner's SBML Level 2 Version 4")
     model = root.find("sbml:model", NS)
     if model is not None:
         display = model.find("./sbml:annotation/cd:extension/cd:modelDisplay", NS)
