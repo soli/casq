@@ -444,7 +444,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
             else:
                 init = ""
             rdf = data["annotations"]
-            if rdf:
+            if rdf is not None:
                 described = ",".join(get_compact_identifiers(rdf))
             else:
                 described = ""

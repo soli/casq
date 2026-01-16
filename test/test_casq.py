@@ -95,3 +95,31 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
         len([s for s in ndiff(cdsbml_out, sbgnml_out) if not s.startswith(" ")])
         == diffs
     )
+
+
+def test_spreadsheet_output():
+    """Test our CSV export."""
+    filename = path.join(str(path.dirname(path.realpath(__file__))), "Small_Apoptosis")
+    with patch("sys.argv", ["casq", "-c", filename + ".xml"]):
+        main()
+
+    assert path.isfile(filename + "_Model.csv"), "Model sheet CSV file not generated"
+    with open(filename + ".bnet", "r") as f:
+        # ignore header
+        bnet_lines = f.readlines()[3:]
+    with open(filename + "_Species.csv", "r") as f:
+        # ignore header
+        species_lines = f.readlines()[1:]
+    assert len(species_lines) == len(bnet_lines), (
+        "Species sheet CSV file and BNET files differ in length"
+    )
+    non_constant = [line for line in species_lines if ",False," in line]
+    with open(filename + "_Transitions.csv", "r") as f:
+        # ignore header
+        transitions_lines = f.readlines()[1:]
+    assert len(transitions_lines) == len(non_constant), (
+        "Transitions sheet CSV file and non-constant entries in BNET differ"
+    )
+    for line in transitions_lines:
+        things = line.split(",")
+        assert f"{things[0]}, {things[2]}\n" in bnet_lines
