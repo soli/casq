@@ -45,7 +45,7 @@ def map_to_model(map_filename: str, model_filename: str, bma=False):
 def main(argv: Union[List[str], None] = None):
     """Run conversion using the CLI given first argument."""
     parser = argparse.ArgumentParser(
-        description=" ".join(__doc__.splitlines()[:3]) + " GPLv3"  # ty: ignore[possibly-unbound-attribute]
+        description=" ".join(__doc__.splitlines()[:3]) + " GPLv3"  # ty: ignore[possibly-missing-attribute]
     )
     parser.add_argument(
         "-v",

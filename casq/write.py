@@ -493,7 +493,11 @@ def get_compact_identifiers(rdf: etree.Element) -> List[str]:
         annot.get(f"{{{NS['rdf']}}}resource")
         for annot in rdf.findall(".//bqbiol:isDescribedBy//rdf:li", NS)
     ]
-    return [annot[11:] for annot in annots if annot.startswith("urn:miriam:")]
+    return [
+        annot[11:]
+        for annot in annots
+        if annot is not None and annot.startswith("urn:miriam:")
+    ]
 
 
 def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
