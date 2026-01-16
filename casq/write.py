@@ -424,23 +424,22 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
     # TODO handle bqbiol annotations
     with open(basename + "_Species.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Species_ID", "Name", "Constant", "InitialLevel", "Comments"])
+        writer.writerow(["Species_ID", "Constant", "InitialLevel", "Comments"])
         for species, data in sorted_items:
             if data["transitions"]:
-                constant = "True"
-            else:
                 constant = "False"
+            else:
+                constant = "True"
             if species in initial:
                 init = initial[species]
             else:
                 init = ""
             writer.writerow(
                 [
-                    species,
                     data["name"],
                     constant,
                     init,
-                    "ref_species: " + data["ref_species"],
+                    species + " " + data["ref_species"],
                 ]
             )
 
@@ -448,9 +447,9 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
     with open(basename + "_Transitions.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["Target", "Level", "Rule"])
-        for species, data in sorted_items:
+        for _species, data in sorted_items:
             if data["transitions"]:
-                writer.writerow([species, "1", data["function"]])
+                writer.writerow([data["name"], "1", data["function"]])
 
     with open(sbml_filename[:-4] + "bnet", "w", encoding="utf-8") as f:
         print(f"# Created with CaSQ {version}\n\ntargets, factors", file=f)
