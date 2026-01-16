@@ -3,7 +3,8 @@ Welcome to CaSQ
 
 CaSQ [#]_, is a tool that can convert a molecular interaction map built with
 `CellDesigner`__, or any similar SBML-capable tool, to an executable Boolean model.
-CaSQ also accepts `SBGN-ML`__ as input format.
+CaSQ also accepts `SBGN-ML`__, for instance from the `Reactome`__ database,
+as input format.
 CaSQ is developed in Python (download and install instructions can be found
 `on the Python package index`__) and uses as source the xml file of CellDesigner,
 in order to infer preliminary Boolean rules based solely on network topology and
@@ -101,12 +102,13 @@ The conversion happens in 4 steps.
 
 CaSQ generates two output files, the proper logical model encoded in
 SBML-qual, a format that is compatible for further analysis with modelling
-tools such as `GINsim`__ or `CellCollective`__ and a CSV file that contains
+tools such as `GINsim`__ or `CellCollective`__ and CSV files that contains
 information about the names, the logic formulae and the CellDesigner alias.
-The second file is mostly for automated treatment.
+These files are compatible with the Spreadsheet-SBML-qual format.
 
 .. [#] https://academic.oup.com/bioinformatics/article/36/16/4473/5836892
 __ http://celldesigner.org/
+__ https://reactome.org/
 __ https://github.com/sbgn/sbgn/wiki/SBGN_ML
 __ https://pypi.org/project/casq/
 __ https://covid.pages.uni.lu/
