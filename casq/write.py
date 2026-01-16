@@ -421,10 +421,19 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
         initial = get_initial(info, fixed)
     else:
         initial = {}
-    # TODO handle bqbiol annotations
+    # TODO handle other bqbiol annotations
     with open(basename + "_Species.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Species_ID", "Constant", "InitialLevel", "Comments"])
+        writer.writerow(
+            [
+                "Species_ID",
+                "Relation1",
+                "Identifier1",
+                "Constant",
+                "InitialLevel",
+                "Comments",
+            ]
+        )
         for species, data in sorted_items:
             if data["transitions"]:
                 constant = "False"
@@ -434,27 +443,57 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                 init = initial[species]
             else:
                 init = ""
+            rdf = data["annotations"]
+            if rdf:
+                described = ",".join(get_compact_identifiers(rdf))
+            else:
+                described = ""
             writer.writerow(
                 [
                     data["name"],
+                    "isDescribedBy",
+                    described,
                     constant,
                     init,
                     species + " " + data["ref_species"],
                 ]
             )
 
-    # TODO handle bqbiol annotations
+    # TODO handle other bqbiol annotations
     with open(basename + "_Transitions.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Target", "Level", "Rule"])
+        writer.writerow(["Target", "Level", "Rule", "Relation1", "Identifier1"])
         for _species, data in sorted_items:
             if data["transitions"]:
-                writer.writerow([data["name"], "1", data["function"]])
+                described = []
+                for reaction in data["transitions"]:
+                    if reaction.annotations is not None:
+                        described.extend(
+                            get_compact_identifiers(reaction.annotations[0])
+                        )
+                writer.writerow(
+                    [
+                        data["name"],
+                        "1",
+                        data["function"],
+                        "isDescribedBy",
+                        ",".join(described),
+                    ]
+                )
 
     with open(sbml_filename[:-4] + "bnet", "w", encoding="utf-8") as f:
         print(f"# Created with CaSQ {version}\n\ntargets, factors", file=f)
         for _, data in sorted_items:
             print(data["name"] + ", " + data["function"], file=f)
+
+
+def get_compact_identifiers(rdf: etree.Element) -> List[str]:
+    """Extract compact identifiers from an RDF element."""
+    annots = [
+        annot.get(f"{{{NS['rdf']}}}resource")
+        for annot in rdf.findall(".//bqbiol:isDescribedBy//rdf:li", NS)
+    ]
+    return [annot[11:] for annot in annots if annot.startswith("urn:miriam:")]
 
 
 def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
