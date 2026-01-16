@@ -20,6 +20,7 @@ import json
 import subprocess
 import time
 from http.client import HTTPSConnection
+from ssl import SSLError
 
 
 def validate(filename: str) -> str:
@@ -52,5 +53,5 @@ def validator_unavailable() -> bool:
         conn = HTTPSConnection("sbml.bioquant.uni-heidelberg.de", timeout=2)
         req = conn.request("HEAD", "/")
         return req is None or req.getresponse().status != 200
-    except TimeoutError:
+    except (TimeoutError, SSLError):
         return True
