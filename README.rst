@@ -102,8 +102,9 @@ Just follow the instructions::
      -h, --help            show this help message and exit
      -v, --version         show program's version number and exit
      -D, --debug           Display a lot of debug information
-     -c, --csv             Store the species information in a separate CSV (and
-                           .bnet) file
+     -c, --csv             Additionally store the information in a .bnet and
+                           separate CSV files compatible with the Spreadsheet-
+                           SBML-qual format
      -s, --sif             Store the influence information in a separate SIF file
      -r S, --remove S      Delete connected components in the resulting model if
                            their size is smaller than S. A negative S leads to

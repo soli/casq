@@ -100,11 +100,12 @@ The conversion happens in 4 steps.
    (e.g., RNA, phosphorylated, etc.) and if there are still homonyms the
    original compartment is added too.
 
-CaSQ generates two output files, the proper logical model encoded in
-SBML-qual, a format that is compatible for further analysis with modelling
-tools such as `GINsim`__ or `CellCollective`__ and CSV files that contains
-information about the names, the logic formulae and the CellDesigner alias.
-These files are compatible with the Spreadsheet-SBML-qual format.
+CaSQ generates two types of output, the proper logical model encoded in
+SBML-qual, a format that is compatible for further analysis with modelling tools
+such as `GINsim`__ or `CellCollective`__, and if you use the ``-c`` option, CSV
+files that contains information about the names, the logic formulae and the
+CellDesigner alias.  These files are compatible with the Spreadsheet-SBML-qual
+format.
 
 .. [#] https://academic.oup.com/bioinformatics/article/36/16/4473/5836892
 __ http://celldesigner.org/
