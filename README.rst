@@ -80,6 +80,15 @@ CaSQ is provided as a Python3 package, you can install it from the `Python packa
 
    $ python3 -m pip install casq
 
+Note that we currently recommend that you use the excellent `uv` tool from Astral, which allows you to run CaSQ without worrying about any installation procedure at all:
+
+.. _`uv`: https://docs.astral.sh/uv/
+
+.. code:: bash
+
+   $ uvx casq -v
+   casq v1.4.3
+
 Command-line usage
 ==================
 
