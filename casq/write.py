@@ -191,6 +191,8 @@ def add_qual_species(
             attribs,
         )
         add_annotation(qspecies, data["annotations"])
+        if data["notes"] is not None:
+            qspecies.append(data["notes"])
 
 
 def add_annotation(node: etree.Element, rdf: Optional[etree.Element]):
@@ -422,7 +424,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
         initial = get_initial(info, fixed)
     else:
         initial = {}
-    # TODO handle other bqbiol annotations and notes
+    # TODO handle other bqbiol annotations
     with open(basename + "_Species.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(
@@ -433,6 +435,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                 "Constant",
                 "InitialLevel",
                 "MaxLevel",
+                "Notes1",
                 "Comments",
             ]
         )
@@ -450,6 +453,9 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                 described = ",".join(get_compact_identifiers(rdf))
             else:
                 described = ""
+            notes = ""
+            if data["notes"] is not None:
+                notes += "".join(data["notes"].itertext()).replace("\n", "")
             writer.writerow(
                 [
                     data["name"],
@@ -458,22 +464,35 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                     constant,
                     init,
                     "1",
+                    notes,
                     species + " " + data["ref_species"],
                 ]
             )
 
-    # TODO handle other bqbiol annotations and notes
+    # TODO handle other bqbiol annotations
     with open(basename + "_Transitions.csv", "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Target", "Level", "Rule", "Relation1", "Identifier1"])
+        writer.writerow(
+            [
+                "Target",
+                "Level",
+                "Rule",
+                "Relation1",
+                "Identifier1",
+                "Notes1",
+            ]
+        )
         for _species, data in sorted_items:
             if data["transitions"]:
                 described = []
+                notes = ""
                 for reaction in data["transitions"]:
                     if reaction.annotations is not None:
                         described.extend(
                             get_compact_identifiers(reaction.annotations[0])
                         )
+                    if reaction.notes is not None:
+                        notes += "".join(reaction.notes.itertext()).replace("\n", "")
                 writer.writerow(
                     [
                         data["name"],
@@ -481,6 +500,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                         data["function"],
                         "isDescribedBy",
                         ",".join(described),
+                        notes,
                     ]
                 )
 

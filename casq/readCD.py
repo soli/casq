@@ -101,6 +101,7 @@ def species_info(model):
         annot = sbml.find("./sbml:annotation", NS)
         if annot is None:
             continue
+        notes = sbml.find("./sbml:notes", NS)
         classtype = get_text(annot.find(".//cd:class", NS), "PROTEIN")
         if classtype == "DEGRADED":
             continue
@@ -136,6 +137,7 @@ def species_info(model):
             "modifications": mods,
             "receptor": is_receptor,
             "annotations": annot.find(".//rdf:RDF", NS),
+            "notes": notes,
             "compartment": compartment,
         }
         # also store in nameconv the reverse mapping from SBML species to CD

@@ -149,6 +149,7 @@ def species_info_sbgn(map_element):
             "modifications": [],
             "receptor": False,
             "annotations": rdf,
+            "notes": None,
             "compartment": compartment_name,
         }
         # --- Reverse mapping : key "__Nom" → list of IDs corresponding to this name ---
