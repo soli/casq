@@ -10,7 +10,7 @@
 
 |pypi-version| |pypi-python| |pypi-wheel| |pypi-downloads| |deps|
 
-|conda| |conda-down|
+|conda| |conda-down| |made-by-humans|
 
 .. |pipeline status| image:: https://gitlab.inria.fr/soliman/casq/badges/master/pipeline.svg
    :target: https://gitlab.inria.fr/soliman/casq/commits/master
@@ -60,7 +60,7 @@
    :target: https://anaconda.org/conda-forge/casq
    :alt: Conda-Forge CaSQ total downloads badge
 
-.. image:: https://img.shields.io/badge/Made_by-humans-darkviolet
+.. |made-by-humans| image:: https://img.shields.io/badge/Made_by-humans-darkviolet
    :alt: Made by humans
 
 **CaSQ** converts `CellDesigner`_ and `SBGN-ML`_ models to Boolean models
