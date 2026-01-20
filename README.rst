@@ -60,6 +60,9 @@
    :target: https://anaconda.org/conda-forge/casq
    :alt: Conda-Forge CaSQ total downloads badge
 
+.. image:: https://img.shields.io/badge/Made_by-humans-darkviolet
+   :alt: Made by humans
+
 **CaSQ** converts `CellDesigner`_ and `SBGN-ML`_ models to Boolean models
 encoded in `SBML-Qual`_ with a rather strict semantics defined in a `published
 article`_.
