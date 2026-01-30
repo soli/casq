@@ -60,6 +60,8 @@ def write_qual(
     model = etree.SubElement(root, "model", id="model_id")
     notes = etree.SubElement(model, "notes")
     html = etree.SubElement(notes, "html", xmlns=NS["xhtml"])
+    head = etree.SubElement(html, "head")
+    _title = etree.SubElement(head, "title")
     body = etree.SubElement(html, "body")
     p = etree.SubElement(body, "p")
     p.text = "Created with CaSQ " + version
@@ -553,13 +555,28 @@ def add_function_as_rdf(info, species: str, func: str):
         f"{{{NS['rdf']}}}Description",
         attrib={f"{{{NS['rdf']}}}about": "#" + info[species]["ref_species"]},
     )
-    bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
-    bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
-    etree.SubElement(
-        bag,
-        f"{{{NS['rdf']}}}li",
-        attrib={f"{{{NS['rdf']}}}resource": "urn:casq:function:" + func},
-    )
+    if info[species]["notes"] is None:
+        notes = etree.Element("notes")
+        html = etree.SubElement(notes, "html", xmlns=NS["xhtml"])
+        head = etree.SubElement(html, "head")
+        _title = etree.SubElement(head, "title")
+        body = etree.SubElement(html, "body")
+        info[species]["notes"] = notes
+    else:
+        for element in info[species]["notes"].iter():
+            for prefix in ("xhtml", "sbml"):
+                prefix_len = len(NS[prefix]) + 2
+                if element.tag.startswith("{" + NS[prefix] + "}"):
+                    element.tag = element.tag[prefix_len:]
+                    if element.tag == "html":
+                        element.set("xmlns", NS["xhtml"])
+
+    body = info[species]["notes"].find(".//body")
+    if body is None:
+        raise ValueError("Notes without body")
+    p = etree.SubElement(body, f"{{{NS['xhtml']}}}p")
+    p.text = f"\nCaSQ-computed function: {func}"
+
     bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
     bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
     etree.SubElement(
