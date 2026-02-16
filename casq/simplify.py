@@ -261,7 +261,8 @@ def get_active(val, info):
     """Find who val activates."""
     active = None
     for species, data in info.items():
-        if species.startswith("csa") or species.startswith("sa"):
+        # possibly useless test
+        if not species.startswith("__"):
             for trans in data["transitions"]:
                 if val in trans.reactants or val in (
                     mod
