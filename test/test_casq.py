@@ -121,5 +121,5 @@ def test_spreadsheet_output():
         "Transitions sheet CSV file and non-constant entries in BNET differ"
     )
     for line in transitions_lines:
-        things = line.split(",")
-        assert f"{things[0]}, {things[2]}\n" in bnet_lines
+        things = line.replace('"', "").split(",")
+        assert f"{things[0]}, {things[1]}\n" in bnet_lines

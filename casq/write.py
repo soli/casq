@@ -26,7 +26,7 @@ import networkx as nx  # type: ignore
 from loguru import logger  # type: ignore
 
 from . import version
-from .readCD import NS, Transition, add_rdf
+from .readCD import NS, Transition
 
 INHIBITION = ("INHIBITION", "UNKNOWN_INHIBITION")
 NEGATIVE = ("INHIBITION", "NEGATIVE_INFLUENCE", "UNKNOWN_INHIBITION")
@@ -222,7 +222,7 @@ def add_transitions(tlist: etree.Element, info, graph: nx.DiGraph):
                     species=species,
                 )
                 info[species]["transitions"] = []
-                add_function_as_rdf(info, species, info[species]["function"])
+                add_function_as_notes(info, species, info[species]["function"])
             else:
                 olist = etree.SubElement(trans, "qual:listOfOutputs")
                 etree.SubElement(
@@ -242,11 +242,11 @@ def add_transitions(tlist: etree.Element, info, graph: nx.DiGraph):
                 add_function(func, data["transitions"], known)
                 sfunc = mathml_to_ginsim(func.find("./math/*", NS), info)
                 info[species]["function"] = sfunc
-                add_function_as_rdf(info, species, sfunc)
+                add_function_as_notes(info, species, sfunc)
                 add_notes(trans, data["transitions"])
                 add_annotations(trans, data["transitions"])
         else:
-            add_function_as_rdf(info, species, info[species]["function"])
+            add_function_as_notes(info, species, info[species]["function"])
 
 
 def add_notes(trans: etree.Element, transitions: List[Transition]):
@@ -415,7 +415,6 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
     # pylint: disable=invalid-name
     basename = sbml_filename[:-5]
     with open(basename + "_Model.csv", "w", encoding="utf-8", newline="") as f:
-        print("Model_ID, model_id", file=f)
         print(f"Created, {datetime.today().isoformat(timespec='seconds')}", file=f)
         print(f"Modified, {datetime.today().isoformat(timespec='seconds')}", file=f)
         print(f"Version, {sbml_filename}", file=f)
@@ -431,7 +430,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
         writer = csv.writer(f)
         writer.writerow(
             [
-                "Species_ID",
+                "Name",
                 "Relation1",
                 "Identifier1",
                 "Constant",
@@ -477,7 +476,6 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
         writer.writerow(
             [
                 "Target",
-                "Level",
                 "Rule",
                 "Relation1",
                 "Identifier1",
@@ -498,7 +496,6 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                 writer.writerow(
                     [
                         data["name"],
-                        "1",
                         data["function"],
                         "isDescribedBy",
                         ",".join(described),
@@ -509,7 +506,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
     with open(sbml_filename[:-4] + "bnet", "w", encoding="utf-8") as f:
         print(f"# Created with CaSQ {version}\n\ntargets, factors", file=f)
         for _, data in sorted_items:
-            print(data["name"] + ", " + data["function"], file=f)
+            print(data["name"] + ", " + data["function"].replace('"', ""), file=f)
 
 
 def get_compact_identifiers(rdf: etree.Element) -> List[str]:
@@ -542,19 +539,17 @@ def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
         if species is None:
             species = ""
         if children[2].text == "0":
-            return "!" + species
+            if "/" in species:
+                return f'!"{species}"'
+            return f"!{species}"
+        if "/" in species:
+            return f'"{species}"'
         return species
     raise ValueError(etree.tostring(math))
 
 
-def add_function_as_rdf(info, species: str, func: str):
-    """Add a new RDF element containing the logical function and name."""
-    rdf = etree.Element(f"{{{NS['rdf']}}}RDF")
-    descr = etree.SubElement(
-        rdf,
-        f"{{{NS['rdf']}}}Description",
-        attrib={f"{{{NS['rdf']}}}about": "#" + info[species]["ref_species"]},
-    )
+def add_function_as_notes(info, species: str, func: str):
+    """Add a new Notes element containing the logical function and name."""
     if info[species]["notes"] is None:
         notes = etree.Element("notes")
         html = etree.SubElement(notes, "html", xmlns=NS["xhtml"])
@@ -576,14 +571,3 @@ def add_function_as_rdf(info, species: str, func: str):
         raise ValueError("Notes without body")
     p = etree.SubElement(body, f"{{{NS['xhtml']}}}p")
     p.text = f"\nCaSQ-computed function: {func}"
-
-    bqbiol = etree.SubElement(descr, f"{{{NS['bqbiol']}}}isDescribedBy")
-    bag = etree.SubElement(bqbiol, f"{{{NS['rdf']}}}Bag")
-    etree.SubElement(
-        bag,
-        f"{{{NS['rdf']}}}li",
-        attrib={
-            f"{{{NS['rdf']}}}resource": "urn:casq:cdid:" + info[species]["ref_species"]
-        },
-    )
-    add_rdf(info, species, rdf)
