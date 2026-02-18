@@ -17,10 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import json
+import ssl
 import subprocess
 import time
 from http.client import HTTPSConnection
-from ssl import SSLError
 
 
 def validate(filename: str) -> str:
@@ -50,8 +50,12 @@ def validate(filename: str) -> str:
 def validator_unavailable() -> bool:
     """Check if the validator is online."""
     try:
-        conn = HTTPSConnection("sbml.bioquant.uni-heidelberg.de", timeout=2)
-        req = conn.request("HEAD", "/")
-        return req is None or req.getresponse().status != 200
-    except (TimeoutError, SSLError):
+        conn = HTTPSConnection(
+            "sbml.bioquant.uni-heidelberg.de",
+            timeout=2,
+            context=ssl._create_unverified_context(),
+        )
+        conn.request("HEAD", "/")
+        return conn.getresponse().status != 200
+    except (TimeoutError, ssl.SSLError):
         return True
