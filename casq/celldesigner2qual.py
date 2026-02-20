@@ -32,7 +32,8 @@ from .write import write_csv, write_qual
 
 def map_to_model(map_filename: str, model_filename: str, bma=False):
     """Do the full run with defaults arguments."""
-    logger.disable("casq")
+    logger.remove()
+    logger.add(sys.stderr, level="WARNING")
     with open(map_filename, "r", encoding="utf-8") as f:
         info, width, height = read_celldesigner(f)
     simplify_model(info, [], [])
@@ -170,7 +171,8 @@ def main(argv: Union[List[str], None] = None):
         args = parser.parse_args()
 
     if not args.debug:
-        logger.disable("casq")
+        logger.remove()
+        logger.add(sys.stderr, level="WARNING")
     logger.debug("parsing {fname}…", fname=args.infile.name)
     try:
         info, width, height = read_celldesigner(args.infile)

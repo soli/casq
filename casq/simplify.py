@@ -82,12 +82,17 @@ def handle_phenotypes(info):
         new_transitions = []
         for t in transitions:
             if len(t.reactants) != 1:
-                logger.debug(
+                logger.warning(
                     "ignoring non-unary reaction to phenotype {pheno}",
                     pheno=data["name"],
                 )
                 new_transitions.append(t)
                 continue
+            if len(t.modifiers) != 0:
+                logger.warning(
+                    "ignoring the modifiers of reaction to phenotype {pheno}",
+                    pheno=data["name"],
+                )
             # the INHIBITION case should only happen in SBGN files
             if t.type in (
                 "NEGATIVE_INFLUENCE",
@@ -134,6 +139,11 @@ def delete_complexes_and_store_multispecies(info):
                 ref=value["ref_species"],
                 name=value["name"],
             )
+            if value["activity"] == "active" or info[into]["activity"] == "active":
+                logger.warning(
+                    "merging active and inactive forms of {name} that represent the same SBML species.",
+                    name=value["name"],
+                )
             # put our annotations with those of into
             add_rdf(info, into, info[key]["annotations"])
             # put our transitions with those of into

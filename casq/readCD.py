@@ -111,8 +111,11 @@ def species_info(model):
             is_receptor = False
         mods = get_mods(annot.find(".//cd:listOfModifications", NS))
         activity = annot.find(".//cd:structuralState", NS)
+        cdactivity = species.find(".//cd:activity", NS)
         if activity is not None:
             activity = activity.get("structuralState")
+        elif cdactivity is not None:
+            activity = cdactivity.text
         else:
             activity = "inactive"
         name = make_name_precise(sbml.get("name"), classtype, mods)
