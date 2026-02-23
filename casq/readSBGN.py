@@ -49,7 +49,7 @@ def read_sbgnml(fileobj: IO):
     grouping = {}
     for sid, data in info.items():
         if isinstance(data, dict):
-            name = data.get("function")
+            name = data.get("name")
             if name:
                 group_key = "__" + make_name_precise(greeks_to_name(name), "PROTEIN", [])
                 if group_key not in grouping:
@@ -110,23 +110,19 @@ def species_info_sbgn(map_element):
         x, y = float(bbox.get("x")), float(bbox.get("y"))
         w, h = float(bbox.get("w")), float(bbox.get("h"))
 
-        # get compartment name
-        if c_ref and c_ref in compartments:
-            compartment_name = compartments[c_ref]["name"].replace(" ", "_")
-        else:
-            # geometric fallback
-            compartment_name = "default_compartment" 
-            cx, cy = x + w / 2, y + h / 2
-            min_area = float("inf")
-            for cid, comp in compartments.items():
-                cbbox = comp["bbox"]
-                cx0, cy0 = float(cbbox.get("x")), float(cbbox.get("y"))
-                cw, ch = float(cbbox.get("w")), float(cbbox.get("h"))
-                if cx0 <= cx <= cx0 + cw and cy0 <= cy <= cy0 + ch:
-                    area = cw * ch
-                    if area < min_area:
-                        min_area = area
-                        compartment_name = comp["name"].replace(" ", "_")
+        compartment_name = "default_compartment" 
+        cx, cy = x + w / 2, y + h / 2
+        min_area = float("inf")
+        for cid, comp in compartments.items():
+            cbbox = comp["bbox"]
+            cx0, cy0 = float(cbbox.get("x")), float(cbbox.get("y"))
+            cw, ch = float(cbbox.get("w")), float(cbbox.get("h"))
+            if cx0 <= cx <= cx0 + cw and cy0 <= cy <= cy0 + ch:
+                area = cw * ch
+                if area < min_area:
+                    min_area = area
+                    compartment_name = comp["name"].replace(" ", "_")
+
         classtype = class_to_type(cls)
         
         # get the state (activity) from the sub-glyphs of a state variable
@@ -138,21 +134,6 @@ def species_info_sbgn(map_element):
                 if value:
                     activity = value # "active", "inactive" there is also "P", probably phosphorylation
                     break
-        
-        # post-translational modifications for the name
-        # collect modifications (keep repetitions, ignore active/inactive)
-        found_mods = []
-        for state_var in glyph.findall("sbgn:glyph[@class='state variable']", namespaces=NS):
-            state_elem = state_var.find("sbgn:state", namespaces=NS)
-            if state_elem is not None:
-                val = state_elem.get("value")
-                if val == "P":
-                    found_mods.append("phosphorylated")
-                elif val == "Ub":
-                    found_mods.append("ubiquitinated")
-        
-        # we can use sorted() to keep the name consistent
-        post_modif = "_".join(sorted(found_mods))
                 
         # Unit of information logic (e.g. N:3)
         uoi_text = ""
@@ -177,9 +158,6 @@ def species_info_sbgn(map_element):
         if uoi_text:
             ref_species += f"__{uoi_text}"
 
-        # name with PTMs if they exist
-        display_name = f"{name_clean}_{post_modif}" if post_modif else name_clean
-
         nameconv[species_id] = {
             "activity": activity, 
             "x": str(x),
@@ -187,7 +165,7 @@ def species_info_sbgn(map_element):
             "h": str(h),
             "w": str(w),
             "transitions": [],
-            "name": display_name,
+            "name": name_clean,
             "function": name_clean,
             "ref_species": ref_species,
             "type": classtype,
