@@ -33,6 +33,7 @@ def read_sbgnml(fileobj: IO):
     if root.tag != "{" + NS["sbgn"] + "}sbgn":
         raise ValueError("Expected sbgn root element")
 
+
     map_info = root.find(".//sbgn:map", namespaces=NS)
     if map_info is None:
         raise ValueError("Could not find sbgn:map element")
@@ -44,7 +45,27 @@ def read_sbgnml(fileobj: IO):
     add_subcomponents_only_sbgn(nameconv, map_info)
     info = get_transitions_sbgn(map_info, nameconv)
 
-    return info, sizeX, sizeY
+    # Grouping logic
+    grouping = {}
+    for sid, data in info.items():
+        if isinstance(data, dict):
+            name = data.get("name")
+            if name:
+                group_key = "__" + make_name_precise(greeks_to_name(name), "PROTEIN", [])
+                if group_key not in grouping:
+                    grouping[group_key] = []
+                grouping[group_key].append(sid)
+    
+    info.update(grouping)
+    
+    # Only keep top-level elements and group keys
+    clean_info = {
+        sid: data for sid, data in info.items()
+        if isinstance(data, list) or data.get("parent") is None
+    }
+
+    return clean_info, sizeX, sizeY
+
 
 
 def convert_sbgn_2to3(node: etree.Element) -> etree.Element:
@@ -65,14 +86,14 @@ def species_info_sbgn(map_element):
     for glyph in map_element.findall("sbgn:glyph", namespaces=NS):
         if glyph.get("class") == "compartment":
             cid = glyph.get("id")
+            label = glyph.find("sbgn:label", namespaces=NS)
             compartments[cid] = {
                 "bbox": glyph.find("sbgn:bbox", namespaces=NS),
-                "name": glyph.find("sbgn:label", namespaces=NS).get("text")
-                if glyph.find("sbgn:label", namespaces=NS) is not None
-                else cid,
+                "name": label.get("text") if label is not None else cid,
             }
 
-    for glyph in map_element.findall("sbgn:glyph", namespaces=NS):
+    # recursive function to handle subglyphs
+    def add_glyph(glyph, parent_id=None):
         cls = glyph.get("class")
         if cls not in (
             "macromolecule",
@@ -88,11 +109,13 @@ def species_info_sbgn(map_element):
                 cls,
                 glyph.get("id"),
             )
-            continue
-
+            return
         species_id = glyph.get("id")
         label = glyph.find("sbgn:label", namespaces=NS)
         name = label.get("text") if label is not None else species_id
+
+        # compartmentRef
+        c_ref = glyph.get("compartmentRef", "default")
 
         bbox = glyph.find("sbgn:bbox", namespaces=NS)
         x = float(bbox.get("x"))
@@ -103,7 +126,7 @@ def species_info_sbgn(map_element):
         compartment_name = "default_compartment"
         cx, cy = x + w / 2, y + h / 2
         min_area = float("inf")
-        for _cid, comp in compartments.items():
+        for cid, comp in compartments.items():
             cbbox = comp["bbox"]
             cx0 = float(cbbox.get("x"))
             cy0 = float(cbbox.get("y"))
@@ -116,7 +139,7 @@ def species_info_sbgn(map_element):
                     compartment_name = comp["name"].replace(" ", "_")
 
         classtype = class_to_type(cls)
-
+        
         # get the state (activity) from the sub-glyphs of a state variable
         activity = "inactive"  # valeur par défaut
         for state_var in glyph.findall(
@@ -128,13 +151,33 @@ def species_info_sbgn(map_element):
                 if value:
                     activity = value  # "active", "inactive" there is also "P", probably phosphorylation
                     break
+                
+        # Unit of information logic (e.g. N:3)
+        uoi_text = ""
+        for uoi in glyph.findall("sbgn:glyph[@class='unit of information']", namespaces=NS):
+            uoi_label = uoi.find("sbgn:label", namespaces=NS)
+            if uoi_label is not None:
+                text = uoi_label.get("text")
+                if text:
+                    uoi_text = text.replace(":", "") 
+                    break
+                
+        # construction of ref_species with compartmentRef and UoI        
         # for now we don't handle mods
-
-        name_clean = make_name_precise(greeks_to_name(name), classtype, [])
+        mods = []
+       
+        name_clean = make_name_precise(greeks_to_name(name), classtype, mods)
         rdf = glyph.find(".//rdf:RDF", namespaces=NS)
         logger.debug(
             "Adding entity: id={}, type={}, name={}", species_id, classtype, name_clean
         )
+
+        ref_species = f"{name_clean}__{compartment_name}__{c_ref}__{activity}"
+        
+        # add UoI to ref_species
+        if uoi_text:
+            ref_species += f"__{uoi_text}"
+
         nameconv[species_id] = {
             "activity": activity,
             "x": str(x),
@@ -144,26 +187,39 @@ def species_info_sbgn(map_element):
             "transitions": [],
             "name": name_clean,
             "function": name_clean,
-            "ref_species": f"{name_clean}__{compartment_name}__{activity}",
+            "ref_species": ref_species,
             "type": classtype,
-            "modifications": [],
+            "modifications": mods,
             "receptor": False,
             "annotations": rdf,
             "notes": None,
             "compartment": compartment_name,
+            "parent": parent_id 
         }
-        # --- Reverse mapping : key "__Nom" → list of IDs corresponding to this name ---
-        prot_ref = "__" + make_name_precise(greeks_to_name(name), "PROTEIN", [])
 
+        # Reverse mapping for grouping
+        prot_ref = "__" + make_name_precise(greeks_to_name(name), "PROTEIN", [])
         if prot_ref in nameconv:
             nameconv[prot_ref].append(species_id)
         else:
             nameconv[prot_ref] = [species_id]
-    return nameconv
 
+        for child in glyph.findall("sbgn:glyph", namespaces=NS):
+            add_glyph(child, parent_id=species_id)
+
+    for glyph in map_element.findall("sbgn:glyph", namespaces=NS):
+        add_glyph(glyph)
+
+    return nameconv
 
 def get_transitions_sbgn(map_element, info):
     """Find all transitions."""
+    def get_top_parent(sid):
+        current = sid
+        while info.get(current, {}).get("parent"):
+            current = info[current]["parent"]
+        return current
+
     port_to_reaction = {}
     reactions = {}
     logic_gates = {}
@@ -241,7 +297,9 @@ def get_transitions_sbgn(map_element, info):
             rid = port_to_reaction[source]
             rxn = reactions[rid]
             if aclass == "production":
-                rxn["outputs"].append(target)
+                real_target = get_top_parent(target)
+                rxn["outputs"].append(real_target)
+
 
         elif target in port_to_reaction or target in reactions:
             if target in port_to_reaction:
@@ -250,11 +308,13 @@ def get_transitions_sbgn(map_element, info):
                 rid = target
             rxn = reactions[rid]
             if aclass == "consumption":
-                rxn["inputs"].append((source, "positive"))
+                real_source = get_top_parent(source)
+                rxn["inputs"].append((real_source, "positive"))
             else:
                 modifier_type = classify_arc_modifier(aclass)
                 if modifier_type != "UNKNOWN":
-                    rxn["modifiers"].append((modifier_type, source))
+                    real_source = get_top_parent(source)
+                    rxn["modifiers"].append((modifier_type, real_source))
                 else:
                     logger.warning("Unknown modifier arc class: {}", aclass)
 
@@ -266,15 +326,18 @@ def get_transitions_sbgn(map_element, info):
                     source,
                     target,
                 )
-                info[target]["transitions"].append(
-                    Transition(
-                        type=f"{modifier_type}",
-                        reactants=[source],
-                        modifiers=[],
-                        notes=None,
-                        annotations=None,
+                transition = Transition(
+                    type=f"{modifier_type}",
+                    reactants=[get_top_parent(source)],
+                    modifiers=[],
+                    notes=None,
+                    annotations=None,
                     )
-                )
+
+                real_target = get_top_parent(target)
+                info[real_target]["transitions"].append(transition)
+
+
 
     for _lgid, gate in logic_gates.items():
         rid = gate["output"]
@@ -295,15 +358,18 @@ def get_transitions_sbgn(map_element, info):
                 logger.debug(
                     "Assigning transition: reaction={} to product={}", ttype, output
                 )
-                info[output]["transitions"].append(
-                    Transition(
-                        type=ttype,
-                        reactants=reactants,
-                        modifiers=modifiers,
-                        notes=notes,
-                        annotations=annotations,
-                    )
+                transition = Transition(
+                    type=ttype,
+                    reactants=reactants,
+                    modifiers=modifiers,
+                    notes=notes,
+                    annotations=annotations,
                 )
+
+                real_output = get_top_parent(output)
+                info[real_output]["transitions"].append(transition)
+
+
 
     return info
 
@@ -365,7 +431,7 @@ def class_to_type(cls: str) -> str:
         "phenotype",
         "unspecified_entity",
         "nucleic_acid_feature",
-        "macromolecule_multimer",
+        # "macromolecule_multimer", # considered as PROTEIN in CD
     ):
         return cls.upper()
     return "PROTEIN"
