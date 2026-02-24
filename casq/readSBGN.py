@@ -449,5 +449,4 @@ def greek_to_name(c: str) -> str:
         return c
     if (greek, letter) != ("GREEK", "LETTER"):
         return c
-    return what.lower() if size == "SMALL" else what.title()
-    
+    return what.lower() if size == "SMALL" else what.title() 
