@@ -48,7 +48,7 @@ def read_sbgnml(fileobj: IO):
     grouping = {}
     for sid, data in info.items():
         if isinstance(data, dict):
-            name = data.get("name")
+            name = data.get("function")
             if name:
                 group_key = "__" + make_name_precise(
                     greeks_to_name(name), "PROTEIN", []
@@ -153,6 +153,22 @@ def species_info_sbgn(map_element):
                     activity = value  # "active", "inactive" there is also "P", probably phosphorylation
                     break
 
+        # post-translational modifications for the name
+        # Collect all post-translational modifications
+        found_mods = []
+        for state_var in glyph.findall("sbgn:glyph[@class='state variable']", namespaces=NS):
+            state_elem = state_var.find("sbgn:state", namespaces=NS)
+            if state_elem is not None:
+                val = state_elem.get("value")
+                if not val or val in ("active", "inactive"):
+                    continue
+                if val == "P":
+                    found_mods.append("phosphorylated")
+                elif val == "Ub":
+                    found_mods.append("ubiquitinated")
+
+        post_modif = "_".join(sorted(found_mods))
+
         # Unit of information logic (e.g. N:3)
         uoi_text = ""
         for uoi in glyph.findall(
@@ -181,6 +197,9 @@ def species_info_sbgn(map_element):
         if uoi_text:
             ref_species += f"__{uoi_text}"
 
+        # name with PTMs if they exist
+        display_name = f"{name_clean}_{post_modif}" if post_modif else name_clean
+
         nameconv[species_id] = {
             "activity": activity,
             "x": str(x),
@@ -188,7 +207,7 @@ def species_info_sbgn(map_element):
             "h": str(h),
             "w": str(w),
             "transitions": [],
-            "name": name_clean,
+            "name": display_name,
             "function": name_clean,
             "ref_species": ref_species,
             "type": classtype,

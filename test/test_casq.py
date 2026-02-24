@@ -74,8 +74,6 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
         cdsbml_out = (
             f.read()
             .replace("_empty", "")
-            .replace("_phosphorylated", "")
-            .replace("_ubiquitinated", "")
             .replace("_ion", "")
             .replace("_simple_molecule", "")
             .replace("_rna", "_nucleic_acid_feature")
