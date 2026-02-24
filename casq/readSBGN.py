@@ -33,7 +33,6 @@ def read_sbgnml(fileobj: IO):
     if root.tag != "{" + NS["sbgn"] + "}sbgn":
         raise ValueError("Expected sbgn root element")
 
-
     map_info = root.find(".//sbgn:map", namespaces=NS)
     if map_info is None:
         raise ValueError("Could not find sbgn:map element")
@@ -126,7 +125,7 @@ def species_info_sbgn(map_element):
         compartment_name = "default_compartment"
         cx, cy = x + w / 2, y + h / 2
         min_area = float("inf")
-        for cid, comp in compartments.items():
+        for _cid, comp in compartments.items():
             cbbox = comp["bbox"]
             cx0 = float(cbbox.get("x"))
             cy0 = float(cbbox.get("y"))
@@ -451,3 +450,4 @@ def greek_to_name(c: str) -> str:
     if (greek, letter) != ("GREEK", "LETTER"):
         return c
     return what.lower() if size == "SMALL" else what.title()
+    
