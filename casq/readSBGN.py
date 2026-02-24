@@ -61,7 +61,8 @@ def read_sbgnml(fileobj: IO):
 
     # Only keep top-level elements and group keys
     clean_info = {
-        sid: data for sid, data in info.items()
+        sid: data 
+        for sid, data in info.items()
         if isinstance(data, list) or data.get("parent") is None
     }
 
@@ -151,21 +152,23 @@ def species_info_sbgn(map_element):
                 if value:
                     activity = value  # "active", "inactive" there is also "P", probably phosphorylation
                     break
-                    
+
         # Unit of information logic (e.g. N:3)
         uoi_text = ""
-        for uoi in glyph.findall("sbgn:glyph[@class='unit of information']", namespaces=NS):
+        for uoi in glyph.findall(
+            "sbgn:glyph[@class='unit of information']", namespaces=NS
+        ):
             uoi_label = uoi.find("sbgn:label", namespaces=NS)
             if uoi_label is not None:
                 text = uoi_label.get("text")
                 if text:
                     uoi_text = text.replace(":", "")
                     break
-                    
+
         # construction of ref_species with compartmentRef and UoI
         # for now we don't handle mods
         mods = []
-       
+
         name_clean = make_name_precise(greeks_to_name(name), classtype, mods)
         rdf = glyph.find(".//rdf:RDF", namespaces=NS)
         logger.debug(
@@ -173,7 +176,7 @@ def species_info_sbgn(map_element):
         )
 
         ref_species = f"{name_clean}__{compartment_name}__{c_ref}__{activity}"
-        
+
         # add UoI to ref_species
         if uoi_text:
             ref_species += f"__{uoi_text}"
@@ -215,6 +218,7 @@ def species_info_sbgn(map_element):
 
 def get_transitions_sbgn(map_element, info):
     """Find all transitions."""
+
     def get_top_parent(sid):
         current = sid
         while info.get(current, {}).get("parent"):
