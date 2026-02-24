@@ -50,13 +50,15 @@ def read_sbgnml(fileobj: IO):
         if isinstance(data, dict):
             name = data.get("name")
             if name:
-                group_key = "__" + make_name_precise(greeks_to_name(name), "PROTEIN", [])
+                group_key = "__" + make_name_precise(
+                    greeks_to_name(name), "PROTEIN", []
+                )
                 if group_key not in grouping:
                     grouping[group_key] = []
                 grouping[group_key].append(sid)
-    
+
     info.update(grouping)
-    
+
     # Only keep top-level elements and group keys
     clean_info = {
         sid: data for sid, data in info.items()
@@ -64,7 +66,6 @@ def read_sbgnml(fileobj: IO):
     }
 
     return clean_info, sizeX, sizeY
-
 
 
 def convert_sbgn_2to3(node: etree.Element) -> etree.Element:
@@ -150,7 +151,7 @@ def species_info_sbgn(map_element):
                 if value:
                     activity = value  # "active", "inactive" there is also "P", probably phosphorylation
                     break
-                
+                    
         # Unit of information logic (e.g. N:3)
         uoi_text = ""
         for uoi in glyph.findall("sbgn:glyph[@class='unit of information']", namespaces=NS):
@@ -158,10 +159,10 @@ def species_info_sbgn(map_element):
             if uoi_label is not None:
                 text = uoi_label.get("text")
                 if text:
-                    uoi_text = text.replace(":", "") 
+                    uoi_text = text.replace(":", "")
                     break
-                
-        # construction of ref_species with compartmentRef and UoI        
+                    
+        # construction of ref_species with compartmentRef and UoI
         # for now we don't handle mods
         mods = []
        
@@ -193,7 +194,7 @@ def species_info_sbgn(map_element):
             "annotations": rdf,
             "notes": None,
             "compartment": compartment_name,
-            "parent": parent_id 
+            "parent": parent_id,
         }
 
         # Reverse mapping for grouping
@@ -210,6 +211,7 @@ def species_info_sbgn(map_element):
         add_glyph(glyph)
 
     return nameconv
+
 
 def get_transitions_sbgn(map_element, info):
     """Find all transitions."""
@@ -299,7 +301,6 @@ def get_transitions_sbgn(map_element, info):
                 real_target = get_top_parent(target)
                 rxn["outputs"].append(real_target)
 
-
         elif target in port_to_reaction or target in reactions:
             if target in port_to_reaction:
                 rid = port_to_reaction[target]
@@ -331,12 +332,10 @@ def get_transitions_sbgn(map_element, info):
                     modifiers=[],
                     notes=None,
                     annotations=None,
-                    )
+                )
 
                 real_target = get_top_parent(target)
                 info[real_target]["transitions"].append(transition)
-
-
 
     for _lgid, gate in logic_gates.items():
         rid = gate["output"]
