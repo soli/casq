@@ -61,7 +61,7 @@ def read_sbgnml(fileobj: IO):
 
     # Only keep top-level elements and group keys
     clean_info = {
-        sid: data 
+        sid: data
         for sid, data in info.items()
         if isinstance(data, list) or data.get("parent") is None
     }
