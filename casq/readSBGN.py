@@ -368,8 +368,6 @@ def get_transitions_sbgn(map_element, info):
                 real_output = get_top_parent(output)
                 info[real_output]["transitions"].append(transition)
 
-
-
     return info
 
 
