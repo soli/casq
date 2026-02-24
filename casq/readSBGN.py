@@ -138,7 +138,7 @@ def species_info_sbgn(map_element):
                     compartment_name = comp["name"].replace(" ", "_")
 
         classtype = class_to_type(cls)
-        
+
         # get the state (activity) from the sub-glyphs of a state variable
         activity = "inactive"  # valeur par défaut
         for state_var in glyph.findall(
