@@ -124,20 +124,25 @@ def species_info_sbgn(map_element):
         w = float(bbox.get("w"))
         h = float(bbox.get("h"))
 
-        compartment_name = "default_compartment"
-        cx, cy = x + w / 2, y + h / 2
-        min_area = float("inf")
-        for _cid, comp in compartments.items():
-            cbbox = comp["bbox"]
-            cx0 = float(cbbox.get("x"))
-            cy0 = float(cbbox.get("y"))
-            cw = float(cbbox.get("w"))
-            ch = float(cbbox.get("h"))
-            if cx0 <= cx <= cx0 + cw and cy0 <= cy <= cy0 + ch:
-                area = cw * ch
-                if area < min_area:
-                    min_area = area
-                    compartment_name = comp["name"].replace(" ", "_")
+        # get compartment name
+        if c_ref and c_ref in compartments:
+            compartment_name = compartments[c_ref]["name"].replace(" ", "_")
+        else:
+            # geometric (layouts) fallback
+            compartment_name = "default_compartment"
+            cx, cy = x + w / 2, y + h / 2
+            min_area = float("inf")
+            for _cid, comp in compartments.items():
+                cbbox = comp["bbox"]
+                cx0 = float(cbbox.get("x"))
+                cy0 = float(cbbox.get("y"))
+                cw = float(cbbox.get("w"))
+                ch = float(cbbox.get("h"))
+                if cx0 <= cx <= cx0 + cw and cy0 <= cy <= cy0 + ch:
+                    area = cw * ch
+                    if area < min_area:
+                        min_area = area
+                        compartment_name = comp["name"].replace(" ", "_")
 
         classtype = class_to_type(cls)
 
@@ -185,7 +190,7 @@ def species_info_sbgn(map_element):
             "Adding entity: id={}, type={}, name={}", species_id, classtype, name_clean
         )
 
-        ref_species = f"{name_clean}__{compartment_name}__{c_ref}__{post_modif}"
+        ref_species = f"{name_clean}__{compartment_name}__{post_modif}"
 
         # add UoI to ref_species
         if uoi_text:
