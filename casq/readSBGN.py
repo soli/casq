@@ -150,7 +150,7 @@ def species_info_sbgn(map_element):
             state_elem = state_var.find("sbgn:state", namespaces=NS)
             if state_elem is not None:
                 val = state_elem.get("value")
-                if not val or val in ("active", "inactive"):
+                if not val:
                     continue
                 if val == "P":
                     found_mods.append("phosphorylated")
