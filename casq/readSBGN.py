@@ -141,29 +141,25 @@ def species_info_sbgn(map_element):
 
         classtype = class_to_type(cls)
 
-        # get state variables (activity and PTMs)
-        activity = "inactive"  # valeur par défaut
+        # get state variables (post-translational modifications)
+        # Collect all post-translational modifications
         found_mods = []
-        activity_set = False
         for state_var in glyph.findall(
             "sbgn:glyph[@class='state variable']", namespaces=NS
-        ):
+            ):
             state_elem = state_var.find("sbgn:state", namespaces=NS)
             if state_elem is not None:
                 val = state_elem.get("value")
-                if val:
-                    # get the state (activity) from the sub-glyphs of a state variable
-                    if not activity_set:
-                        activity = val  # "active", "inactive" there is also "P", probably phosphorylation
-                        activity_set = True
-
-                    # post-translational modifications for the name
-                    # Collect post-translational modifications (P, Ub)
-                    if val not in ("active", "inactive"):
-                        if val == "P":
-                            found_mods.append("phosphorylated")
-                        elif val == "Ub":
-                            found_mods.append("ubiquitinated")
+                if not val or val in ("active", "inactive"):
+                    continue
+                if val == "P":
+                    found_mods.append("phosphorylated")
+                elif val == "Ub":
+                    found_mods.append("ubiquitinated")
+                elif val.endswith("+"): # Capture H+, Ca++, Na+, etc.
+                    found_mods.append("ion")
+                else:
+                    found_mods.append(val)
 
         post_modif = "_".join(sorted(found_mods))
 
@@ -189,7 +185,7 @@ def species_info_sbgn(map_element):
             "Adding entity: id={}, type={}, name={}", species_id, classtype, name_clean
         )
 
-        ref_species = f"{name_clean}__{compartment_name}__{c_ref}__{activity}"
+        ref_species = f"{name_clean}__{compartment_name}__{c_ref}__{post_modif}"
 
         # add UoI to ref_species
         if uoi_text:
@@ -199,7 +195,7 @@ def species_info_sbgn(map_element):
         display_name = f"{name_clean}_{post_modif}" if post_modif else name_clean
 
         nameconv[species_id] = {
-            "activity": activity,
+            "activity": post_modif,
             "x": str(x),
             "y": str(y),
             "h": str(h),
