@@ -146,7 +146,7 @@ def species_info_sbgn(map_element):
         found_mods = []
         for state_var in glyph.findall(
             "sbgn:glyph[@class='state variable']", namespaces=NS
-            ):
+        ):
             state_elem = state_var.find("sbgn:state", namespaces=NS)
             if state_elem is not None:
                 val = state_elem.get("value")
