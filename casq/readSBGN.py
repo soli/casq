@@ -141,33 +141,29 @@ def species_info_sbgn(map_element):
 
         classtype = class_to_type(cls)
 
-        # get the state (activity) from the sub-glyphs of a state variable
+        # get state variables (activity and PTMs)
         activity = "inactive"  # valeur par défaut
-        for state_var in glyph.findall(
-            "sbgn:glyph[@class='state variable']", namespaces=NS
-        ):
-            state_elem = state_var.find("sbgn:state", namespaces=NS)
-            if state_elem is not None:
-                value = state_elem.get("value")
-                if value:
-                    activity = value  # "active", "inactive" there is also "P", probably phosphorylation
-                    break
-
-        # post-translational modifications for the name
-        # Collect all post-translational modifications
         found_mods = []
+        activity_set = False
         for state_var in glyph.findall(
             "sbgn:glyph[@class='state variable']", namespaces=NS
         ):
             state_elem = state_var.find("sbgn:state", namespaces=NS)
             if state_elem is not None:
                 val = state_elem.get("value")
-                if not val or val in ("active", "inactive"):
-                    continue
-                if val == "P":
-                    found_mods.append("phosphorylated")
-                elif val == "Ub":
-                    found_mods.append("ubiquitinated")
+                if val:
+                    # get the state (activity) from the sub-glyphs of a state variable
+                    if not activity_set:
+                        activity = val  # "active", "inactive" there is also "P", probably phosphorylation
+                        activity_set = True
+
+                    # post-translational modifications for the name
+                    # Collect post-translational modifications (P, Ub)
+                    if val not in ("active", "inactive"):
+                        if val == "P":
+                            found_mods.append("phosphorylated")
+                        elif val == "Ub":
+                            found_mods.append("ubiquitinated")
 
         post_modif = "_".join(sorted(found_mods))
 
