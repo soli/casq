@@ -84,6 +84,7 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
             f.read()
             .replace("_macromolecule_multimer", "")
             .replace("_Active", "")
+            .replace("_active", "")
             .replace("_ion", "")
             .splitlines(keepends=True)
         )
