@@ -161,8 +161,6 @@ def species_info_sbgn(map_element):
                     found_mods.append("phosphorylated")
                 elif val == "Ub":
                     found_mods.append("ubiquitinated")
-                elif val.endswith("+"):  # Capture H+, Ca++, Na+, etc.
-                    found_mods.append("ion")
                 else:
                     found_mods.append(val)
 
