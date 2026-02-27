@@ -48,7 +48,7 @@ def read_sbgnml(fileobj: IO):
     grouping = {}
     for sid, data in info.items():
         if isinstance(data, dict):
-            name = data.get("name")
+            name = data.get("function")
             if name:
                 group_key = "__" + make_name_precise(
                     greeks_to_name(name), "PROTEIN", []
@@ -124,34 +124,47 @@ def species_info_sbgn(map_element):
         w = float(bbox.get("w"))
         h = float(bbox.get("h"))
 
-        compartment_name = "default_compartment"
-        cx, cy = x + w / 2, y + h / 2
-        min_area = float("inf")
-        for _cid, comp in compartments.items():
-            cbbox = comp["bbox"]
-            cx0 = float(cbbox.get("x"))
-            cy0 = float(cbbox.get("y"))
-            cw = float(cbbox.get("w"))
-            ch = float(cbbox.get("h"))
-            if cx0 <= cx <= cx0 + cw and cy0 <= cy <= cy0 + ch:
-                area = cw * ch
-                if area < min_area:
-                    min_area = area
-                    compartment_name = comp["name"].replace(" ", "_")
+        # get compartment name
+        if c_ref and c_ref in compartments:
+            compartment_name = compartments[c_ref]["name"].replace(" ", "_")
+        else:
+            # geometric (layouts) fallback
+            compartment_name = "default_compartment"
+            cx, cy = x + w / 2, y + h / 2
+            min_area = float("inf")
+            for _cid, comp in compartments.items():
+                cbbox = comp["bbox"]
+                cx0 = float(cbbox.get("x"))
+                cy0 = float(cbbox.get("y"))
+                cw = float(cbbox.get("w"))
+                ch = float(cbbox.get("h"))
+                if cx0 <= cx <= cx0 + cw and cy0 <= cy <= cy0 + ch:
+                    area = cw * ch
+                    if area < min_area:
+                        min_area = area
+                        compartment_name = comp["name"].replace(" ", "_")
 
         classtype = class_to_type(cls)
 
-        # get the state (activity) from the sub-glyphs of a state variable
-        activity = "inactive"  # valeur par défaut
+        # get state variables (post-translational modifications)
+        # Collect all post-translational modifications
+        found_mods = []
         for state_var in glyph.findall(
             "sbgn:glyph[@class='state variable']", namespaces=NS
         ):
             state_elem = state_var.find("sbgn:state", namespaces=NS)
             if state_elem is not None:
-                value = state_elem.get("value")
-                if value:
-                    activity = value  # "active", "inactive" there is also "P", probably phosphorylation
-                    break
+                val = state_elem.get("value")
+                if not val:
+                    continue
+                if val == "P":
+                    found_mods.append("phosphorylated")
+                elif val == "Ub":
+                    found_mods.append("ubiquitinated")
+                else:
+                    found_mods.append(val)
+
+        post_modif = "_".join(sorted(found_mods))
 
         # Unit of information logic (e.g. N:3)
         uoi_text = ""
@@ -175,20 +188,23 @@ def species_info_sbgn(map_element):
             "Adding entity: id={}, type={}, name={}", species_id, classtype, name_clean
         )
 
-        ref_species = f"{name_clean}__{compartment_name}__{c_ref}__{activity}"
+        ref_species = f"{name_clean}__{compartment_name}__{post_modif}"
 
         # add UoI to ref_species
         if uoi_text:
             ref_species += f"__{uoi_text}"
 
+        # name with PTMs if they exist
+        display_name = f"{name_clean}_{post_modif}" if post_modif else name_clean
+
         nameconv[species_id] = {
-            "activity": activity,
+            "activity": post_modif,
             "x": str(x),
             "y": str(y),
             "h": str(h),
             "w": str(w),
             "transitions": [],
-            "name": name_clean,
+            "name": display_name,
             "function": name_clean,
             "ref_species": ref_species,
             "type": classtype,

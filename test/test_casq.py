@@ -58,7 +58,7 @@ def test_casq_produces_valid_files_on_reactome(tmp_path, infile):
         ("Tgfb", 4),  # order of SMAD cmplx
         ("E_Prot", 4),  # order for Activity_space_pheno
         ("JNK", 0),
-        ("Orf3a", 2),  # order for P65 cmplx and CASP1
+        ("Orf3a", 4),  # order for P65 cmplx and CASP1, TLR3 not receptor in SBGN
     ],
 )
 def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
@@ -74,8 +74,6 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
         cdsbml_out = (
             f.read()
             .replace("_empty", "")
-            .replace("_phosphorylated", "")
-            .replace("_ubiquitinated", "")
             .replace("_ion", "")
             .replace("_simple_molecule", "")
             .replace("_rna", "_nucleic_acid_feature")
@@ -83,7 +81,12 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
         )
     with open(infile + "_SBGNML.bnet") as f:
         sbgnml_out = (
-            f.read().replace("_macromolecule_multimer", "").splitlines(keepends=True)
+            f.read()
+            .replace("_macromolecule_multimer", "")
+            .replace("_Active", "")
+            .replace("_active", "")
+            .replace("_H+", "")
+            .splitlines(keepends=True)
         )
 
     import sys
