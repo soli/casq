@@ -20,6 +20,7 @@ import csv
 import xml.etree.ElementTree as etree
 from datetime import datetime
 from itertools import chain, repeat
+from re import fullmatch
 from typing import IO, Dict, List, Optional, Tuple  # noqa: F401
 
 import networkx as nx  # type: ignore
@@ -539,13 +540,18 @@ def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
         if species is None:
             species = ""
         if children[2].text == "0":
-            if "/" in species:
+            if not is_sid(species):
                 return f'!"{species}"'
             return f"!{species}"
-        if "/" in species:
+        if not is_sid(species):
             return f'"{species}"'
         return species
     raise ValueError(etree.tostring(math))
+
+
+def is_sid(s: str) -> bool:
+    """Check if a string is a valid SBML SId."""
+    return fullmatch(r"[_a-zA-Z][_a-zA-Z0-9]*", s) is not None
 
 
 def add_function_as_notes(info, species: str, func: str):
