@@ -95,7 +95,7 @@ dependencies = [
     "pytest"
 ]
 [[tool.hatch.envs.test.matrix]]
-python = ["pypy310", "311", "312", "313", "314"]
+python = ["pypy310", "312", "314"]
 
 [tool.hatch.envs.cov]
 dependencies = [
