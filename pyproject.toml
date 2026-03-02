@@ -103,6 +103,7 @@ python = ["3.12", "3.14"]
 dependencies = [
     "pytest",
     "pytest-cov",
+    "tabularqual @ git+https://github.com/sys-bio/TabularQual@0e03b49b192a2690a434edc67b696772cd250d08",
 ]  # ty: ignore[unresolved-import]
 python = "3.14"
 [tool.hatch.envs.cov.scripts]
