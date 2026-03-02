@@ -193,9 +193,9 @@ def add_qual_species(
             "qual:qualitativeSpecies",
             attribs,
         )
-        add_annotation(qspecies, data["annotations"])
         if data["notes"] is not None:
             qspecies.append(data["notes"])
+        add_annotation(qspecies, data["annotations"])
 
 
 def add_annotation(node: etree.Element, rdf: Optional[etree.Element]):
@@ -496,7 +496,7 @@ def write_csv(sbml_filename: str, info, fixed: Optional[IO] = None):
                         notes += "".join(reaction.notes.itertext()).replace("\n", "")
                 writer.writerow(
                     [
-                        data["name"],
+                        data["name"] if is_sid(data["name"]) else f'"{data["name"]}"',
                         data["function"],
                         "isDescribedBy",
                         ",".join(described),
@@ -523,7 +523,7 @@ def get_compact_identifiers(rdf: etree.Element) -> List[str]:
     ]
 
 
-def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
+def mathml_to_ginsim(math: Optional[etree.Element], info, top=True) -> str:
     """Convert a MATHML boolean formula into its GinSIM representation."""
     if math is None:
         raise ValueError("Empty math element")
@@ -531,9 +531,13 @@ def mathml_to_ginsim(math: Optional[etree.Element], info) -> str:
         raise ValueError(etree.tostring(math))
     children = list(math)
     if children[0].tag == "and":
-        return "&".join(mathml_to_ginsim(x, info) for x in children[1:])
+        return "&".join(mathml_to_ginsim(x, info, False) for x in children[1:])
     if children[0].tag == "or":
-        return "(" + "|".join(mathml_to_ginsim(x, info) for x in children[1:]) + ")"
+        if top:
+            return "|".join(mathml_to_ginsim(x, info, False) for x in children[1:])
+        return (
+            "(" + "|".join(mathml_to_ginsim(x, info, False) for x in children[1:]) + ")"
+        )
     if children[0].tag == "eq":
         species = children[1].text
         species = info[species]["name"]

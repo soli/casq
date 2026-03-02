@@ -1,5 +1,6 @@
 """Tests for CaSQ."""
 
+from csv import reader
 from difflib import ndiff
 from filecmp import cmp
 from glob import glob
@@ -7,6 +8,7 @@ from os import path
 from unittest.mock import patch
 
 import pytest  # type: ignore
+from tabularqual import convert_sbml_to_spreadsheet  # ty: ignore[unresolved-import]
 
 from casq.celldesigner2qual import main, map_to_model
 from casq.utils import validate, validator_unavailable
@@ -100,8 +102,8 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
     )
 
 
-def test_spreadsheet_output():
-    """Test our CSV export."""
+def test_csv_vs_bnet_output():
+    """Test our CSV export vs. our .bnet output."""
     filename = path.join(str(path.dirname(path.realpath(__file__))), "Small_Apoptosis")
     with patch("sys.argv", ["casq", "-c", filename + ".xml"]):
         main()
@@ -126,3 +128,56 @@ def test_spreadsheet_output():
     for line in transitions_lines:
         things = line.replace('"', "").split(",")
         assert f"{things[0]}, {things[1]}\n" in bnet_lines
+
+
+def test_csv_vs_tabularqual_output():
+    """Test our CSV export vs. TabularQual's one."""
+    filename = path.join(str(path.dirname(path.realpath(__file__))), "Small_Apoptosis")
+    with patch("sys.argv", ["casq", "-c", filename + ".xml"]):
+        main()
+
+    convert_sbml_to_spreadsheet(
+        filename + ".sbml",
+        filename + "_tq",
+        output_csv=True,
+        use_name=True,
+        print_messages=False,
+    )
+
+    with open(filename + "_Species.csv", newline="") as f:
+        species_lines = list(reader(f))
+
+    with open(filename + "_tq_Species.csv", newline="") as f:
+        tq_species_lines = [
+            [
+                cell.replace(", ", ",").replace("&amp;", "&").replace("&quot;", '"')
+                for (i, cell) in enumerate(row)
+                if i in (1, 3, 8, 9, 10)
+            ]
+            for row in reader(f)
+        ]
+
+    for i, line in enumerate(species_lines):
+        if line[0] in ("M", "Orf3a", "E", "Orf3b", "Orf8a", "N", "Orf6", "Orf9b"):
+            # ignore is and isEncodedBy non supported by CaSQ
+            continue
+        # ignore isDescribedBy Notes1 and Comment
+        assert [line[0]] + line[2:-2] == tq_species_lines[i]
+
+    with open(filename + "_Transitions.csv", newline="") as f:
+        trans_lines = list(reader(f))
+    trans_lines.sort()
+
+    with open(filename + "_tq_Transitions.csv", newline="") as f:
+        tq_trans_lines = [
+            [cell.replace(" ", "") for (i, cell) in enumerate(row) if i in (2, 4, 6)]
+            for row in reader(f)
+        ]
+    tq_trans_lines.sort()
+
+    for i, line in enumerate(trans_lines):
+        if line[0] in ('"BCL2/MCL1/BCL2L1_complex"', '"BAD/BBC3/BCL2L11_complex"'):
+            # ignore isEncodedBy non supported by CaSQ
+            continue
+        # ignore Notes1
+        assert line[:-3] + [line[-2]] == tq_trans_lines[i]

@@ -68,7 +68,7 @@ exclude = [
 ]
 
 [tool.hatch.envs.default]
-python = "39"
+python = "3.14"
 installer = "uv"
 
 [tool.hatch.envs.lint]
@@ -77,7 +77,7 @@ dependencies = [
     "ruff>=0.0.289",
     "ty>=0.0.1-alpha.22",
 ]
-python = "313"
+python = "3.13"
 
 [tool.hatch.envs.lint.scripts]
 check = [
@@ -92,17 +92,19 @@ fmt = [
 
 [tool.hatch.envs.test]
 dependencies = [
-    "pytest"
+    "pytest",
+    "tabularqual @ git+https://github.com/sys-bio/TabularQual@0e03b49b192a2690a434edc67b696772cd250d08",
 ]
 [[tool.hatch.envs.test.matrix]]
-python = ["pypy310", "312", "314"]
+# python = ["pypy3.10", "3.12", "3.14"]
+python = ["3.12", "3.14"]
 
 [tool.hatch.envs.cov]
 dependencies = [
     "pytest",
     "pytest-cov",
-]
-python = "39"
+]  # ty: ignore[unresolved-import]
+python = "3.14"
 [tool.hatch.envs.cov.scripts]
 # run = "pytest --cov-config=pyproject.toml --cov=casq"
 run = "pytest --cov-report xml --cov-report term --cov=casq"
