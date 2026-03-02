@@ -18,7 +18,7 @@ stages:
 test:
   stage: test
   script:
-  - apt-get update && apt-get install -y curl
+  - apt-get update && apt-get install -y curl git
   - python3 -m pip install hatch
   - hatch run lint:check && hatch run test:pytest && hatch run cov:run
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
