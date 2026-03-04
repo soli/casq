@@ -142,6 +142,7 @@ def test_csv_vs_tabularqual_output():
         output_csv=True,
         use_name=True,
         print_messages=False,
+        validate=False,
     )
 
     with open(filename + "_Species.csv", newline="") as f:

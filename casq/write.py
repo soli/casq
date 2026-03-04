@@ -579,5 +579,5 @@ def add_function_as_notes(info, species: str, func: str):
     body = info[species]["notes"].find(".//body")
     if body is None:
         raise ValueError("Notes without body")
-    p = etree.SubElement(body, f"{{{NS['xhtml']}}}p")
+    p = etree.SubElement(body, "p")
     p.text = f"\nCaSQ-computed function: {func}"
