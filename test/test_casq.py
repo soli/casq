@@ -80,6 +80,9 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
             .replace("_ion", "")
             .replace("_simple_molecule", "")
             .replace("_rna", "_nucleic_acid_feature")
+            .replace("endoplasmic_space_reticulum", "endoplasmic_reticulum")
+            .replace("mitochondrial_space_matrix", "mitochondrial_matrix")
+            .replace("human_space_host", "human_host")
             .splitlines(keepends=True)
         )
     with open(infile + "_SBGNML.bnet") as f:
@@ -89,6 +92,7 @@ def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
             .replace("_Active", "")
             .replace("_active", "")
             .replace("_H+", "")
+            .replace("_unspecified_entity", "_drug")
             .splitlines(keepends=True)
         )
 
@@ -149,9 +153,6 @@ def test_direct_and_cd2sbgnml_similar(infile, diffs, change_test_dir):
             .replace("_ion", "")
             .replace("_simple_molecule", "")
             .replace("_rna", "_nucleic_acid_feature")
-            .replace("endoplasmic_space_reticulum", "endoplasmic_reticulum")
-            .replace("mitochondrial_space_matrix", "mitochondrial_matrix")
-            .replace("human_space_host", "human_host")
             .replace("_unknown", "_drug")
             .replace("_default_compartment_1", "")
             .replace("_default_compartment_2", "")
@@ -166,8 +167,8 @@ def test_direct_and_cd2sbgnml_similar(infile, diffs, change_test_dir):
             .replace("_Active", "")
             .replace("_active", "")
             .replace("_H+", "")
-            .replace("_unspecified_entity", "_drug")
             .replace("_default_compartment", "")
+            .replace("_unspecified_entity", "_drug")
             .splitlines(keepends=True)
         )
 
