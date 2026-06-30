@@ -83,7 +83,7 @@ def main(argv: Union[List[str], None] = None):
     parser.add_argument(
         "-f",
         "--fixed",
-        type=argparse.FileType(),
+        type=argparse.FileType(),  # ty: ignore[deprecated]
         help="""A CSV file containing input values or knock-ins/knock-outs,
         one per line, with name in the first column and the value in the second.""",
     )
@@ -131,7 +131,7 @@ def main(argv: Union[List[str], None] = None):
         )
     parser.add_argument(
         "infile",
-        type=argparse.FileType("r", encoding="utf-8"),
+        type=argparse.FileType("r", encoding="utf-8"),  # ty: ignore[deprecated]
         nargs="?",
         default=sys.stdin,
         help="CellDesigner or SBGN-ML File",
