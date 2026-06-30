@@ -62,17 +62,79 @@ def test_casq_produces_valid_files_on_reactome(tmp_path, infile):
         ("JNK", 0),
         ("Orf3a", 4),  # order for P65 cmplx and CASP1, TLR3 not receptor in SBGN
         ("Nsp4_Nsp6", 0),
-        ("R-HSA-416482", 16),  # GDP/GTP not merged by cd2sbgnml (ref_species); 1 submap as phenotype; order of GTP factors
-        ("R-HSA-8964315", 7),  # PI(3,4,5)P3 not merged by cd2sbgnml (ref_species); order of PIP3:RhoA factors
-        ("R-HSA-397795", 3),  # PI(3,4,5)P3 not merged by cd2sbgnml (ref_species)
-        ("R-HSA-416476", 3),  # 3 isolated submaps as constant phenotypes in CD, skipped by readSBGN
-        ("R-HSA-418594", 18),  # 2 submaps as phenotypes; ATP/Pi/GDP/GTP not merged by cd2sbgnml (ref_species); "Mg2+ cofactor" label spacing differs
-        ("R-HSA-881907", 6),  # ADP/ATP not merged by cd2sbgnml (ref_species); 2 submaps as phenotypes
-        ("R-HSA-418555", 13),  # ATP/ADP not merged by cd2sbgnml (ref_species); 2 submaps as phenotypes; "Mg2+ cofactor" label spacing differs
     ],
 )
 def test_CD_and_SBGNML_similar(infile, diffs, change_test_dir):
     """Check if the files generated from SBGN and CD are similar."""
+    cdsbml_in = infile + "_CD.xml"
+    sbgnml_in = infile + "_SBGNML.xml"
+    with patch("sys.argv", ["casq", "-c", cdsbml_in]):
+        main()
+    with patch("sys.argv", ["casq", "-c", sbgnml_in]):
+        main()
+
+    with open(infile + "_CD.bnet") as f:
+        cdsbml_out = (
+            f.read()
+            .replace("_empty", "")
+            .replace("_ion", "")
+            .replace("_simple_molecule", "")
+            .replace("_rna", "_nucleic_acid_feature")
+            .splitlines(keepends=True)
+        )
+    with open(infile + "_SBGNML.bnet") as f:
+        sbgnml_out = (
+            f.read()
+            .replace("_macromolecule_multimer", "")
+            .replace("_Active", "")
+            .replace("_active", "")
+            .replace("_H+", "")
+            .splitlines(keepends=True)
+        )
+
+    import sys
+
+    sys.stderr.writelines(ndiff(cdsbml_out, sbgnml_out))
+
+    # differences are order of SMAD double-complex (4 lines), missing ubiquitin inhibition from CD file (3 lines)
+    assert (
+        len([s for s in ndiff(cdsbml_out, sbgnml_out) if not s.startswith(" ")])
+        == diffs
+    )
+
+
+@pytest.mark.parametrize(
+    "infile,diffs",
+    [
+        (
+            "R-HSA-416482",
+            16,
+        ),  # GDP/GTP not merged by cd2sbgnml (ref_species); 1 submap as phenotype; order of GTP factors
+        (
+            "R-HSA-8964315",
+            7,
+        ),  # PI(3,4,5)P3 not merged by cd2sbgnml (ref_species); order of PIP3:RhoA factors
+        ("R-HSA-397795", 3),  # PI(3,4,5)P3 not merged by cd2sbgnml (ref_species)
+        (
+            "R-HSA-416476",
+            3,
+        ),  # 3 isolated submaps as constant phenotypes in CD, skipped by readSBGN
+        (
+            "R-HSA-418594",
+            18,
+        ),  # 2 submaps as phenotypes; ATP/Pi/GDP/GTP not merged by cd2sbgnml (ref_species); "Mg2+ cofactor" label spacing differs
+        (
+            "R-HSA-881907",
+            6,
+        ),  # ADP/ATP not merged by cd2sbgnml (ref_species); 2 submaps as phenotypes
+        (
+            "R-HSA-418555",
+            13,
+        ),  # ATP/ADP not merged by cd2sbgnml (ref_species); 2 submaps as phenotypes; "Mg2+ cofactor" label spacing differs
+    ],
+)
+def test_direct_and_cd2sbgnml_similar(infile, diffs, change_test_dir):
+    """Check if the files generated from SBGN directly and using cd2sbgnml are similar."""
     cdsbml_in = infile + "_CD.xml"
     sbgnml_in = infile + "_SBGNML.xml"
     with patch("sys.argv", ["casq", "-c", cdsbml_in]):
