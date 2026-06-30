@@ -309,7 +309,7 @@ def get_transitions_sbgn(map_element, info):
         target_gate = port_to_gate.get(target, target)
 
         if target_gate in logic_gates:
-            logic_gates[target_gate]["inputs"].append(source_gate)
+            logic_gates[target_gate]["inputs"].append(source_gate)  # ty: ignore[unresolved-attribute]
 
         elif source_gate in logic_gates:
             logic_gates[source_gate]["output"] = target_gate
@@ -319,7 +319,7 @@ def get_transitions_sbgn(map_element, info):
             rxn = reactions[rid]
             if aclass == "production":
                 real_target = get_top_parent(target)
-                rxn["outputs"].append(real_target)
+                rxn["outputs"].append(real_target)  # ty: ignore[unresolved-attribute]
 
         elif target in port_to_reaction or target in reactions:
             if target in port_to_reaction:
@@ -329,12 +329,12 @@ def get_transitions_sbgn(map_element, info):
             rxn = reactions[rid]
             if aclass == "consumption":
                 real_source = get_top_parent(source)
-                rxn["inputs"].append((real_source, "positive"))
+                rxn["inputs"].append((real_source, "positive"))  # ty: ignore[unresolved-attribute]
             else:
                 modifier_type = classify_arc_modifier(aclass)
                 if modifier_type != "UNKNOWN":
                     real_source = get_top_parent(source)
-                    rxn["modifiers"].append((modifier_type, real_source))
+                    rxn["modifiers"].append((modifier_type, real_source))  # ty: ignore[unresolved-attribute]
                 else:
                     logger.warning("Unknown modifier arc class: {}", aclass)
 
@@ -360,18 +360,18 @@ def get_transitions_sbgn(map_element, info):
     for _lgid, gate in logic_gates.items():
         rid = gate["output"]
         if rid in reactions:
-            for mid in gate["inputs"]:
-                reactions[rid]["modifiers"].append(("BOOLEAN_LOGIC_GATE_AND", mid))
+            for mid in gate["inputs"]:  # ty: ignore[not-iterable]
+                reactions[rid]["modifiers"].append(("BOOLEAN_LOGIC_GATE_AND", mid))  # ty: ignore[unresolved-attribute]
 
     # Build a Transition tuple and add it to each product
     for _rid, rxn in reactions.items():
-        reactants = [r for r, sign in rxn["inputs"]]
+        reactants = [r for r, sign in rxn["inputs"]]  # ty: ignore[not-iterable]
         modifiers = rxn["modifiers"]
         notes = rxn["notes"]
         annotations = rxn["annotations"]
         ttype = rxn["label"]
 
-        for output in rxn["outputs"]:
+        for output in rxn["outputs"]:  # ty: ignore[not-iterable]
             if output in info:
                 logger.debug(
                     "Assigning transition: reaction={} to product={}", ttype, output

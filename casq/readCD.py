@@ -147,7 +147,7 @@ def species_info(model):
         # species using the corresponding reference protein
         prot_ref = "__" + sbml.get("name")
         if prot_ref in nameconv:
-            nameconv[prot_ref].append(species.get("id"))
+            nameconv[prot_ref].append(species.get("id"))  # ty: ignore[unresolved-attribute]
         else:
             nameconv[prot_ref] = [species.get("id")]
     add_subcomponents_only(nameconv, model)
