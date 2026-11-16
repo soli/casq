@@ -8,7 +8,7 @@ from os import path
 from unittest.mock import patch
 
 import pytest  # type: ignore
-from tabularqual import convert_sbml_to_spreadsheet  # ty: ignore[unresolved-import]
+from tabularqual import convert_sbml_to_spreadsheet  # ty: ignore[import-not-found]
 
 from casq.celldesigner2qual import main, map_to_model
 from casq.utils import validate, validator_unavailable

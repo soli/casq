@@ -78,7 +78,7 @@ installer = "uv"
 detached = true
 dependencies = [
     "ruff",
-    "ty",
+    "ty==0.0.104",
 ]
 python = "3.15"
 
