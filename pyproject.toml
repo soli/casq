@@ -1,8 +1,6 @@
 [build-system]
-requires = [
-    "hatchling>=1.5.0",
-]
 build-backend = "hatchling.build"
+requires = [ "hatchling>=1.28", "python-sbom[hatch]>=0.3" ]
 
 [project]
 name = "casq"
@@ -10,7 +8,7 @@ description = "CaSQ: Celldesigner as Sbml-Qual"
 readme = "README.rst"
 license = "GPL-3.0-or-later"
 license-files = { paths = ["LICENSE"] }
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 authors = [
     { name = "Sylvain Soliman", email = "Sylvain.Soliman@inria.fr" },
 ]
@@ -19,16 +17,18 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
 dependencies = [
     "loguru>=0.2.5",
     "networkx>=2.2",
+    # "packaging>=24",
 ]
+
 dynamic = [
     "version",
 ]
@@ -55,7 +55,7 @@ Mirror = "https://github.com/soli/casq"
 path = "casq/__init__.py"
 
 [tool.hatch.build.targets.sdist]
-    include = [
+include = [
     "/casq",
     "/docs",
     "/test/*.xml",
@@ -67,17 +67,20 @@ exclude = [
     "/docs/_build",
 ]
 
+[tool.hatch.build.hooks]
+python-sbom = {}
+
 [tool.hatch.envs.default]
-python = "3.14"
+python = "3.15"
 installer = "uv"
 
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
-    "ruff==0.15.20",
-    "ty==0.0.55",
+    "ruff",
+    "ty",
 ]
-python = "3.13"
+python = "3.15"
 
 [tool.hatch.envs.lint.scripts]
 check = [
@@ -96,8 +99,7 @@ dependencies = [
     "tabularqual",
 ]
 [[tool.hatch.envs.test.matrix]]
-# python = ["pypy3.10", "3.12", "3.14"]
-python = ["3.12", "3.14"]
+    python = ["3.12", "3.13", "3.14", "3.15"]
 
 [tool.hatch.envs.cov]
 dependencies = [
@@ -105,7 +107,7 @@ dependencies = [
     "pytest-cov",
     "tabularqual",
 ]  # ty: ignore[unresolved-import]
-python = "3.14"
+python = "3.15"
 [tool.hatch.envs.cov.scripts]
 # run = "pytest --cov-config=pyproject.toml --cov=casq"
 run = "pytest --cov-report xml --cov-report term --cov=casq"
@@ -133,3 +135,6 @@ profile = "black"
 [tool.mypy]
 ignore_missing_imports = true
 check_untyped_defs = true
+
+[tool.python-sbom]
+supplier = { name = "Sylvain Soliman", url = [ "https://gitlab.inria.fr/soliman/" ] }

@@ -19,4 +19,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 # Don't forget to git tag v<version> && git push --tags
-version = "1.4.4"  # pylint: disable=invalid-name
+version = "1.5.0"  # pylint: disable=invalid-name
