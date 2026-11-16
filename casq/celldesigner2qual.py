@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import argparse
 import os.path
 import sys
-from typing import List, Union
+from typing import List, TextIO, Union
 
 from loguru import logger  # type: ignore
 
@@ -41,6 +41,13 @@ def map_to_model(map_filename: str, model_filename: str, bma=False):
         write_qual(model_filename, info, width, height)
     else:
         bmaExport.write_bma(model_filename, info, 1, None, False, True)
+
+
+def input_file(filepath: str) -> TextIO:
+    """Get the file object for string filepath."""
+    if filepath == "-":
+        return sys.stdin
+    return open(filepath, "r")
 
 
 def main(argv: Union[List[str], None] = None):
@@ -83,7 +90,7 @@ def main(argv: Union[List[str], None] = None):
     parser.add_argument(
         "-f",
         "--fixed",
-        type=argparse.FileType(),  # ty: ignore[deprecated]
+        type=input_file,
         help="""A CSV file containing input values or knock-ins/knock-outs,
         one per line, with name in the first column and the value in the second.""",
     )
@@ -131,7 +138,7 @@ def main(argv: Union[List[str], None] = None):
         )
     parser.add_argument(
         "infile",
-        type=argparse.FileType("r", encoding="utf-8"),  # ty: ignore[deprecated]
+        type=input_file,
         nargs="?",
         default=sys.stdin,
         help="CellDesigner or SBGN-ML File",
@@ -163,7 +170,10 @@ def main(argv: Union[List[str], None] = None):
         help="When exporting to BMA, colour all variables pink (defaults to colour by compartment)",
     )
     parser.add_argument(
-        "outfile", nargs="?", default=sys.stdout, help="SBML-Qual/BMA json File"
+        "outfile",
+        nargs="?",
+        default=sys.stdout,
+        help="SBML-Qual/BMA json File",
     )
     if argv:
         args = parser.parse_args(argv)
@@ -179,6 +189,9 @@ def main(argv: Union[List[str], None] = None):
     except ValueError:
         args.infile.seek(0, 0)
         info, width, height = read_sbgnml(args.infile)
+    finally:
+        if not args.infile.closed:
+            args.infile.close()
     simplify_model(info, args.upstream, args.downstream, args.names)
     if args.infile != sys.stdin and args.outfile == sys.stdout:
         args.outfile = os.path.splitext(args.infile.name)[0] + ".sbml"
